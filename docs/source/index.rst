@@ -1,20 +1,36 @@
-.. dias_kuksa_doc documentation master file, created by
-   sphinx-quickstart on Thu Sep 17 15:46:03 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+*****************************************************************************************
+DIAS: Smart Adaptive Remote Diagnostic Antitampering Systems - KUKSA Connectivity Usecase
+*****************************************************************************************
 
-Welcome to dias_kuksa_doc's documentation!
-==========================================
+.. figure:: /_images/dias.png 
+	:width: 400
+	:align: center
+.. figure:: /_images/kuksa.png 
+	:width: 400
+	:align: center
+
+Motivation
+##########
+
+Write your motivation here
+
+|
+|
+|
+
+Contents
+########
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   :maxdepth: 3
+   
+   Intention <contents/intention>   
+   Contribution & Benefits for the community <contents/contribution>
+   Introduction <contents/intro>
+   Step 1: In-vehicle Setup <contents/invehicle>
+   Step 2: Cloud Setup <contents/cloud>
+   Step 3: Simulation <contents/sim>
+   Future Work <contents/future>
+   Repositories <contents/repo>
+   Reference <contents/reference>
+   Contact <contents/contact>

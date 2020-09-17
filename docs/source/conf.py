@@ -1,3 +1,5 @@
+import sphinx_rtd_theme
+
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -17,7 +19,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'dias_kuksa_doc'
+project = u'DIAS - KUKSA Connectivity Usecase'
 copyright = '2020, Junhyung Ki'
 author = 'Junhyung Ki'
 
@@ -31,15 +33,31 @@ release = '0.1'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+	'sphinx.ext.autosectionlabel',
+    'sphinx.ext.autodoc',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.todo', 
+    'sphinx.ext.mathjax', 
+	'sphinx.ext.ifconfig', 
+	'sphinx.ext.imgmath',
+    'sphinx_rtd_theme',
+	'recommonmark'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
+source_suffix = ['.rst', '.md']
+
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
+exclude_patterns = ['_build']
+default_role = 'obj'
+intersphinx_mapping = {
+    'sphinx': ('https://sphinx.readthedocs.io/en/latest/', None),
+}
+gettext_compact = False
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -47,9 +65,18 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
+
+imgmath_latex_preamble = r'\usepackage{array}'
+imgmath_image_format = 'svg'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ['_static', '_images']
+
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+
+
+# Master doc
+master_doc = 'index'
