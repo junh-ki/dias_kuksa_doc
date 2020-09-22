@@ -1,9 +1,9 @@
 samples
 =======
 
-.. code-block:: console
-    mkdir test
-    cd !$  
+Some body text explaining what's coming up::
 
+    ls -lsa .
+    make file
 
-
+hahaha
