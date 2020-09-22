@@ -73,7 +73,7 @@ kuksa.val Infrastructure
     $ sudo apt-get update
     $ sudo apt-get install libmosquitto-dev
 
-5. You can `cmake` now from `~/kuksa.val/build/`::
+5. You can `cmake` now from `kuksa.val/build/`::
 
     $ cmake ..
 
@@ -95,6 +95,6 @@ kuksa.val Infrastructure
 
     #include <jsonpath/json_query.hpp>   =>   #include <jsoncons_ext/jsonpath/json_query.hpp>
 
-7. Then command `make` from `~/kuksa.val/build/`::
+7. Then command `make` from `kuksa.val/build/`::
 
     $ make
