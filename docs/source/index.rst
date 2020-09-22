@@ -6,7 +6,7 @@ DIAS: Smart Adaptive Remote Diagnostic Antitampering Systems - KUKSA Connectivit
 	:width: 400
 	:align: center
 .. figure:: /_images/kuksa.png 
-	:width: 250
+	:width: 200
 	:align: center
 
 Motivation
