@@ -10,7 +10,7 @@ Step 1: In-vehicle Setup
 can-utils
 #########
 
-* `can-utils` is a Linux specific set of utilities that enables Linux to communicate with the CAN network on the vehicle. The basic tutorial can be found `here <https://sgframework.readthedocs.io/en/latest/cantutorial.html>`_
+* `can-utils` is a Linux specific set of utilities that enables Linux to communicate with the CAN network on the vehicle. The basic tutorial can be found `here <https://sgframework.readthedocs.io/en/latest/cantutorial.html>`_.
 
 1. Open a terminal and install `can-utils`::
 
@@ -41,9 +41,9 @@ kuksa.val Infrastructure
 
     $ sudo apt install git
 
-2. Clone the kuksa.val repository::
+2. Recursively clone the kuksa.val repository::
 
-    $ git clone https://github.com/eclipse/kuksa.val.git
+    $ git clone --recursive https://github.com/eclipse/kuksa.val.git
 
 3. Make a `build` folder inside the repository and navigate to the folder::
 
@@ -73,28 +73,10 @@ kuksa.val Infrastructure
     $ sudo apt-get update
     $ sudo apt-get install libmosquitto-dev
 
-5. You can `cmake` now from `kuksa.val/build/`::
+5. You can `cmake` now in `kuksa.val/build/`::
 
     $ cmake ..
 
-6. The following commands should be run before `make` to avoid possible errors.
-
-6-1. `jsoncons` library should be included. Download the `latest release <https://github.com/danielaparker/jsoncons/releases/tag/v0.156.1>`_.
-
-6-2. Unpack the zip file and copy the directory, `jsoncons-x.xxx.x/include/*`, to your '/usr/include/' directory::
-
-    $ sudo cp -R jsoncons-x.xxx.x/include/* /usr/include/
-
-6-3. `jwt-cpp` should also be included. Download the `latest release <https://github.com/Thalhammer/jwt-cpp/releases/tag/v0.4.0>`_.
-
-6-4. Unpack the zip file and copy the directory, `jwt-cpp-x.x.x/include/*`, to your `/usr/include/` directory::
-
-    $ sudo cp -R jwt-cpp-x.x.x/include/* /usr/include/
-
-6-5. The `jsonpath` directory from `kuksa.val/src/SubscriptionHandler.cpp`, `kuksa.val/src/VssDatabase.cpp` and `kuksa.val/src/main.cpp` should be modified::
-
-    #include <jsonpath/json_query.hpp>   =>   #include <jsoncons_ext/jsonpath/json_query.hpp>
-
-7. Then command `make` from `kuksa.val/build/`::
+6. Then command `make` in `kuksa.val/build/`::
 
     $ make
