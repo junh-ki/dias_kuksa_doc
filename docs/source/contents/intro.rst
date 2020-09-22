@@ -6,11 +6,11 @@ Introduction
     :width: 800
     :align: center
 
+- KUKSA is a code-based result of the internationally funded project, APPSTACLE (2017 - 2019).
+
 .. figure:: /_images/intro/kuksa_ecosystem.png 
     :width: 1000
     :align: center
-
-- KUKSA is a code-based result of the internationally funded project, APPSTACLE (2017 - 2019).
 
 - An open-source eco-system for the connected vehicle domain.
 
