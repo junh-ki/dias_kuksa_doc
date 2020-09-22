@@ -1,11 +1,6 @@
 **Repositories**
 ################
 
-**Utils Repo**
-==============
+- `DIAS KUKSA Infrastructure Repository <https://github.com/junh-ki/dias_kuksa>`_
 
-
-**ReadTheDocs Repo**
-====================
-
-Click `ReadTheDocs Documentation Repository <https://github.com/junh-ki/dias_kuksa_doc>`_
+- `ReadTheDocs Documentation Repository <https://github.com/junh-ki/dias_kuksa_doc>`_
