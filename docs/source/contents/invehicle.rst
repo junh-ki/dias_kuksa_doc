@@ -79,13 +79,13 @@ kuksa.val Infrastructure
 
 6. The following commands should be run before `make` to avoid possible errors.
 
-6-1. `jsoncons` library should be included. Download the `latest release <https://github.com/danielaparker/jsoncons/releases/tag/v0.156.1>`_ 
+6-1. `jsoncons` library should be included. Download the `latest release <https://github.com/danielaparker/jsoncons/releases/tag/v0.156.1>`_.
 
 6-2. Unpack the zip file and copy the directory, `jsoncons-x.xxx.x/include/*`, to your '/usr/include/' directory::
 
     $ sudo cp -R jsoncons-x.xxx.x/include/* /usr/include/
 
-6-3. `jwt-cpp` should also be included. Download the `latest release <https://github.com/Thalhammer/jwt-cpp/releases/tag/v0.4.0>`_ 
+6-3. `jwt-cpp` should also be included. Download the `latest release <https://github.com/Thalhammer/jwt-cpp/releases/tag/v0.4.0>`_.
 
 6-4. Unpack the zip file and copy the directory, `jwt-cpp-x.x.x/include/*`, to your '/usr/include/' directory::
 
