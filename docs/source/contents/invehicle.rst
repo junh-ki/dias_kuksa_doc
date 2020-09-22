@@ -21,15 +21,11 @@ can-utils
 
 `candump` allows you to print all data that is being received by a CAN interface (`vcan0` here).
 
-|
-
 3. Open another terminal and command the following::
 
     $ cansend vcan0 7DF#DEADBEEF
 
 `cansend` sends a CAN message to the corresponding CAN interface (`vcan0` here).
-
-|
 
 4. Confirm whether `candump` has received the CAN message. You should be able to see output like the following in the previous terminal::
 
