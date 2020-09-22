@@ -87,7 +87,7 @@ kuksa.val Infrastructure
 
 6-3. `jwt-cpp` should also be included. Download the `latest release <https://github.com/Thalhammer/jwt-cpp/releases/tag/v0.4.0>`_.
 
-6-4. Unpack the zip file and copy the directory, `jwt-cpp-x.x.x/include/*`, to your '/usr/include/' directory::
+6-4. Unpack the zip file and copy the directory, `jwt-cpp-x.x.x/include/*`, to your `/usr/include/` directory::
 
     $ sudo cp -R jwt-cpp-x.x.x/include/* /usr/include/
 
