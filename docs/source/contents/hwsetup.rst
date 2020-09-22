@@ -2,8 +2,8 @@
 Hardware Setup
 **************
 
-Hardware Setup - Raspberry Pi
-#############################
+Raspberry Pi
+############
 
 - For development, you will be using Raspberry-Pi 3 or 4 (preferably 4 since it is faster and has more RAM capacity).
 
@@ -13,12 +13,12 @@ Hardware Setup - Raspberry Pi
 
 - In this documentation, the following hardware and OS are used. 
     * HW: Raspberry-Pi 4 
-    * OS: Raspberry Pi OS (32-bit) with desktop / `Download <https://www.raspberrypi.org/downloads/raspberry-pi-os/>`_
+    * OS: Raspberry-Pi OS (32-bit) with desktop / `Download <https://www.raspberrypi.org/downloads/raspberry-pi-os/>`_
 
 
 
-Hardware Setup - Virtual CAN Interface (Option 1 / Only for simululation)
-#########################################################################
+CAN Interface Option 1 - Virtual CAN (Only for simululation)
+############################################################
 
 1. Open a terminal and command::
 
@@ -32,8 +32,12 @@ Hardware Setup - Virtual CAN Interface (Option 1 / Only for simululation)
 
 
 
-Hardware Setup - SKPang PiCan2 Interface (Option 2)
-###################################################
+CAN Interface Option 2 - SKPang PiCan2
+######################################
+
+.. figure:: /_images/hw/pican2.jpg
+    :width: 700
+    :align: center
 
 1. SKPang PiCan2 is a CAN shield that gives your Raspberry-Pi a CAN interface. So that you can develop any CAN-related projects with your Raspberry-Pi.
 
@@ -51,9 +55,49 @@ Hardware Setup - SKPang PiCan2 Interface (Option 2)
 
     $ ifconfig
 
+6. If you want to bring the interface down, command the following::
+
+    $ sudo ip link set can0 down
 
 
-Hardware Setup - 2 Channel CAN Interface (Option 3)
-###################################################
 
+CAN Interface Option 3 - Seeed 2 Channel CAN
+############################################
 
+.. figure:: /_images/hw/seed_2_channel.png
+    :width: 800
+    :align: center
+
+* The detailed description can be found `here <https://wiki.seeedstudio.com/2-Channel-CAN-BUS-FD-Shield-for-Raspberry-Pi/#install-can-hat>`_.
+
+1. Get the CAN-HAT source code and install all linux kernel drivers::
+
+    $ git clone https://github.com/seeed-Studio/pi-hats
+    $ cd pi-hats/CAN-HAT
+    $ sudo ./install.sh 
+    $ sudo reboot
+
+2. After the reboot, confirm if `can0` and `can1` interfaces are successfully initialized by commanding::
+
+    $ dmesg | grep spi
+
+3. You should be able to see output like the following::
+
+    [ 3.725586] mcp25xxfd spi0.0 can0: MCP2517 successfully initialized.
+    [ 3.757376] mcp25xxfd spi1.0 can1: MCP2517 successfully initialized.
+
+4. Open a terminal and double-check whether the `can0` and `can1` interfaces are present by commanding::
+
+    $ ifconfig -a
+
+5-A. (CAN Classic) If `can0` and `can1` are shown, configure and bring the interface up by commanding::
+
+    $ sudo ip link set can0 up type can bitrate 1000000 restart-ms 1000 fd off
+
+5-B. (CAN FD) If `can0` and `can1` are shown, configure and bring the interface up by commanding::
+
+    $ sudo ip link set can0 up type can bitrate 1000000 dbitrate 2000000 restart-ms 1000 fd on
+
+6. If you want to bring the interface down, command the following::
+
+    $ sudo ip link set can0 down
