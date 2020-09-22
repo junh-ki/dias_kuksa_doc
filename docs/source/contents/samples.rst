@@ -1,0 +1,6 @@
+samples
+=======
+
+::
+    mkdir test
+    cd !$  
