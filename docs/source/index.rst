@@ -27,6 +27,7 @@ Contents
    Intention <contents/intention>   
    Contribution & Benefits for the community <contents/contribution>
    Introduction <contents/intro>
+   Prerequisites <contents/prerequisites>
    Step 1: In-vehicle Setup <contents/invehicle>
    Step 2: Cloud Setup <contents/cloud>
    Step 3: Simulation <contents/sim>
