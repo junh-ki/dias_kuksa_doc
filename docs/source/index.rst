@@ -35,3 +35,4 @@ Contents
    Repositories <contents/repo>
    Reference <contents/reference>
    Contact <contents/contact>
+   Samples <contents/samples>
