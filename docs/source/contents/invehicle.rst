@@ -91,7 +91,7 @@ kuksa.val Infrastructure
 
     $ sudo cp -R jwt-cpp-x.x.x/include/* /usr/include/
 
-6-5. `jsonpath` directories from `kuksa.val/src/SubscriptionHandler.cpp`, `kuksa.val/src/VssDatabase.cpp` and `kuksa.val/src/main.cpp` should be modified::
+6-5. The `jsonpath` directory from `kuksa.val/src/SubscriptionHandler.cpp`, `kuksa.val/src/VssDatabase.cpp` and `kuksa.val/src/main.cpp` should be modified::
 
     #include <jsonpath/json_query.hpp>   =>   #include <jsoncons_ext/jsonpath/json_query.hpp>
 
