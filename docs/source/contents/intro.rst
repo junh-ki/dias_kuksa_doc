@@ -3,11 +3,11 @@ Introduction
 ************
 
 .. figure:: /_images/intro/appstacle-kuksa.PNG 
-    :width: 400
+    :width: 600
     :align: center
 
 .. figure:: /_images/intro/kuksa_ecosystem.png 
-    :width: 400
+    :width: 750
     :align: center
 
 - KUKSA is a code-based result of the internationally funded project, APPSTACLE (2017 - 2019).
@@ -32,6 +32,5 @@ DIAS-KUKSA Overall Schema
 #########################
 
 .. figure:: /_images/intro/overall_schema.png 
-    :width: 400
+    :width: 750
     :align: center
-    
