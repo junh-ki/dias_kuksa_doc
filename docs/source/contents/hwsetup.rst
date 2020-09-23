@@ -92,17 +92,20 @@ CAN Interface Option 3 - Seeed 2 Channel CAN
 
     $ ifconfig -a
 
-5-A. (CAN Classic) If `can0` and `can1` are shown, configure and bring the interface up by commanding::
+5-A. (CAN Classic) If `can0` and `can1` are shown, configure and bring the interfaces up by commanding::
 
     $ sudo ip link set can0 up type can bitrate 1000000 restart-ms 1000 fd off
+    $ sudo ip link set can1 up type can bitrate 1000000 restart-ms 1000 fd off
 
 5-B. (CAN FD) If `can0` and `can1` are shown, configure and bring the interface up by commanding::
 
     $ sudo ip link set can0 up type can bitrate 1000000 dbitrate 2000000 restart-ms 1000 fd on
+    $ sudo ip link set can1 up type can bitrate 1000000 dbitrate 2000000 restart-ms 1000 fd on
 
 6. If you want to bring the interface down, command the following::
 
     $ sudo ip link set can0 down
+    $ sudo ip link set can1 down
 
 
 
