@@ -92,7 +92,7 @@ kuksa.val - kuksa.val VSS Server Setup
 
 	$ git clone --recurse-submodules https://github.com/GENIVI/vehicle_signal_specification.git
 
-1-2. The name of the cloned repository folder is `vehicle_signal_specification`. Inside there is a `Makefile` that creates the VSS data structure according to `vehicle_signal_specification/spec`. Since we only need a json file as output, we can modify the Makefile as follow::
+1-2. The name of the cloned repository folder is `vehicle_signal_specification`. Inside there is a `Makefile` that creates the VSS data structure according to `vehicle_signal_specification/spec`. Since we only need a JSON file as output, we can modify the Makefile as follow::
 
     #
     # Makefile to generate specifications
@@ -174,6 +174,6 @@ kuksa.val - kuksa.val VSS Server Setup
 
 	$ python3.8 testclient.py
 
-4. You would be in the VSS Client shell if connected successfully. To get an admin access to the server, you need to assign a json token. Command the following::
+4. You would be in the VSS Client shell if connected successfully. To get an admin access to the server, you need to assign a JSON token. Command the following::
 
 	VSS Clinet> authorize ../certificates/jwt/super-admin.json.token
