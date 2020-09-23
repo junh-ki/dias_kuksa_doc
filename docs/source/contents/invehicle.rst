@@ -80,3 +80,18 @@ kuksa.val Infrastructure
 6. Then command `make` in `kuksa.val/build/`::
 
     $ make
+
+
+
+kuksa.val - kuksa.val VSS Server Setup
+**************************************
+
+<Work in progress>
+
+1. Before you bring up and run the kuksa.val server, a proper JSON formatted VSS (Vehicle Signal Specification) structure should be put to the server. We
+
+1. pipenv: command not found 
+
+1. Navigate to the directory, `kuksa.val/build/src/`, and command the following::
+
+    ./kuksa-val-server --vss vss

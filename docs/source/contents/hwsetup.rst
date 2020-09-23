@@ -2,8 +2,8 @@
 Hardware Setup
 **************
 
-Raspberry Pi
-############
+Raspberry-Pi (Data Publisher)
+#############################
 
 - For development, you will be using Raspberry-Pi 3 or 4 (preferably 4 since it is faster and has more RAM capacity).
 
@@ -20,7 +20,7 @@ Raspberry Pi
 .. _virtual-can:
 
 CAN Interface Option 1 - Virtual CAN (Only for simululation)
-############################################################
+************************************************************
 
 1. Open a terminal and command::
 
@@ -35,7 +35,7 @@ CAN Interface Option 1 - Virtual CAN (Only for simululation)
 
 
 CAN Interface Option 2 - SKPang PiCan2
-######################################
+**************************************
 
 .. figure:: /_images/hw/pican2.jpg
     :width: 700
@@ -64,7 +64,7 @@ CAN Interface Option 2 - SKPang PiCan2
 
 
 CAN Interface Option 3 - Seeed 2 Channel CAN
-############################################
+********************************************
 
 .. figure:: /_images/hw/seed_2_channel.png
     :width: 800
@@ -103,3 +103,16 @@ CAN Interface Option 3 - Seeed 2 Channel CAN
 6. If you want to bring the interface down, command the following::
 
     $ sudo ip link set can0 down
+
+
+
+Linux (Data Consumer)
+#####################
+
+- For development, you can use a Ubuntu virtual machine (VirtualBox).
+
+    * The image file used (Ubuntu 18.04 LTS - Bionic Beaver) for this documentation can be downloaded `here <http://nl.releases.ubuntu.com/18.04.4/>`_.
+
+- A detailed tutorial to how to set up Ubuntu with VirtualBox is explained `here <https://brb.nci.nih.gov/seqtools/installUbuntu.html>`_.
+
+- Install required SW (git,... etc) < need to be described more in depth........
