@@ -218,7 +218,9 @@ kuksa.val - dbcfeeder.py Setup
 
 	$ pip3 install python-can cantools serial
 
-4. Navigate to the directory, `kuksa.val/examples/dbc2val/`, and command the following::
+4. If you haven't brought up a virtual CAN interface, please do it now by following :ref:`virtual-can`.
+
+5. Navigate to the directory, `kuksa.val/examples/dbc2val/`, and command the following::
 
 	$ python3 dbcfeeder.py -d vcan0 -j ../../certificates/jwt/super-admin.json.token --dbc dias_simple.dbc --mapping dias_mapping.yml
 
