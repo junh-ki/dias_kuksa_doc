@@ -90,6 +90,10 @@ kuksa.val Infrastructure
 kuksa.val - kuksa.val VSS Server Setup
 **************************************
 
+.. figure:: /_images/invehicle/invehicle_schema_server.png
+    :width: 1200
+    :align: center
+
 1. The kuksa.val server is built based on a Genivi VSS (Vehicle Signal Specification) data structure model. The VSS data structure is created according to the JSON file that is put into the `kuksa-val-server` executable file as an arugment under `--vss` (e.g., `vss_rel_2.0.json`). Before we bring up and run the kuksa.val server, we can create our own VSS data structure in the following steps.
 
 1-1. Recursively clone the GENIVI/vehicle_signal_specification repository::
@@ -198,6 +202,10 @@ getValue Vehicle.Private.ThurstersActive
 kuksa.val - dbcfeeder.py Setup
 ******************************
 
+.. figure:: /_images/invehicle/invehicle_schema_dbcfeeder.png
+    :width: 1200
+    :align: center
+
 * `kuksa.val/examples/dbc2val/dbcfeeder.py` is to interpret and write the CAN data that is being received by the CAN interface (e.g., `can0` or `vcan0`) to the kuksa.val server.
 
 * `dbcfeeder.py` takes four compulsory arguments to be run:
@@ -228,5 +236,8 @@ kuksa.val - dbcfeeder.py Setup
 
 kuksa.val - cloudfeeder.py Setup
 ********************************
+.. figure:: /_images/invehicle/invehicle_schema_cloudfeeder.png
+    :width: 1200
+    :align: center
 
 
