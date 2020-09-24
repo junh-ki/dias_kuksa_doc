@@ -154,6 +154,8 @@ kuksa.val - kuksa.val VSS Server Setup
 
     $ ./kuksa-val-server --vss modified.json --insecure --log-level ALL
 
+* The kuksa.val server is entirely passive. Which means that you would need supplementary applications to feed and fetch the data. In the following `dbcfeeder.py` and `cloudfeeder.py` are introduced. They are meant to deal with setting and getting the data from the kuksa.val server.
+
 
 ##### WORK IN PROGRESS ... #####
 
@@ -190,8 +192,6 @@ getMetaData Vehicle.Speed
 getValue Vehicle.Speed
 setValue Vehicle.Private.ThurstersActive true
 getValue Vehicle.Private.ThurstersActive
-
-* The kuksa.val server is entirely passive. Which means that you would need supplementary applications to feed and fetch the data. In the following `dbcfeeder.py` and `cloudfeeder.py` are introduced. They are meant to deal with setting and getting the data from the kuksa.val server.
 
 
 
