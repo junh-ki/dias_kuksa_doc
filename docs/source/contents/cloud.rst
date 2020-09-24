@@ -6,7 +6,7 @@ Step 2: Cloud Setup
     :width: 1200
     :align: center
 
-.. cloud-hono:
+.. _cloud-hono:
 
 kuksa.cloud - Eclipse Hono (Cloud Entry)
 ########################################
