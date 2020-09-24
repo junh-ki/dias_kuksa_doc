@@ -152,7 +152,7 @@ kuksa.val - kuksa.val VSS Server Setup
 
     $ make
 
-1-7. As a result, you can get a JSON file named as `vss_rel_2.0.0-alpha+006.json`. Let's rename this file as `modified.json` for convenience and move it to `kuksa.val/build/src/` where the `kuksa-val-server` executable file is located.
+1-7. As a result, you can get a JSON file named as `vss_rel_2.0.0-alpha+006.json`. Let's rename this file as `modified.json` for convenience and move it to `kuksa.val/build/src/`, where the `kuksa-val-server` executable file is located.
 
 2. Now we can bring up and run the kuksa.val server. Navigate to the directory, `kuksa.val/build/src/`, and command the following::
 
@@ -236,8 +236,51 @@ kuksa.val - dbcfeeder.py Setup
 
 kuksa.val - cloudfeeder.py Setup
 ********************************
+
 .. figure:: /_images/invehicle/invehicle_schema_cloudfeeder.png
     :width: 1200
     :align: center
 
+* `dias_kuksa/utils/in-vehicle/cloudfeeder_telemetry/cloudfeeder.py` fetches the data from the kuksa.val in-vehicle server and preprocess it with a case-specific preprocessor, `dias_kuksa/utils/in-vehicle/cloudfeeder_telemetry/preprocessor_bosch.py`, and transmit the result to the cloud instance (MQTT broker in DIAS use-case).
 
+* `cloudfeeder.py` takes six compulsory arguments to be run:
+	* Host URL (e.g., "mqtt.bosch-iot-hub.com") / `--host`
+	* Protocol Port Number (e.g., "8883") / `-p` or `--port`
+	* Credential Authorization Username (Configured when creating) (e.g., "{username}@{tenant-id}") / `-u` or `--username`
+	* Credential Authorization Password (Configured when creating) (e,g., "your_pw")/ `-P` or `--password`
+	* Server Certificate File (MQTT TLS Encryption) (e.g., "iothub.crt") / `-c` or `--cafile`
+	* Data Type (e.g., "telemetry" or "event") / "-t" or "--type"
+
+1. (Optional) `preprocessor_bosch.py` is designed to follow Bosch's diagnostic methodologies. Therefore you can create your own `preprocessor_xxx.py` that follows your purpose and replace `preprocessor_bosch.py` with it. Of course, the corresponding lines in `cloudfeeder.py` should be modified as well in this case.
+
+2. Navigate to `dias_kuksa/utils/in-vehicle/cloudfeeder_telemetry/`, copy `cloudfeeder.py` and `preprocessor_bosch.py` (or your own `preprocessor_xxx.py`) to `kuksa.val/vss-testclient/`, where the `testclient.py` file is located.
+
+3. Then the `do_getValue(self, args)` function from `kuksa.val/vss-testclient/testclient.py` should be modified as below.
+
+.. code-block:: python
+
+	...
+
+	def do_getValue(self, args):
+        """Get the value of a parameter"""
+        req = {}
+        req["requestId"] = 1234
+        req["action"]= "get"
+        req["path"] = args.Parameter
+        jsonDump = json.dumps(req)
+        self.sendMsgQueue.put(jsonDump)
+        resp = self.recvMsgQueue.get()
+        # print(highlight(resp, lexers.JsonLexer(), formatters.TerminalFormatter()))
+        self.pathCompletionItems = []
+        datastore = json.loads(resp)
+        return datastore
+
+    ...
+
+2. Due to its dependency on the cloud instance information, you should create either a Eclipse Hono or a Bosch-IoT-Hub instance first by following :ref:`cloud-hono`, so that you can get the required information ready to run `cloudfeeder.py`.
+
+3. When all the required information is ready, navigate to the directory, `kuksa.val/vss-testclient/`, and run `cloudfeeder.py` by commanding::
+
+	$ python3 cloudfeeder.py --host {host_url} -p {port_number} -u {username}@{tenant-id} -P {password} -c {server_certificate_file} -t {transmission_type}
+
+* Just a reminder, the information between `{}` should be different depending on the target Hono instance.
