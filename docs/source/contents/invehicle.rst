@@ -130,7 +130,7 @@ kuksa.val - kuksa.val VSS Server Setup
         fi;
             cp  vss_rel_* ${DEPLOYDIR}/
 
-1-3. Now we can replace the `vehicle_signal_specification/spec` folder with the modified folder. To get the modified `spec` folder, clone the junh-ki/dias_kuksa repository:: 
+1-3. Now we can replace the `vehicle_signal_specification/spec` folder with the modified folder. To get the modified `spec` folder, clone the `junh-ki/dias_kuksa` repository:: 
 
     $ git clone https://github.com/junh-ki/dias_kuksa.git
 
@@ -153,7 +153,7 @@ kuksa.val - kuksa.val VSS Server Setup
 
 ##### WORK IN PROGRESS ... #####
 
-3. (Optional / You can proceed without these steps if you just want to use the VSS structure as is.) You can extend or modify the existing VSS data structure during runtime by using `kuksa.val/vss-testclient/testclient.py`. The followings describe from installing dependencies, running `testclient.py` to extending or modifying the VSS structure.
+3. :blue:`(Optional / You can proceed without these steps if you just want to use the VSS structure as is.)` You can extend or modify the existing VSS data structure during runtime by using `kuksa.val/vss-testclient/testclient.py`. The followings describe from installing dependencies, running `testclient.py` to extending or modifying the VSS structure.
 
 3-1. Install requirements (Python 3.8)::
 
@@ -179,8 +179,8 @@ getMetaData Vehicle.Speed
 setValue Vehicle.Speed 200
 setValue Vehicle.Private.ThurstersActive true
 
-shall cat roadster-elon.json
-updateVSSTree roadster-elon.json
+shall cat modified.json
+updateVSSTree ../build/src/modified.json
 
 getMetaData Vehicle.Speed
 getValue Vehicle.Speed
@@ -194,7 +194,25 @@ getValue Vehicle.Private.ThurstersActive
 kuksa.val - dbcfeeder.py Setup
 ******************************
 
+* `kuksa.val/examples/dbc2val/dbcfeeder.py` takes four compulsory arguments to be run:
+	* CAN interface (e.g., `can0` or `vcan0`) / `-d` or `--device` / To connect to the CAN device interface.
+	* JSON token (e.g., `super-admin.json.token`) / `-j` or `--jwt` / To have write-access to the server.
+	* DBC file (e.g., `dbcfile.dbc`) / `--dbc` / To translate the raw CAN data.
+	* Mapping YML file (e.g., `mapping.yml`) / `--mapping` / To map each of the specific signals to the corresponding path in the kuksa.val server.
 
+* Since the kuksa.val work package already has the admin JSON token, you only need a DBC file and a YML file. The `junh-ki/dias_kuksa` repository provides the example DBC file and YML file. :blue:`(DBC file is target-vehicle-specific and can be offered by the target vehicle's manufacturer.)`
+
+1. 
+
+
+
+
+
+* dependencies::
+
+	$ pip3 install python-can cantools serial
+
+	$ python3 dbcfeeder.py -d vcan0 -j ../../certificates/jwt/super-admin.json.token --dbc simple.dbc --mapping modified_mapping.yml
 
 
 kuksa.val - cloudfeeder.py Setup
