@@ -32,5 +32,5 @@ DIAS-KUKSA Overall Schema
 #########################
 
 .. figure:: /_images/intro/overall_schema.png 
-    :width: 1000
+    :width: 1200
     :align: center

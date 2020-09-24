@@ -2,6 +2,10 @@
 Step 1: In-vehicle Setup
 ************************
 
+.. figure:: /_images/invehicle/invehicle_schema.png
+    :width: 1200
+    :align: center
+
 * The in-vehicle environment here is Raspberry-Pi 4.
 * To ease the complexity, Virtual CAN is used here as an interface. Therefore you should follow :ref:`virtual-can` prior to this part.
 
@@ -134,9 +138,9 @@ kuksa.val - kuksa.val VSS Server Setup
 
     $ git clone https://github.com/junh-ki/dias_kuksa.git
 
-1-4. In the directory, `dias_kuksa/vss_spec_database/`, the `spec` folder can be found. Replace the existing `spec` folder from `vehicle_signal_specification/` with the one from `dias_kuksa/vss_spec_database/`. Designing the `spec` folder's file structure can be easily self-explained.
+1-4. In the directory, `dias_kuksa/utils/in-vehicle/vss_structure_example/`, the `spec` folder can be found. Replace the existing `spec` folder from `vehicle_signal_specification/` with the one from `dias_kuksa/utils/in-vehicle/vss_structure_example/`. Designing the `spec` folder's file structure can be easily self-explained.
 
-1-5. Before commanding `make`, install dependencies (anytree, deprecation, stringcase) first::
+1-5. Before commanding `make`, install python dependencies (anytree, deprecation, stringcase) first::
 
     $ pip3 install anytree deprecation stringcase
 
@@ -153,7 +157,7 @@ kuksa.val - kuksa.val VSS Server Setup
 
 ##### WORK IN PROGRESS ... #####
 
-3. :blue:`(Optional / You can proceed without these steps if you just want to use the VSS structure as is.)` You can extend or modify the existing VSS data structure during runtime by using `kuksa.val/vss-testclient/testclient.py`. The followings describe from installing dependencies, running `testclient.py` to extending or modifying the VSS structure.
+3. :blue:`(Optional / You can proceed without these steps if you just want to use the VSS structure as is.)` You can extend or modify the existing VSS data structure during runtime by using `kuksa.val/vss-testclient/testclient.py`. The followings describe from installing python dependencies, running `testclient.py` to extending or modifying the VSS structure.
 
 3-1. Install requirements (Python 3.8)::
 
@@ -194,7 +198,9 @@ getValue Vehicle.Private.ThurstersActive
 kuksa.val - dbcfeeder.py Setup
 ******************************
 
-* `kuksa.val/examples/dbc2val/dbcfeeder.py` takes four compulsory arguments to be run:
+* `kuksa.val/examples/dbc2val/dbcfeeder.py` is to interpret and write the CAN data that is being received by the CAN interface (e.g., `can0` or `vcan0`) to the kuksa.val server.
+
+* `dbcfeeder.py` takes four compulsory arguments to be run:
 	* CAN interface (e.g., `can0` or `vcan0`) / `-d` or `--device` / To connect to the CAN device interface.
 	* JSON token (e.g., `super-admin.json.token`) / `-j` or `--jwt` / To have write-access to the server.
 	* DBC file (e.g., `dbcfile.dbc`) / `--dbc` / To translate the raw CAN data.
@@ -202,17 +208,20 @@ kuksa.val - dbcfeeder.py Setup
 
 * Since the kuksa.val work package already has the admin JSON token, you only need a DBC file and a YML file. The `junh-ki/dias_kuksa` repository provides the example DBC file and YML file. :blue:`(DBC file is target-vehicle-specific and can be offered by the target vehicle's manufacturer.)`
 
-1. 
+1. Assuming you have already cloned the `junh-ki/dias_kuksa` repository, / If you haven't, please clone it now::
 
+	$ git clone https://github.com/junh-ki/dias_kuksa.git
 
+2. Navigate to the directory, `dias_kuksa/utils/in-vehicle/dbcfeeder_example_arguments/`, and copy `dias_mapping.yml` and `dias_simple.dbc` to the directory, `kuksa.val/examples/dbc2val/`, where `dbcfeeder.py` is located.
 
-
-
-* dependencies::
+3. Before running `dbcfeeder.py`, install python dependencies (python-can cantools serial) first::
 
 	$ pip3 install python-can cantools serial
 
-	$ python3 dbcfeeder.py -d vcan0 -j ../../certificates/jwt/super-admin.json.token --dbc simple.dbc --mapping modified_mapping.yml
+4. Navigate to the directory, `kuksa.val/examples/dbc2val/`, and command the following::
+
+	$ python3 dbcfeeder.py -d vcan0 -j ../../certificates/jwt/super-admin.json.token --dbc dias_simple.dbc --mapping dias_mapping.yml
+
 
 
 kuksa.val - cloudfeeder.py Setup
