@@ -1,5 +1,5 @@
 ************************
-Step 1: In-vehicle Setup
+Step 2: In-vehicle Setup
 ************************
 
 .. figure:: /_images/invehicle/invehicle_schema.png
@@ -100,7 +100,7 @@ kuksa.val - kuksa.val VSS Server Setup
 
 	$ git clone --recurse-submodules https://github.com/GENIVI/vehicle_signal_specification.git
 
-1-2. The name of the cloned repository folder is `vehicle_signal_specification`. Inside there is a `Makefile` that creates the VSS data structure according to `vehicle_signal_specification/spec`. Since we only need a JSON file as output, we can modify the Makefile as follow::
+1-2. The name of the cloned repository folder is `vehicle_signal_specification`. Inside there is a `Makefile` that creates the VSS data structure according to `vehicle_signal_specification/spec`. Since we only need a JSON file as output, we can modify `Makefile` as follow::
 
     #
     # Makefile to generate specifications

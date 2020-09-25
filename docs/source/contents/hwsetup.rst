@@ -1,13 +1,13 @@
-**************
-Hardware Setup
-**************
+**********************
+Step 1: Hardware Setup
+**********************
 
 Raspberry-Pi (Data Publisher)
 #############################
 
 - For development, you will be using Raspberry-Pi 3 or 4 (preferably 4 since it is faster and has more RAM capacity).
 
-- Raspberry-Pi is not a regular micro-controller board but rather a single-board computer. This means that you can run an OS (Operating System; Raspbian, Ubuntu, etc.) on it, and connect other devices (such as monitor, keyboard) to it. This way, you can use your RPi in the similar way you use your PC which eases your in-vehicle analysis as well as in-vehicle development.
+- Raspberry-Pi is not a regular micro-controller but rather a single-board computer. This means that you can run an OS (Operating System; Raspbian, Ubuntu, etc.) on it, and connect it to other IO devices (such as monitor, keyboard). This way, you can use your Raspberry-Pi in the similar way you use your PC, which eases the entire in-vehicle development process.
 
 - You can kick-start with your Raspberry-Pi by following this `instruction <https://projects.raspberrypi.org/en/projects/raspberry-pi-setting-up>`_.
 

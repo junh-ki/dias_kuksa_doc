@@ -1,5 +1,5 @@
 *******************
-Step 2: Cloud Setup
+Step 3: Cloud Setup
 *******************
 
 .. figure:: /_images/cloud/cloud_schema.png
