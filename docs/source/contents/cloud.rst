@@ -46,7 +46,7 @@ Hono Option 1 - Bosch IoT Hub as Hono
 
 7. When the status is "Active", click "Show Credentials" of the target instance. Then it would show the instance's credentials information. This information is important to go to the device registry and register your device in the further steps. (You don't need to save this information since you can always come back to see.) Let's copy the username under "device_registry" (e.g., manager@rd23aec9...). 
 
-8. Now go to `Bosch IoT - Hub Management API <https://apidocs.bosch-iot-suite.com/index.html?urls.primaryName=Bosch%20IoT%20Hub%20-%20Management%20API>`_ and click "Authorize".
+8. Now go to `Bosch IoT Hub - Management API <https://apidocs.bosch-iot-suite.com/index.html?urls.primaryName=Bosch%20IoT%20Hub%20-%20Management%20API>`_ and click "Authorize".
 
 
 
