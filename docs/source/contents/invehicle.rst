@@ -234,6 +234,8 @@ kuksa.val - dbcfeeder.py Setup
 
 
 
+.. _cloud-feeder:
+
 kuksa.val - cloudfeeder.py Setup
 ********************************
 
