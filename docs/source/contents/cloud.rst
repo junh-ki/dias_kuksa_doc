@@ -101,7 +101,7 @@ If the server responses with a code 201, it means that new credentials have been
 
 9-5. Now we have all information to run `cloudfeeder.py`:
 
-    * Host URL: "mqtts://mqtt.bosch-iot-hub.com"
+    * Host URL: "mqtt.bosch-iot-hub.com"
     * Protocol Port Number: "8883"
     * Credential Authorization Username (e.g., "{username}@{tenant-id}"): "pc01@td23aec9b9335415594a30c7113f3a266"
     * Credential Authorization Password: "kuksatutisfun01"
@@ -110,7 +110,7 @@ If the server responses with a code 201, it means that new credentials have been
 
 10. With the information in 9-5, we can run `cloudfeeder.py`. Navigate to `kuksa.val/vss-testclient/` and command::
 
-    $ python3 cloudfeeder.py --host mqtts://mqtt.bosch-iot-hub.com -p 8883 -u pc01@td23aec9b9335415594a30c7113f3a266 -P kuksatutisfun01 -c iothub.crt -t telemetry
+    $ python3 cloudfeeder.py --host mqtt.bosch-iot-hub.com -p 8883 -u pc01@td23aec9b9335415594a30c7113f3a266 -P kuksatutisfun01 -c iothub.crt -t telemetry
 
 
 
