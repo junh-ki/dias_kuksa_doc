@@ -72,7 +72,45 @@ You can rename the string value of "device-id" according to your taste::
 
 * To list all the registered devices' ids, you can click the "GET /registration/{tenant-id}" bar, type the instance's tenant-id and click "Execute". If successful, the server would return a code 200 with the device data that lists all the devices that are registered to the instance.
 
-9. 
+9. What we have done so far is, create a Bosch IoT Hub instance and register devices in it. However, we haven't yet configured credentials for each device.
+Credential information helps you access to a specific device that is registered in the instance. The following steps illustrate how to add new credentials for a device.
+
+9-1. Under the "credentials" tab, find and click the "POST" bar.
+
+9-2. Click "Try it out" and paste the tenant-id of the Bosch IoT Hub instance to where it is intended to be placed.
+
+9-3. In the JSON dictionary, change the value of "device-id" to the target device-id's value.
+
+9-4. Set values of "auth-id" and "password" according to your preference::
+
+    {
+        "device-id": "kuksa-tut-jun:pc01",
+        "type": "hashed-password",
+        "auth-id": "pc01",
+        "enabled": true,
+        "secrets": [
+            {
+                "password": "kuksatutisfun01"
+            }
+        ]
+    }
+
+If the server responses with a code 201, it means that new credentials have been added successfully.
+
+* Here the values of "auth-id" and "password" are used to run `cloudfeeder.py`. Therefore it is recommended to save them somewhere.
+
+9-5. Now we have all information to run `cloudfeeder.py`:
+
+    * Host URL: "mqtts://mqtt.bosch-iot-hub.com"
+    * Protocol Port Number: "8883"
+    * Credential Authorization Username (e.g., "{username}@{tenant-id}"): "pc01@td23aec9b9335415594a30c7113f3a266"
+    * Credential Authorization Password: "kuksatutisfun01"
+    * Server Certificate File: "`iothub.crt <https://docs.bosch-iot-suite.com/hub/general-concepts/certificates.html>`_"
+    * Data Type: "telemetry"
+
+10. With the information in 9-5, we can run `cloudfeeder.py`. Navigate to `kuksa.val/vss-testclient/` and command::
+
+    $ python3 cloudfeeder.py --host mqtts://mqtt.bosch-iot-hub.com -p 8883 -u pc01@td23aec9b9335415594a30c7113f3a266 -P kuksatutisfun01 -c iothub.crt -t telemetry
 
 
 

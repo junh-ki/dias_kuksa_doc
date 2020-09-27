@@ -281,33 +281,35 @@ kuksa.val - cloudfeeder.py Setup
 
 2. Due to its dependency on the cloud instance information, you should create either a Eclipse Hono or a Bosch-IoT-Hub instance first by following :ref:`cloud-hono`, so that you can get the required information ready to run `cloudfeeder.py`.
 
-3. Before running `cloudfeeder.py`, install dependencies (mosquitto, mosquitto-clients, matplotlib) first::
+3. Download the server certificate `here <https://docs.bosch-iot-suite.com/hub/general-concepts/certificates.html>`_ and move it to `kuksa.val/vss-testclient/`, where the `cloudfeeder.py` file is located.
+
+4. Before running `cloudfeeder.py`, install dependencies (mosquitto, mosquitto-clients, matplotlib) first::
     
     $ sudo apt-get update
     $ sudo apt-get install mosquitto
     $ sudo apt-get install mosquitto-clients
     $ pip3 install matplotlib
 
-4. When all the required information is ready, navigate to the directory, `kuksa.val/vss-testclient/`, and run `cloudfeeder.py` by commanding::
+5. When all the required information is ready, navigate to the directory, `kuksa.val/vss-testclient/`, and run `cloudfeeder.py` by commanding::
 
 	$ python3 cloudfeeder.py --host {host_url} -p {port_number} -u {username}@{tenant-id} -P {password} -c {server_certificate_file} -t {transmission_type}
 
 * Just a reminder, the information between `{}` should be different depending on the target Hono instance.
 
-5. If all the arguments are assigned properly, you would be asked to choose the connection type (0: Secure, 1: Insecure). Type 1 and enter to connect insecurely::
+6. If all the arguments are assigned properly, you would be asked to choose the connection type (0: Secure, 1: Insecure). Type 1 and enter to connect insecurely::
 
     0-Secure or 1-Insecure connection:
     1
 
-6. Then you would be asked to enter the authorization token. We can copy and paste the JSON token (`kuksa.val/certificates/jwt/super-admin.json.token`).
+7. Then you would be asked to enter the authorization token. We can copy and paste the JSON token (`kuksa.val/certificates/jwt/super-admin.json.token`).
 
-6-1. Open another terminal and navigate to `kuksa.val/certificates/jwt/`, where the JSON token is located.
+7-1. Open another terminal and navigate to `kuksa.val/certificates/jwt/`, where the JSON token is located.
 
-6-2. Print the token by commanding::
+7-2. Print the token by commanding::
 
     cat super-admin.json.token
 
-6-3. Copy the printed token in the terminal and paste it to the previous terminal where you are asked to enter the authorization token::
+7-3. Copy the printed token in the terminal and paste it to the previous terminal where you are asked to enter the authorization token::
 
     Enter the authorization token:
     eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJrdWtzYS52YWwiLCJpc3MiOiJFY2xpcHNlIEtVS1NBIERldiIsImFkbWluIjp0cnVlLCJtb2RpZnlUcmVlIjp0cnVlLCJpYXQiOjE1MTYyMzkwMjIsImV4cCI6MTYwNjIzOTAyMiwia3Vrc2EtdnNzIjp7IioiOiJydyJ9fQ.XJ51r3dd3S7DX7ekzFDF9kHEss__voK8Fgs7DDeSPa1lw51S8l59TKiYj2isHvc7RxG6zbKGSY12UbYqsJW62CNQMQVJw0IupczpdFkuv9-nesvmhMrV40vupe2YD9ruuY-DK8WgY7ti7us6kJ4DYhbMOjtiB8hYaVwiSOdn4r8uWTghbleF9fc6Lvi_igM-lopZU8VZmQCIB5koFRJ-Z7HFg2ZjaD5SX2mWhE2ZhXE07CKpv0aplqlqtqBCf38zQ7Nk05YliNIijhvT35Ge0OL4B4fqeixXbpRkAUBlhy5f0oypeBnBr3XaM7akJa1W91H8ANj_mdELIATXfEfEzxD9dd8YvQZi43vVF3KYIJLL09EIAGKKccom4l7XJORiTKcQt4EfSh1I2IYhsZSB8uNwIEPx7h8HqUDXp6y_eBdy13W48hnT4hJ5HH0hTfIE5VEPTJPmlPlX1coGgFa8zXmL85uElgHUJwL_3PbFB_O8wqy0fiXayqOa09bjUbX3ux3BGZI6Lji2o0q8JW6OHCW4YilhgyfJC3m4kZAxe1S1IGQVQXBlq0JHmPFkJmf3BClPAhBh1tpPpSwz8ppuGZ85asRnkDH2sYoMWjandO1s_oKskplPESGQ3h1lyU9fLvpp_0yJSlrv07CnzKLeXKS8QYiO30YbkTCdGxlSae8
