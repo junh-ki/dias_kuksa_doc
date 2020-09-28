@@ -131,16 +131,77 @@ kuksa.cloud - InfluxDB (Time Series Database)
     :align: center
 
 Now that we have set up a Hono instance, `cloudfeeder.py` can send the telemetry data to Hono every one to two seconds. Hono may be able to collect all the data from its connected vehicles. However, Hono is not a database, meaning that it doesn't store all the collected data in itself. This also means that we have to hire a time series database manager that can collect and store the data received by Hono in chronological order.
-InfluxDB is another kuksa.cloud's component, that is an open-source time series database. In KUKSA, InfluxDB is meant to be used as the back-end database that stores the data incoming into Hono. With InfluxDB, we can make use of the collected data not only for visualization but also for a variety of external services such as a mailing service or an external diagnostic service. InfluxDB should be located in the northbound of Hono along with Hono-InfluxDB-Connector that should be placed in-between Hono and InfluxDB.
+InfluxDB is another kuksa.cloud's component, that is an open-source time series database. In KUKSA, InfluxDB is meant to be used as the back-end database that stores the data incoming into Hono. With InfluxDB, we can make use of the collected data not only for visualization but also for a variety of external services such as a mailing service or an external diagnostic service. InfluxDB should be located in the northbound of Hono along with Hono-InfluxDB-Connector that should be placed in-between Hono and InfluxDB. 
+To set up InfluxDB and Hono-InfluxDB-Connector, we can use a Linux (virtual) machine. Based on Hono, the Linux machine here can be considered as a data consumer while the in-vehicle Raspberry-Pi is considered as a data publisher.
+The following steps to setup InfluxDB is based on `this tutorial <http://www.andremiller.net/content/grafana-and-influxdb-quickstart-on-ubuntu>`_.
 
-1. To set up InfluxDB and Hono-InfluxDB-Connector, we can use a Linux (virtual) machine. VirtualBox with Ubuntu 18.04 LTS is used here for setting up InfluxDB and Hono-InfluxDB-Connector. (VM Setup Tutorial can be found `here <https://codebots.com/library/techies/ubuntu-18-04-virtual-machine-setup>`_.)
+1. VirtualBox with Ubuntu 18.04 LTS is used here for setting up InfluxDB and Hono-InfluxDB-Connector. (VM Setup Tutorial can be found `here <https://codebots.com/library/techies/ubuntu-18-04-virtual-machine-setup>`_.) (If your default OS is already Linux, this step can be skipped.)
 
-2. 
+2. Run your Virtual Machine (VM) and open a terminal.
+
+3. Before InfluxDB installation, command the following::
+
+    $ sudo apt-get update
+
+    $ sudo apt-get upgrade
+
+    $ sudo apt install curl
+
+    $ curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
+
+    $ source /etc/lsb-release
+
+    $ echo "deb https://repos.influxdata.com/${DISTRIB_ID,,} ${DISTRIB_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+
+4. Then install InfluxDB::
+
+    $ sudo apt-get update && sudo apt-get install influxdb
+
+5. Start InfluxDB::
+
+    $ sudo service influxdb start
+
+* If there is no output produced from this command, you have successfully set up InfluxDB on your VM. Please continue with 6 if you want to know how to interact with InfluxDB through a Command Line Interface (CLI). Otherwise, you can move onto Hono-InfluxDB-Connector.
+
+6. Connect to InfluxDB by commanding::
+
+    $ influx
+
+* After this command, you would be inside the InfluxDB shell.
+
+7. Create a database, "kuksademo", by commanding inside the InfluxDB shell::
+
+    > CREATE DATABASE kuksademo
+
+* This command produces no output, but when you list the database, you should see that it was created.
+
+8. List the database by commadning inside the InfluxDB shell::
+
+    > SHOW DATABASES
+
+9. Select the newly created database, "kuksademo", by commanding inside the InfluxDB shell::
+
+    > USE kuksademo
+
+* It should produce the following output on the terminal: "Using database kuksademo" 
+
+10. Insert some test data using the following command::
+
+    > INSERT cpu,host=serverA value=0.64
+
+* More information about inserting data can be found `here <https://docs.influxdata.com/influxdb/v0.12/guides/writing_data/>`_
+
+11. The insert command does not produce any output, but you should see your data when you perform a query::
+
+    > SELECT * from cpu
+
+12. Type “exit” to leave the InfluxDB shell and return to the Linux shell::
+
+    > exit
 
 
 
-
-dias_kuksa - Hono-InfluxDB Connector
+dias_kuksa - Hono-InfluxDB-Connector
 ####################################
 
 .. figure:: /_images/cloud/cloud_hono-influxdb-connector.png
