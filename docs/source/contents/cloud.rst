@@ -161,7 +161,7 @@ The following steps to setup InfluxDB is based on `this tutorial <http://www.and
 
     $ sudo service influxdb start
 
-* If there is no output produced from this command, you have successfully set up InfluxDB on your VM. Please continue with 6 if you want to know how to interact with InfluxDB through a Command Line Interface (CLI). Otherwise, you can move onto Hono-InfluxDB-Connector (:ref:`cloud-hono-influxdb-connector`).
+* If there is no output produced from this command, you have successfully set up InfluxDB on your VM. Please continue with 6 if you want to know how to interact with InfluxDB through a Command Line Interface (CLI). Otherwise, you can directly move onto Hono-InfluxDB-Connector (:ref:`cloud-hono-influxdb-connector`).
 
 6. Connect to InfluxDB by commanding::
 
