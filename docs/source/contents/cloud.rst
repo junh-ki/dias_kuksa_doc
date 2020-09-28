@@ -161,7 +161,7 @@ The following steps to setup InfluxDB is based on `this tutorial <http://www.and
 
     $ sudo service influxdb start
 
-* If there is no output produced from this command, you have successfully set up InfluxDB on your VM. Please continue with 6 if you want to know how to interact with InfluxDB through a Command Line Interface (CLI). Otherwise, you can move onto Hono-InfluxDB-Connector.
+* If there is no output produced from this command, you have successfully set up InfluxDB on your VM. Please continue with 6 if you want to know how to interact with InfluxDB through a Command Line Interface (CLI). Otherwise, you can move onto Hono-InfluxDB-Connector (:ref:`cloud-hono-influxdb-connector`).
 
 6. Connect to InfluxDB by commanding::
 
@@ -201,6 +201,8 @@ The following steps to setup InfluxDB is based on `this tutorial <http://www.and
 
 
 
+.. _cloud-hono-influxdb-connector:
+
 dias_kuksa - Hono-InfluxDB-Connector
 ####################################
 
@@ -208,7 +210,8 @@ dias_kuksa - Hono-InfluxDB-Connector
     :width: 1200
     :align: center
 
-
+Now that Hono and InfluxDB are set up, we have to somehow find a way to transmit the incoming data from Hono to InfluxDB. 
+% https://docs.bosch-iot-suite.com/hub/developer-guide/messagingendpoint.html < continue with this. 
 
 
 
