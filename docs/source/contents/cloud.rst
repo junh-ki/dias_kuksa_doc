@@ -130,10 +130,13 @@ kuksa.cloud - InfluxDB (Time Series Database)
     :width: 1200
     :align: center
 
-Now that we have set up a Hono instance, `cloudfeeder.py` can send the telemetry data to Hono every one to two seconds. Hono may be able to collect all the data from its connected vehicles. However, Hono is not a database, meaning that it doesn't store all the collected data in itself. This also means that we have to hire a time series database manager that can collect and store the data received by Hono in chronological order.
-InfluxDB is another kuksa.cloud's component, that is an open-source time series database. In KUKSA, InfluxDB is meant to be used as the back-end database that stores the data incoming into Hono. With InfluxDB, we can make use of the collected data not only for visualization but also for a variety of external services such as a mailing service or an external diagnostic service. InfluxDB should be located in the northbound of Hono along with Hono-InfluxDB-Connector that should be placed in-between Hono and InfluxDB. 
-To set up InfluxDB and Hono-InfluxDB-Connector, we can use a Linux (virtual) machine. Based on Hono, the Linux machine here can be considered as a data consumer while the in-vehicle Raspberry-Pi is considered as a data publisher.
-The following steps to setup InfluxDB is based on `this tutorial <http://www.andremiller.net/content/grafana-and-influxdb-quickstart-on-ubuntu>`_.
+* Now that we have set up a Hono instance, `cloudfeeder.py` can send the telemetry data to Hono every one to two seconds. Hono may be able to collect all the data from its connected vehicles. However, Hono is not a database, meaning that it doesn't store all the collected data in itself. This also means that we have to hire a time series database manager that can collect and store the data received by Hono in chronological order.
+
+* InfluxDB is another kuksa.cloud's component, that is an open-source time series database. In KUKSA, InfluxDB is meant to be used as the back-end database that stores the data incoming into Hono. With InfluxDB, we can make use of the collected data not only for visualization but also for a variety of external services such as a mailing service or an external diagnostic service. InfluxDB should be located in the northbound of Hono along with Hono-InfluxDB-Connector that should be placed in-between Hono and InfluxDB. 
+
+* To set up InfluxDB and Hono-InfluxDB-Connector, we can use a Linux (virtual) machine. Based on Hono, the Linux machine here can be considered as a data consumer while the in-vehicle Raspberry-Pi is considered as a data publisher.
+
+* The following steps to setup InfluxDB is based on `this tutorial <http://www.andremiller.net/content/grafana-and-influxdb-quickstart-on-ubuntu>`_.
 
 1. VirtualBox with Ubuntu 18.04 LTS is used here for setting up InfluxDB and Hono-InfluxDB-Connector. (VM Setup Tutorial can be found `here <https://codebots.com/library/techies/ubuntu-18-04-virtual-machine-setup>`_.) (If your default OS is already Linux, this step can be skipped.)
 
@@ -199,6 +202,18 @@ The following steps to setup InfluxDB is based on `this tutorial <http://www.and
 
     > exit
 
+13. (Optional) If you want to write test data from the Linux shell, you can run the following one line script::
+
+	$ while true; do curl -i -XPOST 'http://localhost:8086/write?db=kuksademo' --data-binary "cpu,host=serverA value=`cat /proc/loadavg | cut -f1 -d ' '`"; sleep 1; done
+
+* This command will write data to the `kuksademo` database every 1 second.
+
+14. You can verify if data is being sent to InfluxDB by using the influx shell and running a query::
+
+	> influx
+	> USE kuksademo
+	> SELECT * FROM cpu
+
 
 
 .. _cloud-hono-influxdb-connector:
@@ -210,7 +225,7 @@ dias_kuksa - Hono-InfluxDB-Connector
     :width: 1200
     :align: center
 
-Now that Hono and InfluxDB are set up, we have to somehow find a way to transmit the incoming data from Hono to InfluxDB. 
+* Now that Hono and InfluxDB are set up, we have to somehow find a way to transmit the incoming data from Hono to InfluxDB. 
 % https://docs.bosch-iot-suite.com/hub/developer-guide/messagingendpoint.html < continue with this. 
 
 
@@ -222,6 +237,33 @@ kuksa.cloud - Grafana (Visualization Web App)
     :width: 1200
     :align: center
 
+* So far we have successfully managed to set up Hono and InfluxDB, and transmit data incoming to Hono to InfluxDB by running Hono-InfluxDB-Connector. Now our concern is how to visualize the data inside InfluxDB. One way to do this is to use Grafana.
+
+* Grafana is a multi-platform open source analytics and interactive visualization web application. The idea here is to get Grafana to read InfluxDB and visualize the read data.
+
+1. To install Grafana (stable version 2.6) on your VM, run following commands::
+
+	$ echo "deb https://packagecloud.io/grafana/stable/debian/ wheezy main" | sudo tee /etc/apt/sources.list.d/grafana.list
+	$ curl https://packagecloud.io/gpg.key | sudo apt-key add -
+
+##### WORK IN PROGRESS #####
+
+	$ snap install grafana
+	$ sudo apt-get update && sudo apt-get install grafana
+
+2. Start Grafana service::
+
+	$ sudo service grafana-server start
+
+* If this doesn't work, list PIDs to see whether grafana-server is already running::
+
+	$ sudo apt install net-tools
+	$ sudo netstat -anp tcp | grep 3000
 
 
+
+
+
+	$ sudo kill {}
+	$ sudo service grafana-server start
 
