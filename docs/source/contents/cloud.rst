@@ -225,8 +225,28 @@ dias_kuksa - Hono-InfluxDB-Connector
     :width: 1200
     :align: center
 
-* Now that Hono and InfluxDB are set up, we have to somehow find a way to transmit the incoming data from Hono to InfluxDB. 
-% https://docs.bosch-iot-suite.com/hub/developer-guide/messagingendpoint.html < continue with this. 
+* Now that Hono and InfluxDB are set up, we have to somehow find a way to transmit the incoming data from Hono to InfluxDB.
+
+* Since the messaging endpoint of Hono (Bosch IoT Hub) follows the AMQP 1.0 protocol, the consumer application should also be AMQP based.
+
+* An AMQP Based consumer application can be found in `dias_kuksa/utils/cloud/maven.consumer.hono` from the `junh-ki/dias_kuksa` repository. The application is written based on `iot-hub-examples/example-consumer` from the `bosch-io/iot-hub-example` `respoitory <https://github.com/bosch-io/iot-hub-examples/tree/master/example-consumer>`_.
+
+1. To set up the connector, you have to clone the `junh-ki/dias_kuksa` repository on your machine first::
+
+	$ git clone https://github.com/junh-ki/dias_kuksa.git
+
+2. Navigate to `dias_kuksa/utils/cloud/maven.consumer.hono` and check `README.md`. As stated in `README.md`, there are three prerequisites to be installed before running this application.
+
+2-1. Install Java (OpenJDK 11.0.8)::
+
+	$ sudo apt install openjdk-11-jre-headless openjdk-11-jdk-headless
+
+
+2-2. Install Maven (Apache Maven 3.6.0)::
+
+	##### TO BE CONTINUED..... https://maven.apache.org/download.cgi
+
+
 
 
 
@@ -287,7 +307,7 @@ kuksa.cloud - Grafana (Visualization Web App)
 
 	URL: http://localhost:8086
 
-8. Then go to "IndluxDB Details" and enter in the following information::
+8. Then go to "IndluxDB Details". Here we are going to select the "kuksademo" database that we have created to test InfluxDB. You can also choose another database that Hono-InfluxDB-Connector has been sending data to. To choose "kuksademo", enter in the following information::
 
 	Database: kuksademo
 	User: admin
@@ -298,11 +318,11 @@ kuksa.cloud - Grafana (Visualization Web App)
 
 10. Now you can create a new dashboard. Click "Create" on the left and click "Add new panel".
 
-11. Then you would be in the panel editting page. Set the following information::
+11. Then you would be in the panel editting page. You can choose what metrics you want to analyze. This depends entirely on what metrics you have been sending IndluxDB. Since the metrics we have created in "kuksademo" is `cpu`, you can set the following information:: 
 
 	FROM: `default` `cpu`
 
-12. Click "Apply" on the upper right. Now a new dashboard has been created, you can change the time scope, refresh the dashboard and save on the top.
+12. Click "Apply" on the upper right. Now a new dashboard has been created, you can change the time scope, refresh or save the dashboard on the top.
 
 * In the same way, you can create multiple dashboards for different metrics.
 
@@ -310,3 +330,5 @@ kuksa.cloud - Grafana (Visualization Web App)
 
 dias_kuksa - InfluxDB-Consumer
 ##############################
+
+
