@@ -136,7 +136,7 @@ kuksa.cloud - InfluxDB (Time Series Database)
 
 * To set up InfluxDB and Hono-InfluxDB-Connector, we can use a Linux (virtual) machine. Based on Hono, the Linux machine here can be considered as a data consumer while the in-vehicle Raspberry-Pi is considered as a data publisher.
 
-* The following steps to setup InfluxDB is based on `this tutorial <http://www.andremiller.net/content/grafana-and-influxdb-quickstart-on-ubuntu>`_.
+* The following steps to setup InfluxDB is written based on `this tutorial <http://www.andremiller.net/content/grafana-and-influxdb-quickstart-on-ubuntu>`_.
 
 1. VirtualBox with Ubuntu 18.04 LTS is used here for setting up InfluxDB and Hono-InfluxDB-Connector. (VM Setup Tutorial can be found `here <https://codebots.com/library/techies/ubuntu-18-04-virtual-machine-setup>`_.) (If your default OS is already Linux, this step can be skipped.)
 
@@ -241,29 +241,72 @@ kuksa.cloud - Grafana (Visualization Web App)
 
 * Grafana is a multi-platform open source analytics and interactive visualization web application. The idea here is to get Grafana to read InfluxDB and visualize the read data.
 
+* The installation steps to setup Grafana is written based on `here <https://grafana.com/docs/grafana/latest/installation/debian/>`_.
+
 1. To install Grafana (stable version 2.6) on your VM, run following commands::
 
-	$ echo "deb https://packagecloud.io/grafana/stable/debian/ wheezy main" | sudo tee /etc/apt/sources.list.d/grafana.list
-	$ curl https://packagecloud.io/gpg.key | sudo apt-key add -
-
-##### WORK IN PROGRESS #####
-
-	$ snap install grafana
-	$ sudo apt-get update && sudo apt-get install grafana
+	$ sudo apt-get install -y apt-transport-https
+	$ sudo apt-get install -y software-properties-common wget
+	$ wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+	$ echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+	$ sudo apt-get update
+	$ sudo apt-get install grafana
 
 2. Start Grafana service::
 
 	$ sudo service grafana-server start
 
-* If this doesn't work, list PIDs to see whether grafana-server is already running::
+* If this command doesn't work, list PIDs on port 3000 (Grafana uses port 3000) to see whether grafana-server is already running on one of them::
 
 	$ sudo apt install net-tools
 	$ sudo netstat -anp tcp | grep 3000
 
+* assuming the PID number is: 13886
 
-
-
-
-	$ sudo kill {}
+	$ sudo kill 13886
 	$ sudo service grafana-server start
 
+3. Check whether the Grafana instance is running::
+
+	$ sudo service grafana-server status
+
+* `crtl` + `c` to get out.
+
+4. Now that the Grafana server is running on your machine, you can access to the server by using a web-browser. Open a browser and access to the following address::
+
+	http://localhost:3000/
+
+5. Log in with the admin account::
+
+	Email or username: admin
+	Password: admin
+
+6. After logging in, click "Configuration" on the left, click "Add data source" and select "InfluxDB". 
+
+7. Then you would be in the InfluxDB Settings page. Go to "HTTP" and set URL as follow::
+
+	URL: http://localhost:8086
+
+8. Then go to "IndluxDB Details" and enter in the following information::
+
+	Database: kuksademo
+	User: admin
+	Password: admin
+	HTTP Method: GET
+
+9. Click "Save & Test". If you see the message, "Data source is working", it means that Grafana has been successfully connected to InfluxDB.
+
+10. Now you can create a new dashboard. Click "Create" on the left and click "Add new panel".
+
+11. Then you would be in the panel editting page. Set the following information::
+
+	FROM: `default` `cpu`
+
+12. Click "Apply" on the upper right. Now a new dashboard has been created, you can change the time scope, refresh the dashboard and save on the top.
+
+* In the same way, you can create multiple dashboards for different metrics.
+
+
+
+dias_kuksa - InfluxDB-Consumer
+##############################
