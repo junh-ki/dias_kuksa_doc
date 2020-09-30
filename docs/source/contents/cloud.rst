@@ -240,13 +240,24 @@ dias_kuksa - Hono-InfluxDB-Connector
 2-1. Install Java (OpenJDK 11.0.8)::
 
 	$ sudo apt install openjdk-11-jre-headless openjdk-11-jdk-headless
-
+	$ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/
+	$ echo $JAVA_HOME
 
 2-2. Install Maven (Apache Maven 3.6.0)::
 
-	##### TO BE CONTINUED..... https://maven.apache.org/download.cgi
+	$ sudo apt install maven
+	$ mvn --version
+
+2-3. Install mosquitto-clients::
+
+	$ sudo apt install mosquitto-clients
+
+3. Navigate to `dias_kuksa/utils/cloud/maven.consumer.hono/` and command the following::
+
+	$ mvn clean package -DskipTests
 
 
+##### TO BE CONTINUED... ######
 
 
 
