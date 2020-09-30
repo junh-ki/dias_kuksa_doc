@@ -138,6 +138,8 @@ kuksa.val - kuksa.val VSS Server Setup
         fi;
             cp  vss_rel_* ${DEPLOYDIR}/
 
+* Please note that it is recommended to modify the file manually since `Makefile` is `tab`-sensitive.
+
 1-3. Now we can replace the `vehicle_signal_specification/spec` folder with the modified folder. To get the modified `spec` folder, clone the `junh-ki/dias_kuksa` repository:: 
 
     $ git clone https://github.com/junh-ki/dias_kuksa.git
