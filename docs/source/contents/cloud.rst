@@ -256,8 +256,18 @@ dias_kuksa - Hono-InfluxDB-Connector
 
 	$ mvn clean package -DskipTests
 
+* This command compiles the `src` folder with Maven and produces the `target` folder that contains a .jar formatted binary file, `maven.consumer.hono-0.0.1-SNAPSHOT.jar`.
 
-##### TO BE CONTINUED... ######
+4. Now that you have the binary file, you can execute the connector application. In the same directory, `dias_kuksa/utils/cloud/maven.consumer.hono/`, command the following::
+
+	$ java -jar target/maven.consumer.hono-0.0.1-SNAPSHOT.jar --hono.client.tlsEnabled=true --hono.client.username={messaging-username} --hono.client.password={messaging-password} --tenant.id={tenant-id} --device.id={device-id}
+
+* (Bosch IoT Hub) The corresponding info (messaging-username, messaging-password, tenant-id, device-id) can be found in `Service Subscriptions Page <https://accounts.bosch-iot-suite.com/subscriptions>`_.
+* The startup can take up to 10 seconds. If you are still running `cloudfeeder.py`, the connector application should print out telemetry messages on the console.
+
+
+##### TO BE CONTINUED #####
+
 
 
 
