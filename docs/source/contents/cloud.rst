@@ -268,9 +268,7 @@ dias_kuksa - Hono-InfluxDB-Connector
 
 * The startup can take up to 10 seconds. If you are still running `cloudfeeder.py`, the connector application should print out telemetry messages on the console.
 
-5. (Optional) If you want to change the way the connector application post-processes telemetry messages, you can modify `ExampleConsumer.java` that can be found in the following directory::
-
-    `dias_kuksa/utils/cloud/maven.consumer.hono/src/main/java/maven/consumer/hono/`
+5. (Optional) If you want to change the way the connector application post-processes telemetry messages, you can modify `ExampleConsumer.java` that can be found in the directory: `dias_kuksa/utils/cloud/maven.consumer.hono/src/main/java/maven/consumer/hono/`.
 
 * The method, `handleMessage`, is where you can post-process.
 
