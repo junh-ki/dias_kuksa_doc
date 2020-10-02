@@ -225,11 +225,13 @@ dias_kuksa - Hono-InfluxDB-Connector
     :width: 1200
     :align: center
 
-* Now that Hono and InfluxDB are set up, we have to somehow find a way to transmit the incoming data from Hono to InfluxDB.
+* Now that Hono and InfluxDB are set up, we need a connector application to transmit the incoming data from Hono to InfluxDB.
 
-* Since the messaging endpoint of Hono (Bosch IoT Hub) follows the AMQP 1.0 protocol, the consumer application should also be AMQP based.
+* `cloudfeeder.py` produces and sends Hono the result telemetry messages in a form of JSON dictionary. Therefore the connector application should be able to read the JSON dictionary from Hono, map the dictionary to several individual metrics and send them to InfluxDB by using the `curl` command.
 
-* An AMQP Based consumer application can be found in `dias_kuksa/utils/cloud/maven.consumer.hono` from the `junh-ki/dias_kuksa` repository. The application is written based on `iot-hub-examples/example-consumer` from the `bosch-io/iot-hub-example` `respoitory <https://github.com/bosch-io/iot-hub-examples/tree/master/example-consumer>`_.
+* Since the messaging endpoint of Hono (Bosch IoT Hub) follows the AMQP 1.0 protocol, the connector application should also be AMQP based.
+
+* An AMQP Based connector application can be found in `dias_kuksa/utils/cloud/maven.consumer.hono` from the `junh-ki/dias_kuksa` repository. The application is written based on `iot-hub-examples/example-consumer` from the `bosch-io/iot-hub-example` `respoitory <https://github.com/bosch-io/iot-hub-examples/tree/master/example-consumer>`_.
 
 1. To set up the connector, you have to clone the `junh-ki/dias_kuksa` repository on your machine first::
 
@@ -263,11 +265,22 @@ dias_kuksa - Hono-InfluxDB-Connector
 	$ java -jar target/maven.consumer.hono-0.0.1-SNAPSHOT.jar --hono.client.tlsEnabled=true --hono.client.username={messaging-username} --hono.client.password={messaging-password} --tenant.id={tenant-id} --device.id={device-id}
 
 * (Bosch IoT Hub) The corresponding info (messaging-username, messaging-password, tenant-id, device-id) can be found in `Service Subscriptions Page <https://accounts.bosch-iot-suite.com/subscriptions>`_.
+
 * The startup can take up to 10 seconds. If you are still running `cloudfeeder.py`, the connector application should print out telemetry messages on the console.
 
+5. (Optional) If you want to change the way the connector application post-processes telemetry messages, you can modify `ExampleConsumer.java` that can be found in the following directory::
 
-##### TO BE CONTINUED #####
+    `dias_kuksa/utils/cloud/maven.consumer.hono/src/main/java/maven/consumer/hono/`
 
+* The method, `handleMessage`, is where you can post-process.
+
+* The `content` variable is where the received JSON dictionary string is stored.
+
+* To seperate the dictionary into several metrics and store them in a map, the `mapJSONDictionary` method is used.
+
+* Each metric is stored in a variable individually according to its type and sent to the InfluxDB server through the `curlWriteInfluxDBMetrics` method.
+
+* You can add the post-processing part before `curlWriteInfluxDBMetrics` if necessary.
 
 
 
@@ -352,4 +365,10 @@ kuksa.cloud - Grafana (Visualization Web App)
 dias_kuksa - InfluxDB-Consumer
 ##############################
 
+* Since there are possibly more applications that use InfluxDB other than Grafana, it makes sense to create a consumer application that fetches data from InfluxDB and makes them available for any purposes.
 
+* There is an InfluxDB consumer Python script, `influxDB_consumer.py`, in `dias_kuksa/utils/cloud/`.
+
+* The script fetches the last data under certain keys from the local InfluxDB server and store them in the corresponding Python dictionary to each key by using the function, `storeNewMetricVal`.
+
+* You can use the data in the dictionary according to your purpose and goals.

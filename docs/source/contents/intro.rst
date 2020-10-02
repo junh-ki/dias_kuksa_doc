@@ -2,6 +2,18 @@
 Introduction
 ************
 
+
+
+DIAS (DIagnostic Anti-tampering Systems)
+########################################
+
+Modern vehicles with internal combustion engines are equipped with exhaust aftertreatment systems that drastically reduce the emission of harmful exhaust gases. However, there are companies that offer facilities and services to disable these exhaust aftertreatment systems. In a joint European research and development project, `DIAS <https://dias-project.com/>`_, we will help prevent or uncover these manipulations.
+
+
+
+Eclipse KUKSA
+#############
+
 .. figure:: /_images/intro/appstacle-kuksa.PNG 
     :width: 800
     :align: center
@@ -28,9 +40,18 @@ Introduction
 
 
 
+DIAS-KUKSA
+##########
+
+One objective of DIAS is to create a cloud-based diagnostic system. Therefore it is essential to establish connectivity from the vehicle to cloud components. The KUKSA infrastructure offers the starting point for instituting such connectivity. The goal of this documentation is to make clear how to set up each infrastructure component according to the case of DIAS in a sequential manner so that readers can have a thorough understanding how to apply their own implementation on the established connectivity with KUKSA.
+
+
+
 DIAS-KUKSA Overall Schema
-#########################
+*************************
 
 .. figure:: /_images/intro/overall_schema.png 
     :width: 1200
     :align: center
+
+The figure illustrates the entire connectivity cycle from the vehicle to the end-consumer. In the following chapters, how to establish such connectivity cycle is described in detail.

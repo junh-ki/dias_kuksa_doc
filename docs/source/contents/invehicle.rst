@@ -245,7 +245,7 @@ kuksa.val - cloudfeeder.py Setup
     :width: 1200
     :align: center
 
-* `dias_kuksa/utils/in-vehicle/cloudfeeder_telemetry/cloudfeeder.py` fetches the data from the kuksa.val in-vehicle server and preprocess it with a case-specific preprocessor, `dias_kuksa/utils/in-vehicle/cloudfeeder_telemetry/preprocessor_bosch.py`, and transmit the result to the cloud instance (MQTT broker in DIAS use-case).
+* `dias_kuksa/utils/in-vehicle/cloudfeeder_telemetry/cloudfeeder.py` fetches the data from the kuksa.val in-vehicle server and preprocesses it with a user-specific preprocessor, `dias_kuksa/utils/in-vehicle/cloudfeeder_telemetry/preprocessor_bosch.py`, and transmits the result to the cloud instance (MQTT broker in DIAS use-case) in a form of JSON Dictionary.
 
 * `cloudfeeder.py` takes six compulsory arguments to be run:
 	* Host URL (e.g., "mqtt.bosch-iot-hub.com") / `--host`
