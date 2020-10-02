@@ -9,14 +9,7 @@ DIAS: Smart Adaptive Remote Diagnostic Antitampering Systems - KUKSA Connectivit
 	:width: 150
 	:align: center
 
-Motivation
-##########
 
-Write your motivation here
-
-|
-|
-|
 
 Contents
 ########
@@ -24,8 +17,6 @@ Contents
 .. toctree::
    :maxdepth: 3
    
-   Intention <contents/intention>   
-   Contribution & Benefits for the community <contents/contribution>
    Introduction <contents/intro>
    Step 1: Hardware Setup <contents/hwsetup>
    Step 2: In-vehicle Setup <contents/invehicle>
@@ -33,5 +24,4 @@ Contents
    Step 4: Simulation <contents/sim>
    Future Work <contents/future>
    Repositories <contents/repo>
-   Reference <contents/reference>
    Contact <contents/contact>
