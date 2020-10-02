@@ -43,7 +43,7 @@ Eclipse KUKSA
 DIAS-KUKSA
 ##########
 
-One objective of DIAS is to create a cloud-based diagnostic system. Therefore it is essential to establish connectivity from the vehicle to cloud components. The KUKSA infrastructure offers the starting point for instituting such connectivity. The goal of this documentation is to make clear how to set up each infrastructure component according to the case of DIAS in a sequential manner so that readers can have a thorough understanding how to apply their own implementation on the established connectivity with KUKSA.
+One objective of DIAS is to create a cloud-based diagnostic system. Therefore it is essential to establish connectivity from the vehicle to cloud components. The KUKSA infrastructure offers the starting point for instituting such connectivity. The goal of this documentation is to make clear how to set up each infrastructure component according to the case of DIAS in a sequential manner so that readers can have a thorough understanding of how to apply their own implementation on the established connectivity with KUKSA.
 
 
 
