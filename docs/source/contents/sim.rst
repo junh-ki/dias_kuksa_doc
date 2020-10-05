@@ -39,4 +39,23 @@ asc2log Conversion
 
 * `vcan0` should be already configured before running this command. If you haven't, please follow :ref:`virtual-can` and run the command above.
 
-9. As a result, 
+9. As a result from 8, `can0_otosan_can0-30092020.log` would be created.
+
+
+
+Simulation with canplayer
+#########################
+
+1. Now that we have the .log file to play, make sure your in-vehicle components are already up and running.
+
+* Configuring `vcan0` with `kuksa-val-server.exe` and `dbcfeeder.py` is mandatory, `cloudfeeder.py` and other cloud-side components are optional here.
+
+2. To run `canplayer` with the target .log file, `can0_otosan_can0-30092020.log`, navigate to `dias_kuksa/utils/canplayer/`, where the .log file is located, and command the following::
+
+	$ canplayer -I can0_otosan_can0-30092020.log
+
+* You should be able to see signals being updated on both terminals, `kuksa-val-server.exe` and `dbcfeeder.py`, as shown in the screenshots below.
+
+.. figure:: /_images/canplayer/canplayer_terminal.png
+    :width: 700
+    :align: center
