@@ -59,3 +59,5 @@ Simulation with canplayer
 .. figure:: /_images/canplayer/canplayer_terminal.png
     :width: 700
     :align: center
+
+* Although the screenshots are taken in an Ubuntu virtual machine for convenience, the environment for this simulation is meant to be Raspberry-Pi.
