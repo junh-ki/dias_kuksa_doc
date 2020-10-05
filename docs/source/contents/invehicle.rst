@@ -11,6 +11,8 @@ Step 2: In-vehicle Setup
 
 
 
+.. _can-utils:
+
 can-utils
 #########
 
