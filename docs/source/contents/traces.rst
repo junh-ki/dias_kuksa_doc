@@ -38,7 +38,7 @@ Logging with Vector Tools
 2. Connect the Vector CANcase to your laptop and check if the device manager recognizes the CANcase.
 
 .. figure:: /_images/canalyzer/0-device_manager.PNG
-    :width: 700
+    :width: 250
     :align: center
 
 * Because the CANcase used here is Vector VN1630, it shows the exact name of the CANcase.
@@ -78,13 +78,13 @@ Logging with Vector Tools
 7. To enable the logging function, find the "Logging" box on the right hand side of the configuration tap and double-click the small node on the left. 
 
 .. figure:: /_images/canalyzer/6-logging.PNG
-    :width: 700
+    :width: 250
     :align: center
 
 * Confirm that the "Logging" box is enabled as the capture below.
 
 .. figure:: /_images/canalyzer/7-logging.PNG
-    :width: 700
+    :width: 250
     :align: center
 
 8. To change the destination folder or the result file format, double-click the folder-shaped icon on the right and set them as you prefer.
