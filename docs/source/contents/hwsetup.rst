@@ -34,6 +34,8 @@ CAN Interface Option 1 - Virtual CAN (Only for simululation)
 
 
 
+.. _skpang-pican2:
+
 CAN Interface Option 2 - SKPang PiCan2
 **************************************
 
@@ -53,6 +55,8 @@ CAN Interface Option 2 - SKPang PiCan2
 
     $ sudo ip link set can0 up type can bitrate 500000
 
+* `bitrate` shall be set as the same as the CAN baudrate of the target vehicle.
+
 5. Now you should be able to see the interface, `can0`, when commanding::
 
     $ ifconfig
@@ -62,6 +66,8 @@ CAN Interface Option 2 - SKPang PiCan2
     $ sudo ip link set can0 down
 
 
+
+.. _seeed-2-channel:
 
 CAN Interface Option 3 - Seeed 2 Channel CAN
 ********************************************
@@ -97,10 +103,14 @@ CAN Interface Option 3 - Seeed 2 Channel CAN
     $ sudo ip link set can0 up type can bitrate 1000000 restart-ms 1000 fd off
     $ sudo ip link set can1 up type can bitrate 1000000 restart-ms 1000 fd off
 
+* `bitrate` shall be set as the same as the CAN baudrate of the target vehicle.
+
 5-B. (CAN FD) If `can0` and `can1` are shown, configure and bring the interface up by commanding::
 
     $ sudo ip link set can0 up type can bitrate 1000000 dbitrate 2000000 restart-ms 1000 fd on
     $ sudo ip link set can1 up type can bitrate 1000000 dbitrate 2000000 restart-ms 1000 fd on
+
+* `bitrate` shall be set as the same as the CAN baudrate of the target vehicle.
 
 6. If you want to bring the interface down, command the following::
 

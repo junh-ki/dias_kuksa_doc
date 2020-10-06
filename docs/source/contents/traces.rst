@@ -19,8 +19,8 @@ Hardware Prerequisites
 * Laptop installed with Vector Software
 * Licensed Vector CANcase (VN1630 is used here)
 * USB Interface for CAN and I/O (comes with CANcase)
-* CAN cable (D-sub /D-sub) x 1
-* CAN adapter (Open cable to D-sub) x 1
+* CAN Cable (D-sub /D-sub) x 1
+* CAN Adapter (Open cable to D-sub) x 1
 
 
 
@@ -75,29 +75,33 @@ Logging with Vector Tools
     :width: 700
     :align: center
 
-7. 
+7. To enable the logging function, find the "Logging" box on the right hand side of the configuration tap and double-click the small node on the left. 
 
 .. figure:: /_images/canalyzer/6-logging.PNG
     :width: 700
     :align: center
 
-8.
+* Confirm that the "Logging" box is enabled as the capture below.
 
 .. figure:: /_images/canalyzer/7-logging.PNG
     :width: 700
     :align: center
 
-9.
+8. To change the destination folder or the result file format, double-click the folder-shaped icon on the right and set them as you prefer.
 
 .. figure:: /_images/canalyzer/8-logformat.PNG
     :width: 700
     :align: center
 
-10.
+* If you want to use the result for `canplayer` in Raspberry-Pi, set the result file format as "ASCII Frame Logging (*.asc)". That way, you can convert your result to the .log format by running `asc2log_channel_separator.py` that can be found in `dias_kuksa/utils/canplayer/`.
+
+9. Make sure everything is properly connected and configured. You can now start logging CAN traces by pressing the "Start" button on the top left hand corner.
 
 .. figure:: /_images/canalyzer/9-start.PNG
     :width: 700
     :align: center
+
+* If working correctly, you are supposed to able to see the incoming CAN traces on the "Trace" tab.
 
 
 
@@ -107,15 +111,43 @@ Option B: with Raspberry-Pi and CAN Shield
 Hardware Prerequisites
 **********************
 
+* Laptop to ssh Raspberry-Pi
+* Raspberry Pi 3 or 4
+* CAN Shield (SKPang PiCan2 or Seeed 2 Channel CAN)
+* CAN Cable (D-sub /D-sub) x 1
+* CAN Adapter (Open cable to D-sub) x 1
 
+
+
+Software Prerequisites
+**********************
+
+* Network that can be shared by the laptop and Raspberry-Pi (for SSH purpose, you can also use your mobile hotspot.)
+* The `can-utils` library (:ref:`can-utils`)
 
 
 
 Logging with Raspberry-Pi and CAN Shield
 ****************************************
 
+1. Assuming the CAN shield is already attached to Raspberry-Pi, connect the shield to the CAN H/L from an ECU in the vehicle by using the CAN cable and adapter. For this you also need to refer to the ECU hardware specification to get to know which ports of the ECU stand for CAN-high and -low of what number of CAN channel.
 
+2. SSH Raspberry-Pi using `Putty <https://www.chiark.greenend.org.uk/~sgtatham/putty/>`_ (`tutorial <https://youtu.be/IDqQIDL3LKg>`_).
 
-candump -l vcan0
+3. Once you successfully ssh Raspberry-Pi, you would be on your Raspberry-Pi's terminal. Install the `can-utils` library if you haven't yet::
 
+    $ sudo apt install can-utils
 
+4. Configure the CAN shield.
+
+    * For SKPang PiCan2, refer to :ref:`skpang-pican2`.
+
+    * For Seeed 2 Channel CAN, refer to :ref:`seeed-2-channel`.
+
+5. Make sure everything is properly connected and configured. Assuming the name of the configured CAN interface is `can0`, command the following::
+
+    $ candump -l can0
+
+* If working correctly, you are supposed to able to see the .log file named with the current time (e.g., `candump-2020-10-06_163848.log`) in the same directory where the terminal is open.
+
+6. If you want to stop logging, input `ctrl` + `c` and check the result .log file to see if CAN traces have been logged properly.

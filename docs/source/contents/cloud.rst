@@ -322,7 +322,7 @@ kuksa.cloud - Grafana (Visualization Web App)
 
 	$ sudo service grafana-server status
 
-* `crtl` + `c` to get out.
+* `ctrl` + `c` to get out.
 
 4. Now that the Grafana server is running on your machine, you can access to the server by using a web-browser. Open a browser and access to the following address::
 
