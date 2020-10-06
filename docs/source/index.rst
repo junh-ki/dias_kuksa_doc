@@ -22,7 +22,7 @@ Contents
    Step 2: In-vehicle Setup <contents/invehicle>
    Step 3: Cloud Setup <contents/cloud>
    Step 4: Simulation <contents/sim>
-   Ref: Recording CAN traces with CANalzyer <contents/canalyzer>
+   Ref: Logging CAN traces <contents/traces>
    Future Work <contents/future>
    Repositories <contents/repo>
    Contact <contents/contact>
