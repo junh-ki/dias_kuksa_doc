@@ -9,11 +9,17 @@ Raspberry-Pi (Data Publisher)
 
 * Raspberry-Pi is not a regular micro-controller but rather a single-board computer. This means that you can run an OS (Operating System; Raspbian, Ubuntu, etc.) on it, and connect it to other IO devices such as monitor, mouse and keyboard. This way, you can use your Raspberry-Pi in the similar way you use your PC, which eases the entire in-vehicle development process.
 
-* You can kick-start with your Raspberry-Pi by following this `instruction <https://projects.raspberrypi.org/en/projects/raspberry-pi-setting-up>`_.
-
 * In this documentation, the following hardware and OS are used. 
     * HW: Raspberry-Pi 4 
     * OS: Raspberry-Pi OS (32-bit) with desktop / `Download <https://www.raspberrypi.org/downloads/raspberry-pi-os/>`_
+
+1. Set up Raspberry-Pi. You can kick-start with your Raspberry-Pi by following this `instruction <https://projects.raspberrypi.org/en/projects/raspberry-pi-setting-up>`_.
+
+2. When installation is done, open a terminal and install Git on your Raspberry-Pi::
+
+    $ sudo apt update
+    $ sudo apt install git
+    $ git --version
 
 
 
