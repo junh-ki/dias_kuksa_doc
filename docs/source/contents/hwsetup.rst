@@ -133,6 +133,8 @@ CAN Interface Option 3 - Seeed 2-Channel Shield
 
 
 
+.. _data-consumer:
+
 Linux Machine (Data Consumer)
 #############################
 

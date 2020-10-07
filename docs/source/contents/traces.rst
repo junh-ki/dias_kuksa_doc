@@ -4,9 +4,9 @@
 Reference: Logging CAN traces
 *****************************
 
-* It would be tedius if you have to get inside the target vehicle, set up the simulation environment and test everytime there is a new update on your implementation. Which is why having a CAN trace log that is properly logged is important because it eases the development process. With a log file, you can develop and test your application on your desk without having to go to the vehicle and this would save time and energy unnecessarily spent on setting up the environment.
+It would be tedius if you have to get inside the target vehicle, set up the simulation environment and test everytime there is a new update on your implementation. Which is why having a CAN trace log file is important because it eases the development process. With a log file, you can develop and test your application on your desk without having to be in the vehicle which saves time and energy that otherwise would be spent significantly on setting up the test environment.
 
-* Although `canplayer` from the `can-utils` library in Raspberry-Pi is compliant only with the .log format, it is recommended to use Vector tools to get CAN traces since they can provide the traces in a variety of formats such that the traces can be used with not only `canplayer` but also several other means in different environments. Therefore two ways, with and without Vector tools, to log CAN traces in the target vehicle are introduced in this part.
+Although `canplayer` from the `can-utils` library in Raspberry-Pi is compliant only with the .log format, it is recommended to use Vector tools to get CAN traces since they can provide the traces in a variety of formats such that the traces can be used with not only `canplayer` but also several other means in different environments. Therefore the two ways, with and without the Vector tools, to log CAN traces in the target vehicle are introduced here.
 
 
 
@@ -28,6 +28,7 @@ Software Prerequisites
 **********************
 
 * Vector Software (CANalyzer Version 13.0 SP2 is used here)
+
 
 
 Logging with Vector Tools

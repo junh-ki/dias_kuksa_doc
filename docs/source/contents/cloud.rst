@@ -17,6 +17,8 @@ kuksa.cloud - Eclipse Hono (Cloud Entry)
     :width: 1200
     :align: center
 
+Eclipse Hono provides remote service interfaces for connecting large numbers of IoT devices to a back end and interacting with them in a uniform way regardless of the device communication protocol.
+
 
 
 Hono Option 1 - Bosch IoT Hub as Hono
@@ -26,21 +28,17 @@ Hono Option 1 - Bosch IoT Hub as Hono
     :width: 300
     :align: center
 
-* The Bosch IoT Hub comprises open source components developed in the Eclipse IoT ecosystem and other communities, and uses :blue:`Eclipse Hono` as its foundation.
-
-* Utilizing Hono is essential to take care of a large amount of connected vehicles due to its scalability, security and reliability.
-
-* The Bosch IoT Hub is available as a free plan for evaluation purposes. The following steps describe how to create a free Bosch IoT Hub instance.
+The Bosch IoT Hub comprises open source components developed in the Eclipse IoT ecosystem and other communities, and uses :blue:`Eclipse Hono` as its foundation. Utilizing Hono is essential to deal with a large amount of connected vehicles due to its scalability, security and reliability. The Bosch IoT Hub is available as a free plan for evaluation purposes. The following steps describe how to create a free Bosch IoT Hub instance.
 
 1. If you don't have a Bosch ID, register one `here <https://identity-myprofile.bosch.com/ui/web/registration>`_ and activate your ID through the registered E-Mail.
 
 2. Go to the `main page <https://www.bosch-iot-suite.com/>`_ and click "Sign-in" and finish signing-up for a Bosch IoT Suite account. Then you would be directed to the "Service Subscriptions" page.
 
-3. In the "Service Subscriptions" page, you can add a new subscription by clicking "+ New Subscription". Then it direct you to `Product Selection Page <https://accounts.bosch-iot-suite.com/subscriptions/product-selection>`_ that shows you what services can be offered. Click "Bosch IoT Hub".
+3. In the "Service Subscriptions" page, you can add a new subscription by clicking "+ New Subscription". Then it would direct you to `Product Selection Page <https://accounts.bosch-iot-suite.com/subscriptions/product-selection>`_ that shows you what services can be offered. Choose "Bosch IoT Hub".
 
-4. Then select "Free Plan" and name your Bosch IoT Hub instance. The name should be unique (e.g., kuksa-tut-jun) and click "Subscribe".
+4. Then select "Free Plan" and name your Bosch IoT Hub instance. The name should be unique (e.g., `kuksa-tut-jun`) and click "Subscribe".
 
-5. After you will see your subscription details. Click "Subscribe" again to finish the subscription process.
+5. After that, you would see your subscription details. Click "Subscribe" again to finish the subscription process.
 
 6. Now you would be in `Service Subscriptions Page <https://accounts.bosch-iot-suite.com/subscriptions>`_. It would take a minute or two for your instance to change its status from "Provisioning" to "Active". Make sure the status is "Active" by refreshing the page.
 
@@ -130,11 +128,11 @@ kuksa.cloud - InfluxDB (Time Series Database)
     :width: 1200
     :align: center
 
-* Now that we have set up a Hono instance, `cloudfeeder.py` can send the telemetry data to Hono every one to two seconds. Hono may be able to collect all the data from its connected vehicles. However, Hono is not a database, meaning that it doesn't store all the collected data in itself. This also means that we have to hire a time series database manager that can collect and store the data received by Hono in chronological order.
+Now that we have set up a Hono instance, `cloudfeeder.py` can send the telemetry data to Hono every one to two seconds. Hono may be able to collect all the data from its connected vehicles. However, Hono is not a database, meaning that it doesn't store all the collected data in itself. This also means that we have to hire a time series database manager that can collect and store the data received by Hono in chronological order.
 
-* InfluxDB is another kuksa.cloud's component, that is an open-source time series database. In KUKSA, InfluxDB is meant to be used as the back-end database that stores the data incoming into Hono. With InfluxDB, we can make use of the collected data not only for visualization but also for a variety of external services such as a mailing service or an external diagnostic service. InfluxDB should be located in the northbound of Hono along with Hono-InfluxDB-Connector that should be placed in-between Hono and InfluxDB. 
+InfluxDB is another kuksa.cloud's component, that is an open-source time series database. In KUKSA, InfluxDB is meant to be used as the back-end that stores the data incoming to Hono. With InfluxDB, we can make use of the collected data not only for visualization but also for a variety of external services such as a mailing service or an external diagnostic service. InfluxDB should be located in the northbound of Hono along with Hono-InfluxDB-Connector that should be placed in-between Hono and InfluxDB. 
 
-* To set up InfluxDB and Hono-InfluxDB-Connector, we can use a Linux (virtual) machine. Based on Hono, the Linux machine here can be considered as a data consumer while the in-vehicle Raspberry-Pi is considered as a data publisher.
+* To set up InfluxDB and Hono-InfluxDB-Connector, we can use a Linux machine (:ref:`data-consumer`). Based on Hono, the Linux machine here can be considered as a data consumer while the in-vehicle Raspberry-Pi is considered as a data publisher.
 
 * The following steps to setup InfluxDB is written based on `this tutorial <http://www.andremiller.net/content/grafana-and-influxdb-quickstart-on-ubuntu>`_.
 
@@ -225,9 +223,7 @@ dias_kuksa - Hono-InfluxDB-Connector
     :width: 1200
     :align: center
 
-* Now that Hono and InfluxDB are set up, we need a connector application to transmit the incoming data from Hono to InfluxDB.
-
-* `cloudfeeder.py` produces and sends Hono the result telemetry messages in a form of JSON dictionary. Therefore the connector application should be able to read the JSON dictionary from Hono, map the dictionary to several individual metrics and send them to InfluxDB by using the `curl` command.
+Now that Hono and InfluxDB are set up, we need a connector application to transmit the incoming data from Hono to InfluxDB. `cloudfeeder.py` produces and sends Hono the result telemetry messages in a form of JSON dictionary. Therefore the connector application should be able to read the JSON dictionary from Hono, map the dictionary to several individual metrics and send them to InfluxDB by using the `curl` command.
 
 * Since the messaging endpoint of Hono (Bosch IoT Hub) follows the AMQP 1.0 protocol, the connector application should also be AMQP based.
 
@@ -289,9 +285,9 @@ kuksa.cloud - Grafana (Visualization Web App)
     :width: 1200
     :align: center
 
-* So far we have successfully managed to set up Hono and InfluxDB, and transmit data incoming to Hono to InfluxDB by running Hono-InfluxDB-Connector. Now our concern is how to visualize the data inside InfluxDB. One way to do this is to use Grafana.
+So far we have successfully managed to set up Hono and InfluxDB, and transmit data incoming to Hono to InfluxDB by running Hono-InfluxDB-Connector. Now our concern is how to visualize the data inside InfluxDB. One way to do this is to use Grafana.
 
-* Grafana is a multi-platform open source analytics and interactive visualization web application. The idea here is to get Grafana to read InfluxDB and visualize the read data.
+Grafana is a multi-platform open source analytics and interactive visualization web application. The idea here is to get Grafana to read InfluxDB and visualize the read data.
 
 * The installation steps to setup Grafana is written based on `here <https://grafana.com/docs/grafana/latest/installation/debian/>`_.
 
@@ -363,10 +359,8 @@ kuksa.cloud - Grafana (Visualization Web App)
 dias_kuksa - InfluxDB-Consumer
 ##############################
 
-* Since there are possibly more applications that use InfluxDB other than Grafana, it makes sense to create a consumer application that fetches data from InfluxDB and makes them available for any purposes.
+Since there are possibly more applications that use InfluxDB other than Grafana, it makes sense to create a consumer application that fetches data from InfluxDB and makes them available for any purposes.
 
 * There is an InfluxDB consumer Python script, `influxDB_consumer.py`, in `dias_kuksa/utils/cloud/`.
 
-* The script fetches the last data under certain keys from the local InfluxDB server and store them in the corresponding Python dictionary to each key by using the function, `storeNewMetricVal`.
-
-* You can use the data in the dictionary according to your purpose and goals.
+* The script fetches the last data under certain keys from the local InfluxDB server and store them in the corresponding Python dictionary to each key by using the function, `storeNewMetricVal`. Then you can use the data in the Python dictionary according to your purpose and goals.

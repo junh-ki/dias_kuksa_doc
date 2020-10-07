@@ -2,7 +2,7 @@
 Step 4: Simulation
 ******************
 
-* When everything from step 1 to 3 is set up, you can finally test to see whether or not they communicate each other and work in a correct way.
+When everything from step 1 to 3 is set up, you can finally test to see whether or not they communicate each other and work in a correct way.
 
 * If your CAN interface is physical one (e.g., `can0`), you can use either a simulation tool such as Vector CANalyzer, CANoe and etc, or connect to the actual CAN in a vehicle.
 	
@@ -12,12 +12,14 @@ Step 4: Simulation
 
 * To log CAN traces with CANalyzer and get the .asc file (that should be converted to the .log format later) or get the .log file directly with Raspberry-Pi tools, you can follow :ref:`can-traces`.
 
-* The following steps describe how to convert a .asc file to a .log file and simulate CAN with the .log file in your Raspberry-Pi. So that you can verify whether or not your setups function correctly from In-vehicle to Cloud.
+* The followings describe how to convert a .asc file to a .log file and simulate CAN with the .log file in your Raspberry-Pi. So that you can verify whether or not your setups function correctly from In-vehicle to Cloud.
 
 
 
 asc2log Conversion
 ##################
+
+Since `canplayer` from the `can-utils` library only takes the .log format, the existing .asc file should be converted to the .log format.
 
 1. Make sure that all KUKSA components from In-vehicle to Cloud have been set up from the previous steps.
 
