@@ -36,14 +36,14 @@ Eclipse KUKSA
 
 - The initial release (0.1.0): 30.09.2019 / The second release (0.2.0): 01.2020
 
-- Implementing the DIAS use-case with KUKSA benefits both parties by enabling the solution to be compliant with any vehicles regardless of the OEM-specific standards.
+- Implementing the DIAS use-case with KUKSA benefits both parties by enabling the solution to be compliant with any vehicles regardless of OEM-specific standards.
 
 
 
 DIAS-KUKSA
 ##########
 
-One objective of DIAS is to create a cloud-based diagnostic system. Therefore it is essential to establish connectivity from the vehicle to cloud components. The KUKSA infrastructure offers the starting point for instituting such connectivity. The goal of this documentation is to make clear how to set up each infrastructure component according to the case of DIAS in a sequential manner so that readers can have a thorough understanding of how to apply their own implementation on the established connectivity with KUKSA.
+One objective of `DIAS <https://dias-project.com/>`_ is to create a cloud-based diagnostic system. To manage a large scale of vehicles, sufficient computing power and resource are required. A cloud-based system would not only provide these but also make the entire system easy to scale depending on the number of target vehicles by utilizing cloud service providers such as `Azure <https://azure.microsoft.com/>`_, `AWS <https://aws.amazon.com/>`_ and `Bosch IoT Hub <https://developer.bosch-iot-suite.com/service/hub/>`_. For the system to be powered by service providers like these, it is essential to establish connectivity between the vehicle-server-based applications to the external-server-based applications. The KUKSA infrastructure offers the means for instituting such connectivity. The goal of this documentation is to make clear how to set up each infrastructure component according to the case of DIAS in a sequential manner so that readers can have a thorough understanding of how to apply their own implementation on the established connectivity with KUKSA.
 
 
 
@@ -54,4 +54,4 @@ DIAS-KUKSA Overall Schema
     :width: 1200
     :align: center
 
-The figure illustrates the entire connectivity cycle from the vehicle to the end-consumer. In the following chapters, how to establish such connectivity cycle is described in detail.
+The figure illustrates the entire connectivity cycle from the vehicle to the end-consumer. In the following chapters, how to establish such connectivity is described in detail.
