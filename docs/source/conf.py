@@ -19,7 +19,7 @@ import sphinx_rtd_theme
 
 # -- Project information -----------------------------------------------------
 
-project = u'DIAS - KUKSA Connectivity Usecase'
+project = u'Getting Started with DIAS-KUKSA'
 copyright = '2020, Junhyung Ki'
 author = 'Junhyung Ki'
 
