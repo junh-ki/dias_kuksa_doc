@@ -254,7 +254,7 @@ Now that Hono and InfluxDB are set up, we need a connector application to transm
 
 4. Now that you have the binary file, you can execute the connector application. In the same directory, `dias_kuksa/utils/cloud/maven.consumer.hono/`, command the following::
 
-    $ java -jar target/maven.consumer.hono-0.0.1-SNAPSHOT.jar --hono.client.tlsEnabled=true --hono.client.username={messaging-username} --hono.client.password={messaging-password} --tenant.id={tenant-id} --device.id={device-id}
+    $ java -jar target/maven.consumer.hono-0.0.1-SNAPSHOT.jar --hono.client.tlsEnabled=true --hono.client.username={messaging-username} --hono.client.password={messaging-password} --tenant.id={tenant-id} --device.id={device-id} --export.ip={export-ip}
 
 * (Bosch IoT Hub) The corresponding info (messaging-username, messaging-password, tenant-id, device-id) can be found in `Service Subscriptions Page <https://accounts.bosch-iot-suite.com/subscriptions>`_.
 

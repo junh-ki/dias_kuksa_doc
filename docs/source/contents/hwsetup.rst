@@ -33,8 +33,8 @@ For your hardware to be interactive with CAN, a CAN interface is required. Since
 
 .. _virtual-can:
 
-CAN Interface Option 1 - Virtual CAN (Only for simululation)
-************************************************************
+CAN Interface Option 1 - Virtual CAN (Logfile Simulation Purpose)
+*****************************************************************
 
 * A virtual CAN interface emulates a physical CAN interface and is capable of behaving nearly identically with less limitations. A virtual CAN interface is appropriate when user just wants to play a CAN log for testing applications in the development phase.
 
