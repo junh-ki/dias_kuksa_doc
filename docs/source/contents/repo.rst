@@ -11,6 +11,8 @@ DIAS_KUKSA Infrastructure
 
 - `ReadTheDocs Documentation Repository <https://github.com/junh-ki/dias_kuksa_doc>`_
 
+- `Hono-InfluxDB-Connector Docker Image Registry <https://hub.docker.com/repository/docker/mrki102/hono-influxdb-connector>`_
+
 
 
 KUKSA Infrastructure

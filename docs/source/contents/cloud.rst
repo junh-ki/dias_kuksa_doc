@@ -8,27 +8,32 @@ Step 3: Cloud Setup
 
 
 
+Deployment Option 1 - Manual
+############################
+
 .. _cloud-hono:
 
 kuksa.cloud - Eclipse Hono (Cloud Entry)
-########################################
+****************************************
 
 .. figure:: /_images/cloud/cloud_hono.png
     :width: 1200
     :align: center
 
+.. figure:: /_images/cloud/eclipse-hono.png
+    :width: 270
+    :align: center
+
 Eclipse Hono provides remote service interfaces for connecting large numbers of IoT devices to a back end and interacting with them in a uniform way regardless of the device communication protocol.
 
-
-
-Hono Option 1 - Bosch IoT Hub as Hono
-*************************************
+Bosch IoT Hub as Hono
+=====================
 
 .. figure:: /_images/cloud/bosch-iot-hub.PNG
     :width: 300
     :align: center
 
-The Bosch IoT Hub comprises open source components developed in the Eclipse IoT ecosystem and other communities, and uses :blue:`Eclipse Hono` as its foundation. Utilizing Hono is essential to deal with a large amount of connected vehicles due to its scalability, security and reliability. The Bosch IoT Hub is available as a free plan for evaluation purposes. The following steps describe how to create a free Bosch IoT Hub instance.
+The Bosch IoT Hub comprises open source components developed in the Eclipse IoT ecosystem and other communities, and uses Eclipse Hono as its foundation. Utilizing Hono is essential to deal with a large amount of connected vehicles due to its scalability, security and reliability. The Bosch IoT Hub is available as a free plan for evaluation purposes. The following steps describe how to create a free Bosch IoT Hub instance.
 
 1. If you don't have a Bosch ID, register one `here <https://identity-myprofile.bosch.com/ui/web/registration>`_ and activate your ID through the registered E-Mail.
 
@@ -42,7 +47,7 @@ The Bosch IoT Hub comprises open source components developed in the Eclipse IoT 
 
 6. Now you would be in `Service Subscriptions Page <https://accounts.bosch-iot-suite.com/subscriptions>`_. It would take a minute or two for your instance to change its status from "Provisioning" to "Active". Make sure the status is "Active" by refreshing the page.
 
-7. When the status is "Active", click "Show Credentials" of the target instance. Then it would show the instance's credentials information. This information is important to go to the device registry and register your device in the further steps. (You don't need to save this information since you can always come back to see.) Let's copy and save the values of "username" and "password" keys under "device_registry" somewhere. 
+7. When the status is "Active", click "Show Credentials" of the target instance. Then it would show the instance's credentials information. This information is used to go to the device registry and register your device in the further steps. (You don't need to save this information since you can always come back to see.) Let's copy and save the values of "username" and "password" keys under "device_registry" somewhere. 
 
 8. Now go to `Bosch IoT Hub - Management API <https://apidocs.bosch-iot-suite.com/index.html?urls.primaryName=Bosch%20IoT%20Hub%20-%20Management%20API>`_. The Management API is used to interact with the Bosch IoT Hub for management operations. This is where you can register a device on the Bosch IoT Hub instance you've just created and get the tenant configuration that you would ultimately use as input arguments when running `cloudfeeder.py` (:ref:`cloud-feeder`) for a specific device (e.g., Raspberry-Pi of a connected vehicle).
 
@@ -106,23 +111,14 @@ If the server responses with a code 201, it means that new credentials have been
     * Server Certificate File: "`iothub.crt <https://docs.bosch-iot-suite.com/hub/general-concepts/certificates.html>`_"
     * Data Type: "telemetry"
 
-10. With the information in 9-5, we can run `cloudfeeder.py`. Navigate to `kuksa.val/vss-testclient/` and command::
+10. With the information in 9-5 (should be different in your case), we can run `cloudfeeder.py` (:ref:`cloud-feeder`). Navigate to `kuksa.val/vss-testclient/` and command::
 
     $ python3 cloudfeeder.py --host mqtt.bosch-iot-hub.com -p 8883 -u pc01@td23aec9b9335415594a30c7113f3a266 -P kuksatutisfun01 -c iothub.crt -t telemetry
 
 
 
-Hono Option 2 - Hono from The KUKSA Cluster
-*******************************************
-
-.. figure:: /_images/cloud/eclipse-hono.png
-    :width: 270
-    :align: center
-
-
-
 kuksa.cloud - InfluxDB (Time Series Database)
-#############################################
+*********************************************
 
 .. figure:: /_images/cloud/cloud_influxdb.png
     :width: 1200
@@ -202,22 +198,22 @@ InfluxDB is another kuksa.cloud's component, that is an open-source time series 
 
 13. (Optional) If you want to write test data from the Linux shell, you can run the following one line script::
 
-	$ while true; do curl -i -XPOST 'http://localhost:8086/write?db=kuksademo' --data-binary "cpu,host=serverA value=`cat /proc/loadavg | cut -f1 -d ' '`"; sleep 1; done
+    $ while true; do curl -i -XPOST 'http://localhost:8086/write?db=kuksademo' --data-binary "cpu,host=serverA value=`cat /proc/loadavg | cut -f1 -d ' '`"; sleep 1; done
 
 * This command will write data to the `kuksademo` database every 1 second.
 
 14. You can verify if data is being sent to InfluxDB by using the influx shell and running a query::
 
-	> influx
-	> USE kuksademo
-	> SELECT * FROM cpu
+    > influx
+    > USE kuksademo
+    > SELECT * FROM cpu
 
 
 
 .. _cloud-hono-influxdb-connector:
 
 dias_kuksa - Hono-InfluxDB-Connector
-####################################
+************************************
 
 .. figure:: /_images/cloud/cloud_hono-influxdb-connector.png
     :width: 1200
@@ -231,34 +227,34 @@ Now that Hono and InfluxDB are set up, we need a connector application to transm
 
 1. To set up the connector, you have to clone the `junh-ki/dias_kuksa` repository on your machine first::
 
-	$ git clone https://github.com/junh-ki/dias_kuksa.git
+    $ git clone https://github.com/junh-ki/dias_kuksa.git
 
 2. Navigate to `dias_kuksa/utils/cloud/maven.consumer.hono` and check `README.md`. As stated in `README.md`, there are three prerequisites to be installed before running this application.
 
 2-1. Install Java (OpenJDK 11.0.8)::
 
-	$ sudo apt install openjdk-11-jre-headless openjdk-11-jdk-headless
-	$ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/
-	$ echo $JAVA_HOME
+    $ sudo apt install openjdk-11-jre-headless openjdk-11-jdk-headless
+    $ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/
+    $ echo $JAVA_HOME
 
 2-2. Install Maven (Apache Maven 3.6.0)::
 
-	$ sudo apt install maven
-	$ mvn --version
+    $ sudo apt install maven
+    $ mvn --version
 
 2-3. Install mosquitto-clients::
 
-	$ sudo apt install mosquitto-clients
+    $ sudo apt install mosquitto-clients
 
 3. Navigate to `dias_kuksa/utils/cloud/maven.consumer.hono/` and command the following::
 
-	$ mvn clean package -DskipTests
+    $ mvn clean package -DskipTests
 
 * This command compiles the `src` folder with Maven and produces the `target` folder that contains a .jar formatted binary file, `maven.consumer.hono-0.0.1-SNAPSHOT.jar`.
 
 4. Now that you have the binary file, you can execute the connector application. In the same directory, `dias_kuksa/utils/cloud/maven.consumer.hono/`, command the following::
 
-	$ java -jar target/maven.consumer.hono-0.0.1-SNAPSHOT.jar --hono.client.tlsEnabled=true --hono.client.username={messaging-username} --hono.client.password={messaging-password} --tenant.id={tenant-id} --device.id={device-id}
+    $ java -jar target/maven.consumer.hono-0.0.1-SNAPSHOT.jar --hono.client.tlsEnabled=true --hono.client.username={messaging-username} --hono.client.password={messaging-password} --tenant.id={tenant-id} --device.id={device-id}
 
 * (Bosch IoT Hub) The corresponding info (messaging-username, messaging-password, tenant-id, device-id) can be found in `Service Subscriptions Page <https://accounts.bosch-iot-suite.com/subscriptions>`_.
 
@@ -279,7 +275,7 @@ Now that Hono and InfluxDB are set up, we need a connector application to transm
 
 
 kuksa.cloud - Grafana (Visualization Web App)
-#############################################
+*********************************************
 
 .. figure:: /_images/cloud/cloud_grafana.png
     :width: 1200
@@ -293,54 +289,54 @@ Grafana is a multi-platform open source analytics and interactive visualization 
 
 1. To install Grafana (stable version 2.6) on your VM, run following commands::
 
-	$ sudo apt-get install -y apt-transport-https
-	$ sudo apt-get install -y software-properties-common wget
-	$ wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
-	$ echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
-	$ sudo apt-get update
-	$ sudo apt-get install grafana
+    $ sudo apt-get install -y apt-transport-https
+    $ sudo apt-get install -y software-properties-common wget
+    $ wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+    $ echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+    $ sudo apt-get update
+    $ sudo apt-get install grafana
 
 2. Start Grafana service::
 
-	$ sudo service grafana-server start
+    $ sudo service grafana-server start
 
 * If this command doesn't work, list PIDs on port 3000 (Grafana uses port 3000) to see whether grafana-server is already running on one of them::
 
-	$ sudo apt install net-tools
-	$ sudo netstat -anp tcp | grep 3000
+    $ sudo apt install net-tools
+    $ sudo netstat -anp tcp | grep 3000
 
-* assuming the PID number is: 13886
+* assuming the PID number is: 13886::
 
-	$ sudo kill 13886
-	$ sudo service grafana-server start
+    $ sudo kill 13886
+    $ sudo service grafana-server start
 
 3. Check whether the Grafana instance is running::
 
-	$ sudo service grafana-server status
+    $ sudo service grafana-server status
 
 * `ctrl` + `c` to get out.
 
 4. Now that the Grafana server is running on your machine, you can access to the server by using a web-browser. Open a browser and access to the following address::
 
-	http://localhost:3000/
+    http://localhost:3000/
 
 5. Log in with the admin account::
 
-	Email or username: admin
-	Password: admin
+    Email or username: admin
+    Password: admin
 
 6. After logging in, click "Configuration" on the left, click "Add data source" and select "InfluxDB". 
 
 7. Then you would be in the InfluxDB Settings page. Go to "HTTP" and set URL as follow::
 
-	URL: http://localhost:8086
+    URL: http://localhost:8086
 
 8. Then go to "IndluxDB Details". Here we are going to select the "kuksademo" database that we have created to test InfluxDB. You can also choose another database that Hono-InfluxDB-Connector has been sending data to. To choose "kuksademo", enter in the following information::
 
-	Database: kuksademo
-	User: admin
-	Password: admin
-	HTTP Method: GET
+    Database: kuksademo
+    User: admin
+    Password: admin
+    HTTP Method: GET
 
 9. Click "Save & Test". If you see the message, "Data source is working", it means that Grafana has been successfully connected to InfluxDB.
 
@@ -348,7 +344,7 @@ Grafana is a multi-platform open source analytics and interactive visualization 
 
 11. Then you would be in the panel editting page. You can choose what metrics you want to analyze. This depends entirely on what metrics you have been sending IndluxDB. Since the metrics we have created in "kuksademo" is `cpu`, you can set the following information:: 
 
-	FROM: `default` `cpu`
+    FROM: `default` `cpu`
 
 12. Click "Apply" on the upper right. Now a new dashboard has been created, you can change the time scope, refresh or save the dashboard on the top.
 
@@ -356,8 +352,15 @@ Grafana is a multi-platform open source analytics and interactive visualization 
 
 
 
-dias_kuksa - InfluxDB-Consumer
-##############################
+Deployment Option 2 - Docker Compose
+####################################
+
+
+
+
+
+(Additional) dias_kuksa - InfluxDB-Consumer
+###########################################
 
 Since there are possibly more applications that use InfluxDB other than Grafana, it makes sense to create a consumer application that fetches data from InfluxDB and makes them available for any purposes.
 

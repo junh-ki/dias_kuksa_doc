@@ -7,7 +7,7 @@ Raspberry-Pi (Data Publisher)
 
 For development, you will be using Raspberry-Pi 3 or 4 (preferably 4 since it is faster and has more RAM capacity). Raspberry-Pi is not a regular micro-controller but rather a single-board computer. This means that you can run an OS (Operating System; Raspbian, Ubuntu, etc.) on it, and connect it to other IO devices such as monitor, mouse and keyboard. This way, you can use your Raspberry-Pi in the similar way you use your PC, which eases the entire in-vehicle development process.
 
-* In this documentation, the following hardware and OS are used. 
+* (Hardware Option 1 - Raspberry-Pi) In this documentation, the following hardware and OS are used. 
     * HW: Raspberry-Pi 4 
     * OS: Raspberry-Pi OS (32-bit) with desktop / `Download <https://www.raspberrypi.org/downloads/raspberry-pi-os/>`_
 
@@ -19,12 +19,16 @@ For development, you will be using Raspberry-Pi 3 or 4 (preferably 4 since it is
     $ sudo apt install git
     $ git --version
 
+* (Hardware Option 2 - Ubuntu VM) If you are only interested in desk development without connecting to the real CAN, you can use a virtual machine as your in-vehicle "hardware".
+    * Set up an Ubuntu virtual machine. A detailed tutorial to how to set up Ubuntu with VirtualBox is explained `here <https://brb.nci.nih.gov/seqtools/installUbuntu.html>`_.
+    * The image file used (Ubuntu 18.04 LTS - Bionic Beaver) that is compatiable to this documentation can be downloaded `here <http://nl.releases.ubuntu.com/18.04.4/>`_.
 
 
-CAN Interface for Raspberry-Pi
-******************************
 
-For Raspberry-Pi to be interactive with CAN, a CAN interface is required. Since Raspberry-Pi doesn't have the in-built CAN interface, user has to configure it manually. There are several ways for configuring the interface on Raspberry-Pi and only three options with different purposes are introduced here.
+CAN Interface for Hardware
+**************************
+
+For your hardware to be interactive with CAN, a CAN interface is required. Since Raspberry-Pi doesn't have a built-in CAN interface, user has to configure it manually. There are several ways for configuring the interface on Raspberry-Pi and only three options with different purposes are introduced here.
 
 
 .. _virtual-can:
@@ -48,8 +52,8 @@ CAN Interface Option 1 - Virtual CAN (Only for simululation)
 
 .. _skpang-pican2:
 
-CAN Interface Option 2 - SKPang PiCan2
-**************************************
+CAN Interface Option 2 - SKPang PiCan2 (Only for Raspberry-Pi)
+**************************************************************
 
 .. figure:: /_images/hw/pican2.jpg
     :width: 700
@@ -81,8 +85,8 @@ CAN Interface Option 2 - SKPang PiCan2
 
 .. _seeed-2-channel:
 
-CAN Interface Option 3 - Seeed 2-Channel Shield
-***********************************************
+CAN Interface Option 3 - Seeed 2-Channel Shield (Only for Raspberry-Pi)
+***********************************************************************
 
 .. figure:: /_images/hw/seed_2_channel.png
     :width: 800
