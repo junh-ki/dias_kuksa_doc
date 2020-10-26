@@ -231,6 +231,11 @@ Now that Hono and InfluxDB are set up, we need a connector application to transm
 
 2. Navigate to `dias_kuksa/utils/cloud/maven.consumer.hono` and check `README.md`. As stated in `README.md`, there are three prerequisites to be installed before running this application.
 
+2-1. Update the system::
+
+    $ sudo apt update
+    $ sudo apt upgrade
+
 2-1. Install Java (OpenJDK 11.0.8)::
 
     $ sudo apt install openjdk-11-jre-headless openjdk-11-jdk-headless
@@ -245,6 +250,10 @@ Now that Hono and InfluxDB are set up, we need a connector application to transm
 2-3. Install mosquitto-clients::
 
     $ sudo apt install mosquitto-clients
+
+2-4. Install curl::
+
+    $ sudo apt install curl
 
 3. Navigate to `dias_kuksa/utils/cloud/maven.consumer.hono/` and command the following::
 
