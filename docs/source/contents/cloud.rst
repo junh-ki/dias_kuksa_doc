@@ -7,6 +7,7 @@ Step 3: Cloud Setup
     :align: center
 
 
+.._manual-deployment:
 
 Deployment Option 1 - Manual
 ############################
@@ -363,6 +364,26 @@ Grafana is a multi-platform open source analytics and interactive visualization 
 
 Deployment Option 2 - Docker Compose
 ####################################
+
+:ref:`manual-deployment` has been introduced to understand what kinds of cloud components are used for `kuksa.cloud` and how to configure them so that they can interact each other. However, deploying each and every cloud component and configuring them manually is not plausible when considering a large number of connected vehicles. This is where container technology like Docker comes into play. A couple of key concepts are described below:
+
+* Docker Container: A standard unit of software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to another.
+* Docker Compose: A tool for defining and running serveral Docker containers. A YAML file is used to configure the application's services.
+* Kubernetes: One difference between Docker Compose and Kubernetes is that Docker Compose runs on a single host, whereas Kubernetes is for running and connecting containers on multiple host.
+
+.. figure:: /_images/cloud/docker_example.pdf
+    :width: 1200
+    :align: center
+
+.. `here <https://identity-myprofile.bosch.com/ui/web/registration>`_
+.. Docker and  comes in.
+.. inefficient
+
+
+
+
+Deployment Option 3 - Azure Kubernetes Service (AKS)
+####################################################
 
 
 
