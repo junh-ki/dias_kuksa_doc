@@ -371,7 +371,7 @@ Deployment Option 2 - Docker Compose
 * Docker Compose: A tool for defining and running serveral Docker containers. A YAML file is used to configure the application's services.
 * Kubernetes: One difference between Docker Compose and Kubernetes is that Docker Compose runs on a single host, whereas Kubernetes is for running and connecting containers on multiple host.
 
-.. figure:: /_images/cloud/docker_example.pdf
+.. figure:: /_images/cloud/docker_example.png
     :width: 1200
     :align: center
 
