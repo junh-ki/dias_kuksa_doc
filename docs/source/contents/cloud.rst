@@ -424,6 +424,8 @@ As already mentioned in 3), it doesn't require for the rest of the Docker hosts 
     :width: 450
     :align: center
 
+* The changes should be made depending on the telemetry message sent by `cloudfeeder.py`. Please consider the format of the message or the availability of intended metrics in the message.
+
 2. To create a Docker image out of `Hono-InfluxDB-Connector`, a Dockerfile is required. The Dockerfile for `Hono-InfluxDB-Connector` is located in `dias_kuksa/utils/cloud/maven.consumer.hono/`. The Dockerfile consists of two different stages: Jar Building and Image Building. The Dockerfile can be self-explained with the comments in it. Navigate to `dias_kuksa/utils/cloud/maven.consumer.hono/` and build the Docker image by commanding::
 
     $ docker build -t hono-influxdb-connector .
