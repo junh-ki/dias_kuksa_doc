@@ -7,7 +7,7 @@ Step 3: Cloud Setup
     :align: center
 
 
-.._manual-deployment:
+.. _manual-deployment:
 
 Deployment Option 1 - Manual
 ############################
@@ -369,16 +369,106 @@ Deployment Option 2 - Docker Compose
 
 * Docker Container: A standard unit of software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to another.
 * Docker Compose: A tool for defining and running serveral Docker containers. A YAML file is used to configure the application's services.
-* Kubernetes: One difference between Docker Compose and Kubernetes is that Docker Compose runs on a single host, whereas Kubernetes is for running and connecting containers on multiple host.
+* Kubernetes: One difference between Docker Compose and Kubernetes is that Docker Compose runs on a single host, whereas Kubernetes is for running and connecting containers on multiple hosts.
+
+The key point of using Docker is to facilitate automation so that users can deploy the applications in an agile and efficient way.
+To learn all the concepts and basics of Docker and be familiar with them, you can follow `this tutorial <https://docker-curriculum.com/>`_. The subsequent contents are written based on the assumption that readers are familiar with Docker.
+
+In the case of DIAS-KUKSA, there are two deployment options that utilize Docker:
+
+* Docker Compose
+* Azure Kubernetes Service(AKS)
+
+When deploying with Docker Compose, it is assumed that a Bosch-IoT-Hub instance is already up and running. Therefore the deployment only includes: `Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana`. Since Docker Compose runs only on a single host (a single Ubuntu machine), we can use it for a development, test and evaluation purpose.
+
+On the other hand, AKS runs on multiple hosts and includes all the cloud components (`Eclipse Hono`, `Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana`). The downside of using AKS is that it costs money since the service is offered by Microsoft Azure and also the deployment configuration is more intricate. Therefore using AKS would be more favorable for commercial distribution.
+
+In this part, how to modify the `Hono-InfluxDB-Connector` Docker image and `Grafana`'s dashboards according to your use-case, how to setup the configuration among the cloud components (`Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana`) and how to deploy them with Docker Compose are explained. The end-goal here is to deploy these applications as Docker containers as the figure below and establish connectivity among these containerized applications.
 
 .. figure:: /_images/cloud/docker_example.png
-    :width: 450
+    :width: 370
     :align: center
 
-.. `here <https://identity-myprofile.bosch.com/ui/web/registration>`_
-.. Docker and  comes in.
-.. inefficient
+* Follow `this tutorial <https://linuxconfig.org/how-to-install-docker-on-ubuntu-18-04-bionic-beaver>`_ to install Docker.
+* Follow `this tutorial <https://linuxize.com/post/how-to-install-and-use-docker-compose-on-ubuntu-18-04/#:~:text=%20To%20install%20Docker%20Compose%20on%20Ubuntu%2018.04%2C,command%20which%20will%20display%20the%20Compose...%20More%20>`_ to install Docker Compose.
+* If you only want to test the connectivity with the default DIAS-KUKSA setting, you can directly go to :ref:`docker-compose-deployment`.
 
+
+
+Modifying `Hono-InfluxDB-Connector`
+***********************************
+
+`Hono-InfluxDB-Connector` should be containerized to be archieved in Docker Hub Registry. That way, the achieved Docker image can be pulled from the registry by any user that has Internet access. To docker-containerize `Hono-InfluxDB-Connector`, a `Dockerfile` is required. With a `Dockerfile`, you can build a Docker image that can create a Docker container and push the image to Docker Hub.
+
+1. Make changes in `dias_kuksa/utils/cloud/maven.consumer.hono/src/main/java/maven/consumer/hono/ExampleConsumer.java` according to your preference.
+
+2. Navigate to `dias_kuksa/utils/cloud/maven.consumer.hono/` where `Dockerfile` is located.
+
+* 
+
+3. docker build
+
+
+Modifying `Grafana`'s Dashboards
+********************************
+
+
+
+
+
+Configuration Setup
+*******************
+
+
+
+
+
+.. _docker-compose-deployment:
+
+Deployment with Docker Compose
+******************************
+
+1. Make sure a Bosch-IoT-Hub instance is up and running. If you haven't brought it up, please do it now by following :ref:`cloud-hono`.
+
+2. In the `dias-kuksa <https://github.com/junh-ki/dias_kuksa_doc.git>`_ repository, you can find the pre-configured `docker-compose.yml` file. With one command you can deploy all the applications according to the default configuration setting in the file. But there are few things that need to be done by each user.
+
+2-1. In `docker-compose.yml`, change `command` under `connector` on line 22 according to your Bosch-IoT-Hub instance's information::
+
+    $ --hono.client.tlsEnabled=true --hono.client.username={$YOUR_MESSAGING_USERNAME} --hono.client.password={$YOUR_MESSAGING_PASSWORD} --tenant.id={$YOUR_TENANT_ID} --export.ip=influxdb:8086
+
+2-2. According to `docker-compose.yml`, `InfluxDB` and `Grafana` are deployed on port 8086 and 3000 respectively. Therefore the corresponding ports should be available before running Docker Compose. To see the availability of a certain port, one can use `net-tools`. With this, one can also kill any service that is running on a certain port to make it available for the target application. Install `net-tools` and list PIDs on port 8086 (Connector - 8080, InfluxDB - 8086, Grafana - 3000)::
+
+    $ sudo apt install net-tools
+    $ sudo netstat -anp tcp | grep 8086
+
+By now, a list of PIDs would be shown on the terminal.
+
+2-3. Assuming the number of PID that is running on port 8086 is 13886, you can kill the PID with the following command::
+
+    $ sudo kill 13886
+
+3. Now that you have made sure all three ports (8080, 8086 and 3000) are available, navigate to `dias_kuksa/utils/cloud/connector-influxdb-grafana-deployment/` where the `docker-compose.yml` file is located and command the following::
+
+    $ docker-compose up -d
+
+If there is no error output, you have successfully deployed all applications configured in the `docker-compose.yml` file. 
+
+4. Double-check whether three containers are created and working properly::
+
+    $ docker ps
+
+Make sure `Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana` are in the "Up" status.
+
+5. Now you should be able to access to the Grafana server through a web-browser. 
+
+5-1. Open a browser and access to `http://localhost:3000/`.
+
+5-2. Log in with the admin account::
+
+    Email or username: admin
+    Password: admin
+
+5-3. You can acccess
 
 
 
