@@ -365,7 +365,7 @@ Grafana is a multi-platform open source analytics and interactive visualization 
 Deployment Option 2 - Docker Compose
 ####################################
 
-:ref:`manual-deployment` has been introduced to understand what kinds of cloud components are used for `kuksa.cloud` and how to configure them so that they can interact each other. However, deploying each and every cloud component and configuring them manually is not plausible when considering a large number of connected vehicles. This is where container technology like Docker comes into play. A couple of key concepts are described below:
+:ref:`manual-deployment` has been introduced to understand what kinds of cloud components are used for `kuksa.cloud` and how to configure them so that they can interact each other. However, deploying each and every cloud component, configuring them and designing `Grafana` dashboards manually is not plausible when considering a huge number of connected vehicles. This is where container technology like Docker comes into play. A couple of key concepts are described below:
 
 * Docker Container: A standard unit of software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to another.
 * Docker Compose: A tool for defining and running serveral Docker containers. A YAML file is used to configure the application's services.
@@ -379,11 +379,17 @@ In the case of DIAS-KUKSA, there are two deployment options that utilize Docker:
 * Docker Compose
 * Azure Kubernetes Service(AKS)
 
-When deploying with Docker Compose, it is assumed that a Bosch-IoT-Hub instance is already up and running. Therefore the deployment only includes: `Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana`. Since Docker Compose runs only on a single host (a single Ubuntu machine), we can use it for a development, test and evaluation purpose.
+When deploying with Docker Compose, it is assumed that a Bosch-IoT-Hub instance is already up and running. Therefore the deployment only includes: `Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana`. Docker Compose runs only on a single host (a single Ubuntu machine). Even though it can only take care of a single connected vehicle, deploying with Docker Compose can be advantageous because it eases development process by reducing time and effort spent on setting deployment configuration for each application and creating the identical `Grafana` dashboards. Therefore Docker Compose deployment can be applicable for deveopment, test and evaluation purposes.
 
-On the other hand, AKS runs on multiple hosts and includes all the cloud components (`Eclipse Hono`, `Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana`). The downside of using AKS is that it costs money since the service is offered by Microsoft Azure and also the deployment configuration is more intricate. Therefore using AKS would be more favorable for commercial distribution.
+On the other hand, AKS includes all the cloud components (`Eclipse Hono`, `Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana`) and runs on multiple hosts, meaning that it can be highly advantageous for commercial distribution that deals with a large amount of data transference involving with a number of connected vehicles. The downside of using AKS is that it costs money since the service is offered by Microsoft Azure and also the deployment configuration is more intricate. Therefore using AKS would be more favorable for commercial distribution rather than a development purpose.
 
-In this part, how to modify the `Hono-InfluxDB-Connector` Docker image and `Grafana`'s dashboards according to your use-case, how to setup the configuration among the cloud components (`Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana`) and how to deploy them with Docker Compose are explained. The end-goal here is to deploy these applications as Docker containers as the figure below and establish connectivity among these containerized applications.
+In this part, Docker Compose deployment is closely covered. 
+The contents include: 
+    1. How to modify the `Hono-InfluxDB-Connector` Docker image.
+    2. How to design and import `Grafana`'s dashboard configuration according to your use-case. 
+    3. How to setup `docker-compose.yml` for the KUKSA cloud components (`Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana`)
+    4. How to deploy the KUKSA cloud components with Docker Compose. 
+The end-goal here is to deploy these applications as Docker containers as the figure below and establish connectivity among these containerized applications.
 
 .. figure:: /_images/cloud/docker_example.png
     :width: 370
@@ -391,7 +397,7 @@ In this part, how to modify the `Hono-InfluxDB-Connector` Docker image and `Graf
 
 * Follow `this tutorial <https://linuxconfig.org/how-to-install-docker-on-ubuntu-18-04-bionic-beaver>`_ to install Docker.
 * Follow `this tutorial <https://linuxize.com/post/how-to-install-and-use-docker-compose-on-ubuntu-18-04/#:~:text=%20To%20install%20Docker%20Compose%20on%20Ubuntu%2018.04%2C,command%20which%20will%20display%20the%20Compose...%20More%20>`_ to install Docker Compose.
-* If you only want to test the connectivity with the default DIAS-KUKSA setting, you can directly go to :ref:`docker-compose-deployment`.
+* **If you only want to test the connectivity with the default DIAS-KUKSA setting, you can directly go to :ref:`docker-compose-deployment`.**
 
 
 
