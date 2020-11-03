@@ -401,18 +401,51 @@ The end-goal here is to deploy these applications as Docker containers as the fi
 
 
 
-Modifying `Hono-InfluxDB-Connector`
-***********************************
+Modifying and creating a Docker image for `Hono-InfluxDB-Connector`
+*******************************************************************
 
-`Hono-InfluxDB-Connector` should be containerized to be archieved in Docker Hub Registry. That way, the achieved Docker image can be pulled from the registry by any user that has Internet access. To docker-containerize `Hono-InfluxDB-Connector`, a `Dockerfile` is required. With a `Dockerfile`, you can build a Docker image that can create a Docker container and push the image to Docker Hub.
+Unlike `InfluxDB` and `Grafana`, `Hono-InfluxDB-Connector` is an application that is only designed to serve a particular task. This means that the application needs to be changed according to the target metrics. Since the application cannot be generic but only user-specific, it is important to understand how to make changes on the application, build a new Docker image with the new changes and push it to the Docker Hub registry. One might ask why the application needs to be docker-containerized and pushed to Docker Hub when one could simply run the result Jar file on a local machine. This can be easily explained with the figure below.
 
-1. Make changes in `dias_kuksa/utils/cloud/maven.consumer.hono/src/main/java/maven/consumer/hono/ExampleConsumer.java` according to your preference.
+.. figure:: /_images/cloud/docker-compose-scenario.png
+    :width: 1200
+    :align: center
 
-2. Navigate to `dias_kuksa/utils/cloud/maven.consumer.hono/` where `Dockerfile` is located.
+The figure describes the following scenario:
 
-* 
+    1) Docker Host 1 builds the `Hono-InfluxDB-Connector` image by running its Dockerfile. During the build process, `Maven` and `Java` images are pulled to build the executable Jar file.
+    2) After the Jar file is created, the Docker image is produced. Then Docker Host 1 pushes the Jar file to the Docker Hub registry in the Internet. (To do this, one needs to login to DockerHub on a local terminal to designate the destination repository.)
+    3) Once the `Hono-InfluxDB-Connector` image is available on Docker Hub, the other hosts (2, 3, 4) can also use the image as long as the Internet access is available and Docker (and Docker Compose) is (are) installed locally. Finally the other Docker hosts (2, 3, 4) pull and run `Hono-InfluxDB-Connector` along with `InfluxDB` and `Grafana` through Docker Compose. The produced containers from Docker Compose are set to interact with each other according to the configuration setting in `docker-compose.yml`.
 
-3. docker build
+As already mentioned in 3), it doesn't require for the rest of the Docker hosts (2, 3, 4) to pull and update the code according to the recent changes and build it with `Maven` to create the executable Jar file because the updated `Hono-InfluxDB-Connector` Docker image is already available on Docker Hub. All they need are Docker and Docker Hub installed locally with the Internet access and the pull-address of the updated image. This makes it possible to avoid repetitive tasks such as: pulling the source code repository, making changes and building the application with `Maven` to create the executable Jar file. In this way, a user can simply pull the application image from Docker Hub and run a container out of the image.
+
+1. Make changes in `dias_kuksa/utils/cloud/maven.consumer.hono/src/main/java/maven/consumer/hono/ExampleConsumer.java` according to your purpose.
+
+.. figure:: /_images/cloud/connector_changes.PNG
+    :width: 450
+    :align: center
+
+2. To create a Docker image out of `Hono-InfluxDB-Connector`, a Dockerfile is required. The Dockerfile for `Hono-InfluxDB-Connector` is located in `dias_kuksa/utils/cloud/maven.consumer.hono/`. The Dockerfile consists of two different stages: Jar Building and Image Building. The Dockerfile can be self-explained with the comments in it. Navigate to `dias_kuksa/utils/cloud/maven.consumer.hono/` and build the Docker image by commanding::
+
+    $ docker build -t hono-influxdb-connector .
+
+3. Assuming a Docker Hub account has already been made (Please make it in `this link <https://hub.docker.com/>`_ if you haven't), log into Docker Hub on your terminal by commanding::
+
+    $ docker login --username={$USERNAME} --password={$PASSWORD}
+
+4. Before pushing `hono-influxdb-connector` to your Docker Hub repository, tag it according to the following convention::
+
+    $ docker tag hono-influxdb-connector {$USERNAME}/hono-influxdb-connector
+
+This way, the tagged Docker image would be directed to your respository on Docker Hub and archieved there when pushed.
+
+5. Push the tagged Docker image::
+
+    $ docker push {$USERNAME}/hono-influxdb-connector
+
+6. (Optional) When you want to pull the image from another Docker Host, simply command::
+
+    $ docker pull {$USERNAME}/hono-influxdb-connector
+
 
 
 Modifying `Grafana`'s Dashboards
