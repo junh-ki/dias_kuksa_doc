@@ -397,7 +397,7 @@ The end-goal here is to deploy these applications as Docker containers as the fi
 
 * Follow `this tutorial <https://linuxconfig.org/how-to-install-docker-on-ubuntu-18-04-bionic-beaver>`_ to install Docker.
 * Follow `this tutorial <https://linuxize.com/post/how-to-install-and-use-docker-compose-on-ubuntu-18-04/#:~:text=%20To%20install%20Docker%20Compose%20on%20Ubuntu%2018.04%2C,command%20which%20will%20display%20the%20Compose...%20More%20>`_ to install Docker Compose.
-* **If you only want to test the connectivity with the default DIAS-KUKSA setting, you can directly go to :ref:`docker-compose-deployment`.**
+* **If you only want to test the connectivity with the default DIAS-KUKSA setting, you can directly go to** :ref:`docker-compose-deployment`.
 
 
 
