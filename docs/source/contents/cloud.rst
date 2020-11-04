@@ -494,7 +494,13 @@ It can be noticed that all configuration files for `Grafana` are located under `
 Configuration Setup
 *******************
 
+.. figure:: /_images/cloud/docker-compose.PNG
+    :width: 350
+    :align: center
 
+.. figure:: /_images/cloud/docker-compose-connector-command.PNG
+    :width: 350
+    :align: center
 
 
 
