@@ -356,16 +356,18 @@ Grafana is a multi-platform open source analytics and interactive visualization 
 
     FROM: `default` `cpu`
 
-12. Click "Apply" on the upper right. Now a new dashboard has been created, you can change the time scope, refresh or save the dashboard on the top.
+12. Click "Apply" on the upper right. Now a new dashboard with a panel has been created, you can change the time scope, refresh or save the dashboard on the top.
 
-* In the same way, you can create multiple dashboards for different metrics.
+* In the same way, you can create multiple panels in the dashboard for different metrics.
 
 
+
+.. _docker-compose-deployment:
 
 Deployment Option 2 - Docker Compose
 ####################################
 
-:ref:`manual-deployment` has been introduced to understand what kinds of cloud components are used for `kuksa.cloud` and how to configure them so that they can interact each other. However, deploying each and every cloud component, configuring them and designing `Grafana` dashboards manually is not plausible when considering a huge number of connected vehicles. This is where container technology like Docker comes into play. A couple of key concepts are described below:
+:ref:`manual-deployment` has been introduced to understand what kinds of cloud components are used for `kuksa.cloud` and how to configure them so that they can interact with each other. However, deploying each and every cloud component, configuring them, setting a data source for `Grafana` and designing a dashboard of it manually is not plausible when considering a huge number of connected vehicles. This is where container technology like Docker comes into play. A couple of key concepts are described below:
 
 * Docker Container: A standard unit of software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to another.
 * Docker Compose: A tool for defining and running serveral Docker containers. A YAML file is used to configure the application's services.
@@ -379,14 +381,14 @@ In the case of DIAS-KUKSA, there are two deployment options that utilize Docker:
 * Docker Compose
 * Azure Kubernetes Service(AKS)
 
-When deploying with Docker Compose, it is assumed that a Bosch-IoT-Hub instance is already up and running. Therefore the deployment only includes: `Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana`. Docker Compose runs only on a single host (a single Ubuntu machine). Even though it can only take care of a single connected vehicle, deploying with Docker Compose can be advantageous because it eases development process by reducing time and effort spent on setting deployment configuration for each application and creating the identical `Grafana` dashboards. Therefore Docker Compose deployment can be applicable for deveopment, test and evaluation purposes.
+When deploying with Docker Compose, it is assumed that a `Bosch-IoT-Hub` instance is already up and running. Therefore the deployment only includes: `Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana`. Docker Compose runs only on a single host (a single Ubuntu machine). Even though it can only take care of a single connected vehicle, deploying with Docker Compose can be advantageous because it eases development process by reducing time and effort spent on setting deployment configuration for each application and creating the identical `Grafana` dashboard. Therefore Docker Compose deployment can be applicable for deveopment, test and evaluation purposes.
 
 On the other hand, AKS includes all the cloud components (`Eclipse Hono`, `Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana`) and runs on multiple hosts, meaning that it can be highly advantageous for commercial distribution that deals with a large amount of data transference involving with a number of connected vehicles. The downside of using AKS is that it costs money since the service is offered by Microsoft Azure and also the deployment configuration is more intricate. Therefore using AKS would be more favorable for commercial distribution rather than a development purpose.
 
 In this part, Docker Compose deployment is closely covered. 
 The contents include: 
     1. How to modify the `Hono-InfluxDB-Connector` Docker image.
-    2. How to design and import `Grafana`'s dashboard configuration according to your use-case. 
+    2. How to set data sources and dashboards on `Grafana`'s according to your use-case. 
     3. How to setup `docker-compose.yml` for the KUKSA cloud components (`Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana`)
     4. How to deploy the KUKSA cloud components with Docker Compose. 
 The end-goal here is to deploy these applications as Docker containers as the figure below and establish connectivity among these containerized applications.
@@ -401,8 +403,8 @@ The end-goal here is to deploy these applications as Docker containers as the fi
 
 
 
-Modifying and creating a Docker image for `Hono-InfluxDB-Connector`
-*******************************************************************
+Modifying and creating a Docker image for Hono-InfluxDB-Connector
+*****************************************************************
 
 Unlike `InfluxDB` and `Grafana`, `Hono-InfluxDB-Connector` is an application that is only designed to serve a particular task. This means that the application needs to be changed according to the target metrics. Since the application cannot be generic but only user-specific, it is important to understand how to make changes on the application, build a new Docker image with the new changes and push it to the Docker Hub registry. One might ask why the application needs to be docker-containerized and pushed to Docker Hub when one could simply run the result Jar file on a local machine. This can be easily explained with the figure below.
 
@@ -421,7 +423,7 @@ As already mentioned in 3), it doesn't require for the rest of the Docker hosts 
 1. Make changes in `dias_kuksa/utils/cloud/maven.consumer.hono/src/main/java/maven/consumer/hono/ExampleConsumer.java` according to your purpose.
 
 .. figure:: /_images/cloud/connector_changes.PNG
-    :width: 450
+    :width: 700
     :align: center
 
 * The changes should be made depending on the telemetry message sent by `cloudfeeder.py`. Please consider the format of the message or the availability of intended metrics in the message.
@@ -444,16 +446,48 @@ This way, the tagged Docker image would be directed to your respository on Docke
 
     $ docker push {$USERNAME}/hono-influxdb-connector
 
-6. (Optional) When you want to pull the image from another Docker Host, simply command::
+6. (Optional) When you want to pull the image from Docker Hub on another Docker host, simply command::
 
     $ docker pull {$USERNAME}/hono-influxdb-connector
 
 
 
-Modifying `Grafana`'s Dashboards
-********************************
+Configuring a Grafana's Data Source and Dashboard
+*************************************************
 
+Manually synchronizing `Grafana` with the `InfluxDB` data source and creating a `Grafana` dashboard for several Docker hosts can take a lot of work especially when the dashboard contains several panels. The following `Grafana` dashboard example is used for the NOx map analysis part from Bosch's DIAS-KUKSA implementation.
 
+.. figure:: /_images/cloud/nox_map_dashboard.PNG
+    :width: 1200
+    :align: center
+
+As depicted in the figure, the dashboard contains 6 different panels. Each panel has a unique title and is set to detect certain metrics that come from `InfluxDB`. The dashboard is simply designed to accommodate a specific type of messages sent by `Hono-InfluxDB-Connector` conforming its intended purpose. Since the `Grafana Docker image <https://hub.docker.com/r/grafana/grafana/>`_ is offered without any pre-configured dashboard options, it could be easily presumed that users might have to set a data source and create this sort of dashboard manaually everytime they deploy the application, which can be considered highly inefficient.
+
+`Grafana`'s provisioning system helps users with this problem. With the provisioning system, data sources and dashboards can be defined via config files such as YML and JSON that can be version-controlled with `Git`.
+
+1. To set data sources when deploying `Grafana` with Docker Compose, a YML configuration file can be used. Under `dias_kuksa/utils/cloud/connector-influxdb-grafana-deployment/grafana-provisioning/`, there is `datasources/` with `datasource.yml` inside.
+
+.. figure:: /_images/cloud/datasource.PNG
+    :width: 350
+    :align: center
+
+* `datasource.yml` contains the same information that you use to set a data source manually on the Grafana web-page (Grafana Server > Configuration > Add data source: "InfluxDB", "URL", "Database", "User", "Password"). 
+
+2. Likewise, to set data sources when deploying `Grafana` with Docker Compose, a YML and a JSON configuration files can be used. Under the same `../grafana-provisioning/` directory, there is `dashboards/` with `dashboard.yml` and `nox_map_dashboard.json` inside.
+
+.. figure:: /_images/cloud/dashboard.PNG
+    :width: 350
+    :align: center
+
+* `dashboard.yml` states the name of the data source that dashboards receive data from and the path that the file would be located inside the `Grafana` container when it runs. 
+
+.. figure:: /_images/cloud/nox_map_dashboard_json.PNG
+    :width: 350
+    :align: center
+
+* To create such dashboard JSON file, one needs to create a dashboard manually on Grafana, and export it as a JSON file (Grafana Server > Dashboards > Your_Target_Dashboard > Save dashboard (on the top) > "Save JSON to file"). Then rename it according to your preference. (e.g., `nox_map_dashboard`)
+
+It can be noticed that all configuration files for `Grafana` are located under `../grafana-provisioning/`. This directory would be later used by Docker Compose to provision `Grafana` with data sources and dashboards. Next, the explanation to the Docker Compose configuration file is followed.
 
 
 
@@ -469,11 +503,11 @@ Configuration Setup
 Deployment with Docker Compose
 ******************************
 
-1. Make sure a Bosch-IoT-Hub instance is up and running. If you haven't brought it up, please do it now by following :ref:`cloud-hono`.
+1. Make sure a `Bosch-IoT-Hub` instance is up and running. If you haven't brought it up, please do it now by following :ref:`cloud-hono`.
 
 2. In the `dias-kuksa <https://github.com/junh-ki/dias_kuksa_doc.git>`_ repository, you can find the pre-configured `docker-compose.yml` file. With one command you can deploy all the applications according to the default configuration setting in the file. But there are few things that need to be done by each user.
 
-2-1. In `docker-compose.yml`, change `command` under `connector` on line 22 according to your Bosch-IoT-Hub instance's information::
+2-1. In `docker-compose.yml`, change `command` under `connector` on line 22 according to your `Bosch-IoT-Hub` instance's information::
 
     $ --hono.client.tlsEnabled=true --hono.client.username={$YOUR_MESSAGING_USERNAME} --hono.client.password={$YOUR_MESSAGING_PASSWORD} --tenant.id={$YOUR_TENANT_ID} --export.ip=influxdb:8086
 
@@ -487,6 +521,13 @@ By now, a list of PIDs would be shown on the terminal.
 2-3. Assuming the number of PID that is running on port 8086 is 13886, you can kill the PID with the following command::
 
     $ sudo kill 13886
+
+2-4. Stop `InfluxDB` and `Grafana` if they are already running locally::
+
+    $ sudo service influxdb stop
+    $ sudo service grafana-server stop
+
+* Because they are set to be running on port 8086 and 3000 respectively. Therefore it makes sense to stop them to secure the corresponding ports before running Docker Compose.
 
 3. Now that you have made sure all three ports (8080, 8086 and 3000) are available, navigate to `dias_kuksa/utils/cloud/connector-influxdb-grafana-deployment/` where the `docker-compose.yml` file is located and command the following::
 
@@ -509,7 +550,7 @@ Make sure `Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana` are in the "Up" st
     Email or username: admin
     Password: admin
 
-5-3. You can acccess
+5-3. You can access and monitor the provisioned NOx map dashboard (Dashboards > NOx Map Dashboard). Change the time range according to your preference.
 
 
 
