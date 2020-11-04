@@ -467,7 +467,7 @@ As depicted in the figure, the dashboard contains 6 different panels. Each panel
 
 1. To set data sources when deploying `Grafana` with Docker Compose, a YML configuration file can be used. Under `dias_kuksa/utils/cloud/connector-influxdb-grafana-deployment/grafana-provisioning/`, there is `datasources/` with `datasource.yml` inside.
 
-.. figure:: /_images/cloud/datasource.PNG
+.. figure:: /_images/cloud/datasource_.PNG
     :width: 350
     :align: center
 
