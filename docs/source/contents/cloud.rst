@@ -426,13 +426,12 @@ Installing Docker and Docker Compose
     $ docker run hello-world
 
 .. figure:: /_images/cloud/hello-world.PNG
-    :width: 400
+    :width: 500
     :align: center
 
 * If you cannot see the output above on your terminal, you should log out and log back in to re-evaluate your group membership. Then run `docker run hello-world` again. 
 
-Now you are ready to proceed.
-* **If you only want to test the connectivity with the default DIAS-KUKSA setting, you can directly go to** :ref:`docker-compose-deployment`.
+Now you are ready to proceed. **If you only want to test the connectivity with the default DIAS-KUKSA setting, you can directly go to** :ref:`docker-compose-deployment`.
 
 
 
@@ -487,6 +486,8 @@ This way, the tagged Docker image would be directed to your respository on Docke
 
 
 
+.. _grafana-provisioning:
+
 Configuring a Grafana's Data Source and Dashboard
 *************************************************
 
@@ -529,20 +530,69 @@ It can be noticed that all configuration files for `Grafana` are located under `
 Configuration Setup
 *******************
 
-.. figure:: /_images/cloud/docker-compose.PNG
+.. figure:: /_images/cloud/docker-compose_.PNG
     :width: 500
     :align: center
 
-:ref:`dockerized-connector`
+1. `docker-compose.yml` runs three services (`InfluxDB`, `Hono-InfluxDB-Connector`, `Grafana`) here. Since all three services should be connected to each other, they need to be under the same network. Therefore a user-defined bridge network, `monitor_network`, needs to be configured under every service here::
 
+    networks:
+      - monitor_network
 
+    networks:
+      monitor_network:
 
+2. `Hono-InfluxDB-Connector`(`connector`)  and `Grafana`(`grafana`) have a dependency on `InfluxDB`(`influxdb`). Therefore a dependency needs to be configured under `connector` and `grafana`::
 
-.. figure:: /_images/cloud/docker-compose-connector-command.PNG
-    :width: 1200
+    depends_on:
+      - influxdb
+
+3. Since the `connector` service is just a data intermediary, it doesn't need to be persistent. On the other hand, `influxdb` and `grafana` should be persistent if a user wants to save the accumulated data or metadata even when the services are taken down. Therefore a user-defined volume needs to be configured under each of `influxdb` and `grafana`::
+
+    volumes:
+      - influxdb-storage:/var/lib/influxdb
+
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./grafana-provisioning/:/etc/grafana/provisioning/
+
+    volumes:
+      influxdb-storage:
+      grafana-storage:
+
+Here, `./grafana-provisioning/:/etc/grafana/provisioning/` is additionally added for `grafana`. This is to provision `grafana` with the datasource and dashboard that have been configured in :ref:`grafana-provisioning`. Therefore `docker-compose.yml` finds `grafana-provisioning/` in the current directory and map it to `/etc/grafana/provisioning/` that is in the `grafana` Docker service's file system. Likewise, each of internally defined volumes (`influxdb-storage` and `grafana-storage`) is mapped to the corresponding directory in the target service's file system.
+
+4. The username and password information to connect to each `influxdb` and `grafana` server can also be provided with the `.env` file.
+
+.. figure:: /_images/cloud/env.PNG
+    :width: 200
     :align: center
 
+The information needs to be stated in `docker-compose.yml` as well::
 
+    environment:
+      - INFLUXDB_DB=dias_kuksa_tut
+      - INFLUXDB_ADMIN_USER=${INFLUXDB_USERNAME}
+      - INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_PASSWORD}
+
+    environment:
+      - GF_INSTALL_PLUGINS=natel-plotly-panel # to add plugins
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USERNAME}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+
+* `INFLUXDB_DB=dias_kuksa_tut`: The database is set as `dias_kuksa_tut` because it is the name of the database that `Hono-InfluxDB-Connector` is targetting at.
+
+.. figure:: /_images/cloud/target_database.PNG
+    :width: 400
+    :align: center
+
+* `GF_INSTALL_PLUGINS=natel-plotly-panel`: The NOx Map dashboard that we are trying to provision uses the `natel-plotly-panel` plugin that is not provided by default.
+
+5. The `connector` service needs to be executed with an additional command that specifies the target `Hono` instance's information::
+
+    command: --hono.client.tlsEnabled=true --hono.client.username={$YOUR_MESSAGING_USERNAME} --hono.client.password={$YOUR_MESSAGING_PASSWORD} --tenant.id={$YOUR_TENANT_ID} --export.ip=influxdb:8086
+
+* `export.ip` follows `{$SERVICE_NAME_IN_DOCKER-COMPOSE}:{$PORT_NUMBER_IN_DOCKER-COMPOSE}`. Therefore it is `influxdb:8086`.
 
 
 
@@ -600,23 +650,22 @@ Make sure `Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana` are in the "Up" st
 
 5-3. You can access and monitor the provisioned NOx map dashboard (Dashboards > NOx Map Dashboard). Change the time range according to your preference.
 
-(Additional Docker Compose commands)
+    **In case where the provisioned dashboard is not displayed on the main page, please hover over "Dashboards" on the left-side bar and then go to "Manage". You would be able to see "NOx Map Dashboard" under the "General" folder.**
+
+<Additional Docker Compose commands>
 
 - To stop your services once you have finished with them::
-
     $ docker-compose stop
 
 - To also remove the data volume used by the containers::
-
     $ docker-compose down --volumes
-
 
 
 
 Deployment Option 3 - Azure Kubernetes Service (AKS)
 ####################################################
 
-
+**WORK IN PROGRESS...**
 
 
 
