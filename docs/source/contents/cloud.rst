@@ -374,7 +374,7 @@ Deployment Option 2 - Docker Compose
 * Kubernetes: One difference between Docker Compose and Kubernetes is that Docker Compose runs on a single host, whereas Kubernetes is for running and connecting containers on multiple hosts.
 
 The key point of using Docker is to facilitate automation so that users can deploy the applications in an agile and efficient way.
-To learn all the concepts and basics of Docker and be familiar with them, you can follow `this tutorial <https://docker-curriculum.com/>`_. The subsequent contents are written based on the assumption that readers are familiar with Docker.
+To learn all the concepts and basics of Docker and be familiar with them, you can follow `this tutorial <https://docker-curriculum.com/>`_. **The subsequent contents are written based on the assumption that readers are familiar with Docker.**
 
 In the case of DIAS-KUKSA, there are two deployment options that utilize Docker:
 
@@ -386,22 +386,57 @@ When deploying with Docker Compose, it is assumed that a `Bosch-IoT-Hub` instanc
 On the other hand, AKS includes all the cloud components (`Eclipse Hono`, `Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana`) and runs on multiple hosts, meaning that it can be highly advantageous for commercial distribution that deals with a large amount of data transference involving with a number of connected vehicles. The downside of using AKS is that it costs money since the service is offered by Microsoft Azure and also the deployment configuration is more intricate. Therefore using AKS would be more favorable for commercial distribution rather than a development purpose.
 
 In this part, Docker Compose deployment is closely covered. 
-The contents include: 
-    1. How to modify the `Hono-InfluxDB-Connector` Docker image.
-    2. How to set data sources and dashboards on `Grafana`'s according to your use-case. 
-    3. How to setup `docker-compose.yml` for the KUKSA cloud components (`Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana`)
-    4. How to deploy the KUKSA cloud components with Docker Compose. 
+The contents include:
+    1. How to install Docker and Docker Compose
+    2. How to modify the `Hono-InfluxDB-Connector` Docker image.
+    3. How to set data sources and dashboards on `Grafana`'s according to your use-case. 
+    4. How to setup `docker-compose.yml` for the KUKSA cloud components (`Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana`)
+    5. How to deploy the KUKSA cloud components with Docker Compose. 
 The end-goal here is to deploy these applications as Docker containers as the figure below and establish connectivity among these containerized applications.
 
 .. figure:: /_images/cloud/docker_example.png
     :width: 370
     :align: center
 
-* Follow `this tutorial <https://linuxconfig.org/how-to-install-docker-on-ubuntu-18-04-bionic-beaver>`_ to install Docker.
-* Follow `this tutorial <https://linuxize.com/post/how-to-install-and-use-docker-compose-on-ubuntu-18-04/#:~:text=%20To%20install%20Docker%20Compose%20on%20Ubuntu%2018.04%2C,command%20which%20will%20display%20the%20Compose...%20More%20>`_ to install Docker Compose.
+
+
+Installing Docker and Docker Compose
+************************************
+
+1. Install Docker from the standard Ubuntu repository::
+
+    $ sudo snap install docker
+
+* If you don't install Docker with `snap`, it is possible to face version conflict with Docker Compose.
+* Docker installation with `snap` includes Docker Compose installation.
+
+2. Check the version::
+
+    $ docker --version
+    $ docker-compose --version
+
+3. If you don't want to preface the `docker` command with `sudo`, create the `docker` group and add your user to the `docker` group::
+
+    $ sudo groupadd docker
+    $ sudo usermod -aG docker $USER
+
+4. Activate the changes to groups, then verify that you can run `docker` commands without `sudo`::
+
+    $ newgrp docker
+    $ docker run hello-world
+
+.. figure:: /_images/cloud/hello-world.PNG
+    :width: 400
+    :align: center
+
+* If you cannot see the output above on your terminal, you should log out and log back in to re-evaluate your group membership. Then run `docker run hello-world` again. 
+
+Now you are ready to proceed.
 * **If you only want to test the connectivity with the default DIAS-KUKSA setting, you can directly go to** :ref:`docker-compose-deployment`.
 
 
+
+.. _dockerized-connector:
 
 Modifying and creating a Docker image for Hono-InfluxDB-Connector
 *****************************************************************
@@ -467,7 +502,7 @@ As depicted in the figure, the dashboard contains 6 different panels. Each panel
 
 1. To set data sources when deploying `Grafana` with Docker Compose, a YML configuration file can be used. Under `dias_kuksa/utils/cloud/connector-influxdb-grafana-deployment/grafana-provisioning/`, there is `datasources/` with `datasource.yml` inside.
 
-.. figure:: /_images/cloud/datasource_.PNG
+.. figure:: /_images/cloud/datasource.PNG
     :width: 350
     :align: center
 
@@ -495,12 +530,19 @@ Configuration Setup
 *******************
 
 .. figure:: /_images/cloud/docker-compose.PNG
-    :width: 350
+    :width: 500
     :align: center
 
+:ref:`dockerized-connector`
+
+
+
+
 .. figure:: /_images/cloud/docker-compose-connector-command.PNG
-    :width: 350
+    :width: 1200
     :align: center
+
+
 
 
 
@@ -557,6 +599,17 @@ Make sure `Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana` are in the "Up" st
     Password: admin
 
 5-3. You can access and monitor the provisioned NOx map dashboard (Dashboards > NOx Map Dashboard). Change the time range according to your preference.
+
+(Additional Docker Compose commands)
+
+- To stop your services once you have finished with them::
+
+    $ docker-compose stop
+
+- To also remove the data volume used by the containers::
+
+    $ docker-compose down --volumes
+
 
 
 
