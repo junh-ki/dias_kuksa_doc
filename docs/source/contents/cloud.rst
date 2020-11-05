@@ -431,7 +431,7 @@ Installing Docker and Docker Compose
 
 * If you cannot see the output above on your terminal, you should log out and log back in to re-evaluate your group membership. Then run `docker run hello-world` again. 
 
-Now you are ready to proceed. **If you only want to test the connectivity with the default DIAS-KUKSA setting, you can directly go to** :ref:`docker-compose-deployment`.
+Now you are ready to proceed. **If you only want to test the connectivity with the default DIAS-KUKSA setting, you can directly go to** :ref:`deploy-docker-compose`.
 
 
 
@@ -530,7 +530,7 @@ It can be noticed that all configuration files for `Grafana` are located under `
 Configuration Setup
 *******************
 
-.. figure:: /_images/cloud/docker-compose_.PNG
+.. figure:: /_images/cloud/docker-compose.PNG
     :width: 500
     :align: center
 
@@ -562,7 +562,7 @@ Configuration Setup
 
 Here, `./grafana-provisioning/:/etc/grafana/provisioning/` is additionally added for `grafana`. This is to provision `grafana` with the datasource and dashboard that have been configured in :ref:`grafana-provisioning`. Therefore `docker-compose.yml` finds `grafana-provisioning/` in the current directory and map it to `/etc/grafana/provisioning/` that is in the `grafana` Docker service's file system. Likewise, each of internally defined volumes (`influxdb-storage` and `grafana-storage`) is mapped to the corresponding directory in the target service's file system.
 
-4. The username and password information to connect to each `influxdb` and `grafana` server can also be provided with the `.env` file.
+4. The username and password information to connect to each `influxdb` and `grafana` server can also be provided with the `.env` file. `.env` is in the same directory where `docker-compose.yml` is located and is hidden by default.
 
 .. figure:: /_images/cloud/env.PNG
     :width: 200
@@ -592,11 +592,11 @@ The information needs to be stated in `docker-compose.yml` as well::
 
     command: --hono.client.tlsEnabled=true --hono.client.username={$YOUR_MESSAGING_USERNAME} --hono.client.password={$YOUR_MESSAGING_PASSWORD} --tenant.id={$YOUR_TENANT_ID} --export.ip=influxdb:8086
 
-* `export.ip` follows `{$SERVICE_NAME_IN_DOCKER-COMPOSE}:{$PORT_NUMBER_IN_DOCKER-COMPOSE}`. Therefore it is `influxdb:8086`.
+* `export.ip` follows `{$SERVICE_NAME_IN_DOCKER-COMPOSE-FILE}:{$PORT_NUMBER_IN_DOCKER-COMPOSE-FILE}`. Therefore it is `influxdb:8086`.
 
 
 
-.. _docker-compose-deployment:
+.. _deploy-docker-compose:
 
 Deployment with Docker Compose
 ******************************
