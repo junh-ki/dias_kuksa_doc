@@ -59,7 +59,7 @@ kuksa.val Infrastructure
 
 4. The following commands should be run before `cmake` to avoid possible errors.
 
-4-1 Install `cmake` (version 3.12 or higher) if it hasn't been installed::
+4-1. Install `cmake` (version 3.12 or higher) if it hasn't been installed::
 
     $ sudo apt-get update && sudo apt-get upgrade
 
@@ -144,7 +144,13 @@ kuksa.val - kuksa.val VSS Server Setup
 
     $ git clone https://github.com/junh-ki/dias_kuksa.git
 
-1-4. In the directory, `dias_kuksa/utils/in-vehicle/vss_structure_example/`, the `spec` folder can be found. Replace the existing `spec` folder from `vehicle_signal_specification/` with the one from `dias_kuksa/utils/in-vehicle/vss_structure_example/`. Designing the `spec` folder's file structure can be easily self-explained.
+1-4. In the directory, `dias_kuksa/utils/in-vehicle/vss_structure_example/`, the `spec` folder can be found. Replace the existing `spec` folder from `vehicle_signal_specification/` with the one from `dias_kuksa/utils/in-vehicle/vss_structure_example/`. Designing the `spec` folder's file structure can be easily self-explained. The following figure illustrates what the GENIVI data structure would look like when created with the `spec` folder.
+
+.. figure:: /_images/invehicle/dias_GENIVI_structure.png
+    :width: 1200
+    :align: center
+
+* By modifying the structure of `spec` folder, a user-specific GENIVI data structure can be created that can be fed onto `kuksa-val-server`.
 
 1-5. Before commanding `make`, install python dependencies (anytree, deprecation, stringcase) first::
 
@@ -157,7 +163,7 @@ kuksa.val - kuksa.val VSS Server Setup
 
 1-7. As a result, you can get a JSON file named as `vss_rel_2.0.0-alpha+006.json`. Let's rename this file as `modified.json` for convenience and move it to `kuksa.val/build/src/`, where the `kuksa-val-server` executable file is located.
 
-2. Now we can bring up and run the `kuksa.val` server. Navigate to the directory, `kuksa.val/build/src/`, and command the following::
+2. Now we can bring up and run the `kuksa.val` server with `modified.json`. Navigate to the directory, `kuksa.val/build/src/`, and command the following::
 
     $ ./kuksa-val-server --vss modified.json --insecure --log-level ALL
 
@@ -249,7 +255,7 @@ kuksa.val - cloudfeeder.py Setup
 
 5. Download the server certificate `here <https://docs.bosch-iot-suite.com/hub/general-concepts/certificates.html>`_ and place it to `kuksa.val/clients/vss-testclient/`, where the `cloudfeeder.py` file is located.
 
-6. Before running `cloudfeeder.py`, install dependencies (`mosquitto`, `mosquitto-clients`, `matplotlib` and `pygments` from pip3) first::
+6. Before running `cloudfeeder.py`, install dependencies (`mosquitto`, `mosquitto-clients`, from `apt` and `pygments`, `cmd2` from `pip3`) first::
     
     $ sudo apt-get update
     $ sudo apt-get install mosquitto mosquitto-clients
