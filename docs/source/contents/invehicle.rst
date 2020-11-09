@@ -59,27 +59,21 @@ kuksa.val Infrastructure
 
 4. The following commands should be run before `cmake` to avoid possible errors.
 
-4-1. Install `cmake` if it has been installed::
+4-1 Install `cmake` (version 3.12 or higher) if it hasn't been installed::
 
     $ sudo apt-get update && sudo apt-get upgrade
+
+A. Raspberry-Pi::
+
     $ sudo apt install cmake
 
-* If you are using Ubuntu 18.04.4 and not Raspberry-Pi, follow this `description <https://www.claudiokuenzler.com/blog/796/install-upgrade-cmake-3.12.1-ubuntu-14.04-trusty-alternatives>`_.
+B. Ubuntu::
 
-4-2. Install Boost libraries::
+    $ sudo snap install cmake --classic
 
-    $ sudo apt-get update
-    $ sudo apt-get install cmake libblkid-dev e2fslibs-dev libboost-all-dev libaudit-dev
+4-2. Install dependencies (Boost libraries, OpenSSL, Mosquitto and more)::
 
-4-3. Install OpenSSL::
-
-    $ sudo apt-get update
-    $ sudo apt-get install libssl-dev
-
-4-4. Install Mosquitto library::
-
-    $ sudo apt-get update
-    $ sudo apt-get install libmosquitto-dev
+    $ sudo apt-get install libblkid-dev e2fslibs-dev libboost-all-dev libaudit-dev libssl-dev mosquitto libmosquitto-dev
 
 5. You can `cmake` now. Navigate to `kuksa.val/build/` and command the following::
 
@@ -154,6 +148,7 @@ kuksa.val - kuksa.val VSS Server Setup
 
 1-5. Before commanding `make`, install python dependencies (anytree, deprecation, stringcase) first::
 
+    $ sudo apt install python3-pip
     $ pip3 install anytree deprecation stringcase
 
 1-6. Navigate to the directory, `vehicle_signal_specification/`, and command `make` to create a new JSON file::
@@ -166,7 +161,7 @@ kuksa.val - kuksa.val VSS Server Setup
 
     $ ./kuksa-val-server --vss modified.json --insecure --log-level ALL
 
-* The `kuksa.val` server is entirely passive. Which means that you would need supplementary applications to feed and fetch the data. In the following `dbcfeeder.py` and `cloudfeeder.py` are introduced. They are meant to deal with setting and getting the data from the `kuksa.val` server.
+* The `kuksa.val` server is entirely passive. Which means that you would need supplementary applications to feed and fetch the data. `dbcfeeder.py` and `cloudfeeder.py` are introduced in the following contents. They are meant to deal with setting and getting the data from the `kuksa.val` server.
 
 
 
@@ -191,17 +186,17 @@ kuksa.val - dbcfeeder.py Setup
 
 	$ git clone https://github.com/junh-ki/dias_kuksa.git
 
-2. Navigate to the directory, `dias_kuksa/utils/in-vehicle/dbcfeeder_example_arguments/`, and copy `dias_mapping.yml` and `dias_simple.dbc` to `kuksa.val/examples/dbc2val/` where `dbcfeeder.py` is located.
+2. Navigate to the directory, `dias_kuksa/utils/in-vehicle/dbcfeeder_example_arguments/`, and copy `dias_mapping.yml` and `dias_simple.dbc` *(omitted due to the copyright issue and thus shared on request)* to `kuksa.val/clients/feeder/dbc2val/` where `dbcfeeder.py` is located.
 
 3. Before running `dbcfeeder.py`, install python dependencies (python-can cantools serial) first::
 
-	$ pip3 install python-can cantools serial
+	$ pip3 install python-can cantools serial websockets
 
 4. If you haven't brought up a virtual CAN interface, `vcan0`, please do it now by following :ref:`virtual-can`.
 
-5. Navigate to `kuksa.val/examples/dbc2val/`, and command the following::
+5. Navigate to `kuksa.val/clients/feeder/dbc2val/`, and command the following::
 
-	$ python3 dbcfeeder.py -d vcan0 -j ../../certificates/jwt/super-admin.json.token --dbc dias_simple.dbc --mapping dias_mapping.yml
+	$ python3 dbcfeeder.py -d vcan0 -j ../../../certificates/jwt/super-admin.json.token --dbc dias_simple.dbc --mapping dias_mapping.yml
 
 
 
@@ -224,11 +219,11 @@ kuksa.val - cloudfeeder.py Setup
 	* Server Certificate File (MQTT TLS Encryption) (e.g., "iothub.crt") / `-c` or `--cafile`
 	* Data Type (e.g., "telemetry" or "event") / "-t" or "--type"
 
-1. (Optional) `preprocessor_bosch.py` is designed to follow Bosch's diagnostic methodologies. Therefore you can create your own `preprocessor_xxx.py` that replaces `preprocessor_bosch.py` to follow your own purpose. Of course, the corresponding lines in `cloudfeeder.py` should be modified as well in this case.
+1. (Optional) `preprocessor_bosch.py` is designed to follow Bosch's diagnostic methodologies. Therefore you can create your own `preprocessor_xxx.py` or modify `preprocessor_example.py` that replaces `preprocessor_bosch.py` to follow your own purpose. Of course, the corresponding lines in `cloudfeeder.py` should be modified as well in this case.
 
-2. Navigate to `dias_kuksa/utils/in-vehicle/cloudfeeder_telemetry/`, copy `cloudfeeder.py` and `preprocessor_bosch.py` (or your own `preprocessor_xxx.py`) to `kuksa.val/vss-testclient/`, where the `testclient.py` file is located.
+2. Navigate to `dias_kuksa/utils/in-vehicle/cloudfeeder_telemetry/`, copy `cloudfeeder.py` and `preprocessor_example.py` to `kuksa.val/clients/vss-testclient/`, where the `testclient.py` file is located.
 
-3. Then the `do_getValue(self, args)` function from `kuksa.val/vss-testclient/testclient.py` should be modified as below.
+3. Then the `do_getValue(self, args)` function from `kuksa.val/clients/vss-testclient/testclient.py` should be modified as below.
 
 .. code-block:: python
 
@@ -252,18 +247,17 @@ kuksa.val - cloudfeeder.py Setup
 
 4. Due to its dependency on the cloud instance information, you should create either a Eclipse Hono or a Bosch-IoT-Hub instance first by following :ref:`cloud-hono`, so that you can get the required information for running `cloudfeeder.py` ready.
 
-5. Download the server certificate `here <https://docs.bosch-iot-suite.com/hub/general-concepts/certificates.html>`_ and move it to `kuksa.val/vss-testclient/`, where the `cloudfeeder.py` file is located.
+5. Download the server certificate `here <https://docs.bosch-iot-suite.com/hub/general-concepts/certificates.html>`_ and place it to `kuksa.val/clients/vss-testclient/`, where the `cloudfeeder.py` file is located.
 
-6. Before running `cloudfeeder.py`, install dependencies (`mosquitto`, `mosquitto-clients`, `matplotlib`) first::
+6. Before running `cloudfeeder.py`, install dependencies (`mosquitto`, `mosquitto-clients`, `matplotlib` and `pygments` from pip3) first::
     
     $ sudo apt-get update
-    $ sudo apt-get install mosquitto
-    $ sudo apt-get install mosquitto-clients
-    $ pip3 install matplotlib
+    $ sudo apt-get install mosquitto mosquitto-clients
+    $ pip3 install pygments cmd2
 
-7. When all the required information is ready, navigate to `kuksa.val/vss-testclient/`, and run `cloudfeeder.py` by commanding::
+7. When all the required information is ready, navigate to `kuksa.val/clients/vss-testclient/`, and run `cloudfeeder.py` by commanding::
 
-	$ python3 cloudfeeder.py --host {host_url} -p {port_number} -u {username}@{tenant-id} -P {password} -c {server_certificate_file} -t {transmission_type}
+	$ python3 cloudfeeder.py --host {host_url} -p {port_number} -u {auth-id}@{tenant-id} -P {password} -c {server_certificate_file} -t {transmission_type}
 
 * Just a reminder, the information between `{}` should be different depending on the target Hono instance. You can follow :ref:`cloud-hono` to create a Hono instance.
 
@@ -285,4 +279,4 @@ kuksa.val - cloudfeeder.py Setup
     Enter the authorization token:
     eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJrdWtzYS52YWwiLCJpc3MiOiJFY2xpcHNlIEtVS1NBIERldiIsImFkbWluIjp0cnVlLCJtb2RpZnlUcmVlIjp0cnVlLCJpYXQiOjE1MTYyMzkwMjIsImV4cCI6MTYwNjIzOTAyMiwia3Vrc2EtdnNzIjp7IioiOiJydyJ9fQ.XJ51r3dd3S7DX7ekzFDF9kHEss__voK8Fgs7DDeSPa1lw51S8l59TKiYj2isHvc7RxG6zbKGSY12UbYqsJW62CNQMQVJw0IupczpdFkuv9-nesvmhMrV40vupe2YD9ruuY-DK8WgY7ti7us6kJ4DYhbMOjtiB8hYaVwiSOdn4r8uWTghbleF9fc6Lvi_igM-lopZU8VZmQCIB5koFRJ-Z7HFg2ZjaD5SX2mWhE2ZhXE07CKpv0aplqlqtqBCf38zQ7Nk05YliNIijhvT35Ge0OL4B4fqeixXbpRkAUBlhy5f0oypeBnBr3XaM7akJa1W91H8ANj_mdELIATXfEfEzxD9dd8YvQZi43vVF3KYIJLL09EIAGKKccom4l7XJORiTKcQt4EfSh1I2IYhsZSB8uNwIEPx7h8HqUDXp6y_eBdy13W48hnT4hJ5HH0hTfIE5VEPTJPmlPlX1coGgFa8zXmL85uElgHUJwL_3PbFB_O8wqy0fiXayqOa09bjUbX3ux3BGZI6Lji2o0q8JW6OHCW4YilhgyfJC3m4kZAxe1S1IGQVQXBlq0JHmPFkJmf3BClPAhBh1tpPpSwz8ppuGZ85asRnkDH2sYoMWjandO1s_oKskplPESGQ3h1lyU9fLvpp_0yJSlrv07CnzKLeXKS8QYiO30YbkTCdGxlSae8
 
-* If you have successuly made it here, you would see `cloudfeeder.py` fetching and transmitting the data every 1~2 seconds now. 
+* If you have successuly made it here, you would be able to see `cloudfeeder.py` fetching and transmitting the data every 1~2 seconds by now. 

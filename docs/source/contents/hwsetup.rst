@@ -44,7 +44,11 @@ CAN Interface Option 1 - Virtual CAN (Logfile Simulation Purpose)
     $ sudo ip link add dev vcan0 type vcan
     $ sudo ip link set up vcan0
 
-2. Now you should be able to see the interface, `vcan0`, when commanding::
+2. Install `net-tools` to use `ifconfig`::
+
+    $ sudo apt install net-tools
+
+3. Now you should be able to see the interface, `vcan0`, when commanding::
 
     $ ifconfig
 
