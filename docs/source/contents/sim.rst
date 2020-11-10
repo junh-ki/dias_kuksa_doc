@@ -25,7 +25,7 @@ Since `canplayer` from the `can-utils` library only takes the .log format, the e
 
 2. `canplayer` can be run in the same in-vehicle machine (e.g., your Raspberry-Pi). Therefore you should be in your Raspberry-Pi to proceed further.
 
-3. Navigate to `dias_kuksa/utils/canplayer/` where `asc2log_channel_separator.py` with two .asc files are located.
+3. Navigate to `dias_kuksa/utils/canplayer/` where `asc2log_channel_separator.py` with two .asc files *(omitted due to the copyright issue and thus shared on request)* are located.
 
 4. `otosan_can0-30092020.asc` is logged with CAN channel 0 while `otosan_can2-30092020.asc` with channel 2 from the Ford Otosan truck.
 

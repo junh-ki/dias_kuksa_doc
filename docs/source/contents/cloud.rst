@@ -107,7 +107,7 @@ If the server responses with a code 201, it means that new credentials have been
 
     * Host URL: "mqtt.bosch-iot-hub.com"
     * Protocol Port Number: "8883"
-    * Credential Authorization Username (e.g., "{username}@{tenant-id}"): "pc01@td23aec9b9335415594a30c7113f3a266"
+    * Credential Authorization Username (e.g., "{auth-id}@{tenant-id}"): "pc01@td23aec9b9335415594a30c7113f3a266"
     * Credential Authorization Password: "kuksatutisfun01"
     * Server Certificate File: "`iothub.crt <https://docs.bosch-iot-suite.com/hub/general-concepts/certificates.html>`_"
     * Data Type: "telemetry"
