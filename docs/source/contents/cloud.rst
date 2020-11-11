@@ -400,6 +400,8 @@ The end-goal here is to deploy these applications as Docker containers as the fi
 
 
 
+.. _docker-compose-install:
+
 Installing Docker and Docker Compose
 ************************************
 
@@ -419,17 +421,18 @@ Installing Docker and Docker Compose
 
     $ sudo groupadd docker
     $ sudo usermod -aG docker $USER
-
-4. Activate the changes to groups, then verify that you can run `docker` commands without `sudo`::
-
     $ newgrp docker
+
+4. Log out and log back in to re-evaluate your group membership.
+
+5. Run `docker` commands without `sudo` to verify that the changes have been applied::
+
+    
     $ docker run hello-world
 
 .. figure:: /_images/cloud/hello-world.PNG
     :width: 500
     :align: center
-
-* If you cannot see the output above on your terminal, you should log out and log back in to re-evaluate your group membership. Then run `docker run hello-world` again. 
 
 Now you are ready to proceed. **If you only want to test the connectivity with the default DIAS-KUKSA setting, you can directly go to** :ref:`deploy-docker-compose`.
 
@@ -488,26 +491,26 @@ This way, the tagged Docker image would be directed to your respository on Docke
 
 .. _grafana-provisioning:
 
-Configuring a Grafana's Data Source and Dashboard
-*************************************************
+Configuring a Grafana's Data Source, Dashboard and Notifier
+***********************************************************
 
-Manually synchronizing `Grafana` with the `InfluxDB` data source and creating a `Grafana` dashboard for several Docker hosts can take a lot of work especially when the dashboard contains several panels. The following `Grafana` dashboard example is used for the NOx map analysis part from Bosch's DIAS-KUKSA implementation.
+Manually synchronizing `Grafana` with `InfluxDB` as a data source, creating a dashboard with several panels and setting a notifier via Email in `Grafana` for several Docker hosts (Virtual Machines) can take a lot of handwork. The following `Grafana` dashboard example is used for the NOx map analysis part from Bosch's DIAS-KUKSA implementation.
 
-.. figure:: /_images/cloud/nox_map_dashboard.PNG
+.. figure:: /_images/cloud/nox-map-dashboard.PNG
     :width: 1200
     :align: center
 
-As depicted in the figure, the dashboard contains 6 different panels. Each panel has a unique title and is set to detect certain metrics that come from `InfluxDB`. The dashboard is simply designed to accommodate a specific type of messages sent by `Hono-InfluxDB-Connector` conforming its intended purpose. Since the `Grafana Docker image <https://hub.docker.com/r/grafana/grafana/>`_ is offered without any pre-configured dashboard options, it could be easily presumed that users might have to set a data source and create this sort of dashboard manaually everytime they deploy the application, which can be considered highly inefficient.
+As depicted in the figure, the dashboard contains 7 different panels. Each of 6 scatter-plotly panels has a unique title and is set to detect certain metrics that come from the `InfluxDB` data source. The last panel is to measure the cumulative sampling time of data collection. The dashboard is simply designed to accommodate a specific type of messages sent by `Hono-InfluxDB-Connector` conforming its intended purpose. Since the `Grafana Docker image <https://hub.docker.com/r/grafana/grafana/>`_ is offered without any pre-configured panel options, it could be easily presumed that users might have to set a data source and create this sort of panels manaually everytime they deploy the application, which can be considered significantly inefficient.
 
-`Grafana`'s provisioning system helps users with this problem. With the provisioning system, data sources and dashboards can be defined via config files such as YML and JSON that can be version-controlled with `Git`.
+`Grafana`'s provisioning system helps users with this problem. With the provisioning system, data sources, dashboards and notifiers can be defined via config files such as YML and JSON that can be version-controlled with `Git`.
 
-1. To set data sources when deploying `Grafana` with Docker Compose, a YML configuration file can be used. Under `dias_kuksa/utils/cloud/connector-influxdb-grafana-deployment/grafana-provisioning/`, there is `datasources/` with `datasource.yml` inside.
+1. To set data sources when deploying `Grafana` with Docker Compose, a YML configuration file can be used. Under `dias_kuksa/utils/cloud/connector-influxdb-grafana-deployment/grafana_config/grafana-provisioning/`, there is `datasources/` with `datasource.yml` inside.
 
 .. figure:: /_images/cloud/datasource.PNG
     :width: 350
     :align: center
 
-* `datasource.yml` contains the same information that you use to set a data source manually on the Grafana web-page (Grafana Server > Configuration > Add data source: "InfluxDB", "URL", "Database", "User", "Password"). 
+* `datasource.yml` contains the same information used to set a data source manually on the Grafana web-page (Grafana Server > Configuration > Add data source: "InfluxDB", "URL", "Database", "User", "Password"). 
 
 2. Likewise, to set data sources when deploying `Grafana` with Docker Compose, a YML and a JSON configuration files can be used. Under the same `../grafana-provisioning/` directory, there is `dashboards/` with `dashboard.yml` and `nox_map_dashboard.json` inside.
 
@@ -521,16 +524,42 @@ As depicted in the figure, the dashboard contains 6 different panels. Each panel
     :width: 350
     :align: center
 
-* To create such dashboard JSON file, one needs to create a dashboard manually on Grafana, and export it as a JSON file (Grafana Server > Dashboards > Your_Target_Dashboard > Save dashboard (on the top) > "Save JSON to file"). Then rename it according to your preference. (e.g., `nox_map_dashboard`)
+* To create such dashboard JSON file, one needs to create a dashboard manually on Grafana, and export it as a JSON file (Grafana Server > Dashboards > Your_Target_Dashboard > Save dashboard (on the top) > "Save JSON to file"). Then rename it according to your preference. (e.g., `nox_map_dashboard.json`)
 
-It can be noticed that all configuration files for `Grafana` are located under `../grafana-provisioning/`. This directory would be later used by Docker Compose to provision `Grafana` with data sources and dashboards. Next, the explanation to the Docker Compose configuration file is followed.
+3. As stated earlier, the last panel with the title of "Cumulative Bin Sampling Time" keeps track of the cumulative sampling time of data collection. If the point of evaluation is set to 10 hours, the threshold of the panel for notification would be 36000 considering sampling is done every second (10h = 600m = 36000s) approximately. When it finally reaches the threshold, Grafana would send a message to the registered email to notify the user that it is time to evaluate which can be done by setting `notifier.yml` in `../grafana-provisioning/notifiers/`.
+
+.. figure:: /_images/cloud/notifier.PNG
+    :width: 350
+    :align: center
+
+* `notifier.yml` states the type of notifier (e.g., Email, Slack, Line, etc...) and the receiver's addresses in case when Email is chosen as the notifier type. If there are more than one receivers, multiple addresses can be added with semi colons that separate email addresses as shown in the screenshot. The result can be checked in `Alerting > Notification Channels` in the Grafana web-server page.
+
+.. figure:: /_images/cloud/alert_rules.PNG
+    :width: 700
+    :align: center
+
+.. figure:: /_images/cloud/sent_email.PNG
+    :width: 700
+    :align: center
+
+* Now that you have set a notifier, you have to set an alert rule for you to receive a message from Grafana in a certain condition. The first screenshot above shows a condition that the alert is triggered when the query A, `cumulative_time`, is above 300. The second screenshot above shows the kind of message a receiver would receive via Email if the condition is met.
+
+.. figure:: /_images/cloud/grafana_ini.PNG
+    :width: 400
+    :align: center
+
+* `grafana.ini` needs to be configured to enable SMTP (Simple Mail Transfer Protocol). Simply speaking, this is to set a sender's Email account. In the case of Gmail, the address of SMTP host server is `smtp.gmail.com:465` (Click `here <https://domar.com/smtp_pop3_server>`_ to learn more about SMTP servers). Then set the sender's Email address, `user`, and password, `password`. To use a Gmail account, one needs to have 2FA enabled for the account and then create an APP password for `password` (Click `here <https://support.google.com/mail/answer/185833?hl=en-GB>`_ to find more about the APP password). `from_address` and `from_name` are set to change the sender's information in the receiver's perspective.
+
+    * At the time of writing this documentation, only the graph panel visualization supports alerts as stated `here <https://grafana.com/docs/grafana/latest/alerting/alerts-overview/>`_.
+
+It can be noticed that all configuration files for `Grafana` are located under `../grafana_config/grafana-provisioning/` and `../grafana_config/`. These directories would later be used by Docker Compose to provision `Grafana` with data sources, dashboards and notifiers. Next, the explanation to the Docker Compose configuration file is followed.
 
 
 
 Configuration Setup
 *******************
 
-.. figure:: /_images/cloud/docker-compose.PNG
+.. figure:: /_images/cloud/docker-compose_yml.PNG
     :width: 500
     :align: center
 
@@ -554,17 +583,18 @@ Configuration Setup
 
     volumes:
       - grafana-storage:/var/lib/grafana
+      - ./grafana_config/grafana.ini:/etc/grafana/grafana.ini
       - ./grafana-provisioning/:/etc/grafana/provisioning/
 
     volumes:
       influxdb-storage:
       grafana-storage:
 
-Here, `./grafana-provisioning/:/etc/grafana/provisioning/` is additionally added for `grafana`. This is to provision `grafana` with the datasource and dashboard that have been configured in :ref:`grafana-provisioning`. Therefore `docker-compose.yml` finds `grafana-provisioning/` in the current directory and map it to `/etc/grafana/provisioning/` that is in the `grafana` Docker service's file system. Likewise, each of internally defined volumes (`influxdb-storage` and `grafana-storage`) is mapped to the corresponding directory in the target service's file system.
+Here, `./grafana_config/grafana.ini:/etc/grafana/grafana.ini` and `./grafana-provisioning/:/etc/grafana/provisioning/` are additionally added for `grafana`. These are to provision `grafana` with the datasource, dashboard and notifier that have been configured in :ref:`grafana-provisioning`. Therefore `docker-compose.yml` finds `grafana_config/grafana.ini` and `grafana-provisioning/` in the current directory and map them to `/etc/grafana/grafana.ini` and `/etc/grafana/provisioning/` respectively that are in the `grafana` Docker service's file system. Likewise, each of internally defined volumes (`influxdb-storage` and `grafana-storage`) are mapped to the corresponding directory in the target service's file system.
 
-4. The username and password information to connect to each `influxdb` and `grafana` server can also be provided with the `.env` file. `.env` is in the same directory where `docker-compose.yml` is located and is hidden by default.
+4. The information of username and password to connect to each `influxdb` and `grafana` server, and that of the target `Bosch-IoT-Hub` instance can be provided for the `connector` service with the `.env` file as they can be dynamic depending on the user. `.env` is in the same directory where `docker-compose.yml` is located and is hidden by default.
 
-.. figure:: /_images/cloud/env.PNG
+.. figure:: /_images/cloud/env_file.PNG
     :width: 200
     :align: center
 
@@ -574,6 +604,8 @@ The information needs to be stated in `docker-compose.yml` as well::
       - INFLUXDB_DB=dias_kuksa_tut
       - INFLUXDB_ADMIN_USER=${INFLUXDB_USERNAME}
       - INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_PASSWORD}
+
+    command: --hono.client.tlsEnabled=true --hono.client.username=messaging@${HONO_TENANTID} --hono.client.password=${HONO_MESSAGINGPW} --tenant.id=${HONO_TENANTID} --export.ip=influxdb:8086
 
     environment:
       - GF_INSTALL_PLUGINS=natel-plotly-panel # to add plugins
@@ -586,13 +618,8 @@ The information needs to be stated in `docker-compose.yml` as well::
     :width: 400
     :align: center
 
-* `GF_INSTALL_PLUGINS=natel-plotly-panel`: The NOx Map dashboard that we are trying to provision uses the `natel-plotly-panel` plugin that is not provided by default.
-
-5. The `connector` service needs to be executed with an additional command that specifies the target `Hono` instance's information::
-
-    command: --hono.client.tlsEnabled=true --hono.client.username={$YOUR_MESSAGING_USERNAME} --hono.client.password={$YOUR_MESSAGING_PASSWORD} --tenant.id={$YOUR_TENANT_ID} --export.ip=influxdb:8086
-
 * `export.ip` follows `{$SERVICE_NAME_IN_DOCKER-COMPOSE-FILE}:{$PORT_NUMBER_IN_DOCKER-COMPOSE-FILE}`. Therefore it is `influxdb:8086`.
+* `GF_INSTALL_PLUGINS=natel-plotly-panel`: The NOx Map dashboard that we are trying to provision uses the `natel-plotly-panel` plugin that is not provided by default.
 
 
 
@@ -603,59 +630,59 @@ Deployment with Docker Compose
 
 1. Make sure a `Bosch-IoT-Hub` instance is up and running. If you haven't brought it up, please do it now by following :ref:`cloud-hono`.
 
-2. In the `dias-kuksa <https://github.com/junh-ki/dias_kuksa_doc.git>`_ repository, you can find the pre-configured `docker-compose.yml` file. With one command you can deploy all the applications according to the default configuration setting in the file. But there are few things that need to be done by each user.
+2. Make sure you have Docker and Docker Compose installed in your machine. If you haven't installed, please do it now by following :ref:`docker-compose-install`.
 
-2-1. In `docker-compose.yml`, change `command` under `connector` on line 22 according to your `Bosch-IoT-Hub` instance's information::
+3. In the `dias_kuksa <https://github.com/junh-ki/dias_kuksa>`_ repository, you can find the `docker-compose.yml` file in 'dias_kuksa/utils/cloud/connector-influxdb-grafana-deployment/'. With one command you can deploy all the applications according to the pre-configured setting in the file. But there are few things that need to be done by each user.
 
-    $ --hono.client.tlsEnabled=true --hono.client.username={$YOUR_MESSAGING_USERNAME} --hono.client.password={$YOUR_MESSAGING_PASSWORD} --tenant.id={$YOUR_TENANT_ID} --export.ip=influxdb:8086
+3-1. In `.env`, change `HONO_TENANTID` and `HONO_MESSAGINGPW` according to your `Bosch-IoT-Hub` instance's credentials.
 
-2-2. According to `docker-compose.yml`, `InfluxDB` and `Grafana` are deployed on port 8086 and 3000 respectively. Therefore the corresponding ports should be available before running Docker Compose. To see the availability of a certain port, one can use `net-tools`. With this, one can also kill any service that is running on a certain port to make it available for the target application. Install `net-tools` and list PIDs on port 8086 (Connector - 8080, InfluxDB - 8086, Grafana - 3000)::
+3-2. According to `docker-compose.yml`, `influxDB`, `connector` and `grafana` are deployed on port 8086, 8080 and 3000 respectively. Therefore the corresponding ports should be available before running Docker Compose. To see the availability of a certain port, one can use `net-tools`. With this, one can also kill any service that is running on a certain port to make it available for the target application. Install `net-tools` and list PIDs on port 8086 (InfluxDB - 8086, Connector - 8080, Grafana - 3000)::
 
     $ sudo apt install net-tools
     $ sudo netstat -anp tcp | grep 8086
 
 By now, a list of PIDs would be shown on the terminal.
 
-2-3. Assuming the number of PID that is running on port 8086 is 13886, you can kill the PID with the following command::
+3-3. Assuming the number of PID that is running on port 8086 is 13886, you can kill the PID with the following command::
 
     $ sudo kill 13886
 
-2-4. Stop `InfluxDB` and `Grafana` if they are already running locally::
+3-4. Stop `InfluxDB` and `Grafana` if they are already running locally without using Docker::
 
     $ sudo service influxdb stop
     $ sudo service grafana-server stop
 
-* Because they are set to be running on port 8086 and 3000 respectively. Therefore it makes sense to stop them to secure the corresponding ports before running Docker Compose.
+* Because they are set to be running on port 8086, 8080 and 3000 respectively, it makes sense to stop them to secure the corresponding ports before running Docker Compose.
 
-3. Now that you have made sure all three ports (8080, 8086 and 3000) are available, navigate to `dias_kuksa/utils/cloud/connector-influxdb-grafana-deployment/` where the `docker-compose.yml` file is located and command the following::
+4. Now that you have made sure all three ports (8080, 8086 and 3000) are available, navigate to `dias_kuksa/utils/cloud/connector-influxdb-grafana-deployment/` where the `docker-compose.yml` file is located and command the following::
 
     $ docker-compose up -d
 
 If there is no error output, you have successfully deployed all applications configured in the `docker-compose.yml` file. 
 
-4. Double-check whether three containers are created and working properly::
+5. Double-check whether three containers are created and working properly::
 
     $ docker ps
 
 Make sure `Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana` are in the "Up" status.
 
-5. Now you should be able to access to the Grafana server through a web-browser. 
+6. Now you should be able to access to the Grafana server through a web-browser. 
 
-5-1. Open a browser and access to `http://localhost:3000/`.
+6-1. Open a browser and access to `http://0.0.0.0:3000/`.
 
-5-2. Log in with the admin account::
+6-2. Log in with the admin account::
 
     Email or username: admin
     Password: admin
 
-5-3. You can access and monitor the provisioned NOx map dashboard (Dashboards > NOx Map Dashboard). Change the time range according to your preference.
+6-3. You can access and monitor the provisioned NOx map dashboard (Dashboards > NOx Map Dashboard). Change the time range according to your preference.
 
     **In case where the provisioned dashboard is not displayed on the main page, please hover over "Dashboards" on the left-side bar and then go to "Manage". You would be able to see "NOx Map Dashboard" under the "General" folder.**
 
 <Additional Docker Compose commands>
 
 - To stop your services once you have finished with them::
-    $ docker-compose stop
+    $ docker-compose down
 
 - To also remove the data volume used by the containers::
     $ docker-compose down --volumes
@@ -665,7 +692,7 @@ Make sure `Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana` are in the "Up" st
 Deployment Option 3 - Azure Kubernetes Service (AKS)
 ####################################################
 
-**WORK IN PROGRESS...**
+* **WORK IN PROGRESS...** *
 
 
 

@@ -147,7 +147,7 @@ kuksa.val - kuksa.val VSS Server Setup
 1-4. In the directory, `dias_kuksa/utils/in-vehicle/vss_structure_example/`, the `spec` folder can be found. Replace the existing `spec` folder from `vehicle_signal_specification/` with the one from `dias_kuksa/utils/in-vehicle/vss_structure_example/`. Designing the `spec` folder's file structure can be easily self-explained. The following figure illustrates what the GENIVI data structure would look like when created with the `spec` folder.
 
 .. figure:: /_images/invehicle/dias_GENIVI_structure.png
-    :width: 1200
+    :width: 700
     :align: center
 
 * By modifying the structure of `spec` folder, a user-specific GENIVI data structure can be created that can be fed onto `kuksa-val-server`.
