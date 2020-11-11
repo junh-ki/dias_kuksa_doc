@@ -497,7 +497,7 @@ Configuring a Grafana's Data Source, Dashboard and Notifier
 Manually synchronizing `Grafana` with `InfluxDB` as a data source, creating a dashboard with several panels and setting a notifier via Email in `Grafana` for several Docker hosts (Virtual Machines) can take a lot of handwork. The following `Grafana` dashboard example is used for the NOx map analysis part from Bosch's DIAS-KUKSA implementation.
 
 .. figure:: /_images/cloud/nox-map-dashboard.PNG
-    :width: 1200
+    :width: 1000
     :align: center
 
 As depicted in the figure, the dashboard contains 7 different panels. Each of 6 scatter-plotly panels has a unique title and is set to detect certain metrics that come from the `InfluxDB` data source. The last panel is to measure the cumulative sampling time of data collection. The dashboard is simply designed to accommodate a specific type of messages sent by `Hono-InfluxDB-Connector` conforming its intended purpose. Since the `Grafana Docker image <https://hub.docker.com/r/grafana/grafana/>`_ is offered without any pre-configured panel options, it could be easily presumed that users might have to set a data source and create this sort of panels manaually everytime they deploy the application, which can be considered significantly inefficient.
@@ -529,23 +529,23 @@ As depicted in the figure, the dashboard contains 7 different panels. Each of 6 
 3. As stated earlier, the last panel with the title of "Cumulative Bin Sampling Time" keeps track of the cumulative sampling time of data collection. If the point of evaluation is set to 10 hours, the threshold of the panel for notification would be 36000 considering sampling is done every second (10h = 600m = 36000s) approximately. When it finally reaches the threshold, Grafana would send a message to the registered email to notify the user that it is time to evaluate which can be done by setting `notifier.yml` in `../grafana-provisioning/notifiers/`.
 
 .. figure:: /_images/cloud/notifier.PNG
-    :width: 350
+    :width: 500
     :align: center
 
 * `notifier.yml` states the type of notifier (e.g., Email, Slack, Line, etc...) and the receiver's addresses in case when Email is chosen as the notifier type. If there are more than one receivers, multiple addresses can be added with semi colons that separate email addresses as shown in the screenshot. The result can be checked in `Alerting > Notification Channels` in the Grafana web-server page.
 
 .. figure:: /_images/cloud/alert_rules.PNG
-    :width: 700
+    :width: 800
     :align: center
 
 .. figure:: /_images/cloud/sent_email.PNG
-    :width: 700
+    :width: 800
     :align: center
 
 * Now that you have set a notifier, you have to set an alert rule for you to receive a message from Grafana in a certain condition. The first screenshot above shows a condition that the alert is triggered when the query A, `cumulative_time`, is above 300. The second screenshot above shows the kind of message a receiver would receive via Email if the condition is met.
 
 .. figure:: /_images/cloud/grafana_ini.PNG
-    :width: 400
+    :width: 600
     :align: center
 
 * `grafana.ini` needs to be configured to enable SMTP (Simple Mail Transfer Protocol). Simply speaking, this is to set a sender's Email account. In the case of Gmail, the address of SMTP host server is `smtp.gmail.com:465` (Click `here <https://domar.com/smtp_pop3_server>`_ to learn more about SMTP servers). Then set the sender's Email address, `user`, and password, `password`. To use a Gmail account, one needs to have 2FA enabled for the account and then create an APP password for `password` (Click `here <https://support.google.com/mail/answer/185833?hl=en-GB>`_ to find more about the APP password). `from_address` and `from_name` are set to change the sender's information in the receiver's perspective.
@@ -595,7 +595,7 @@ Here, `./grafana_config/grafana.ini:/etc/grafana/grafana.ini` and `./grafana-pro
 4. The information of username and password to connect to each `influxdb` and `grafana` server, and that of the target `Bosch-IoT-Hub` instance can be provided for the `connector` service with the `.env` file as they can be dynamic depending on the user. `.env` is in the same directory where `docker-compose.yml` is located and is hidden by default.
 
 .. figure:: /_images/cloud/env_file.PNG
-    :width: 200
+    :width: 400
     :align: center
 
 The information needs to be stated in `docker-compose.yml` as well::
@@ -615,7 +615,7 @@ The information needs to be stated in `docker-compose.yml` as well::
 * `INFLUXDB_DB=dias_kuksa_tut`: The database is set as `dias_kuksa_tut` because it is the name of the database that `Hono-InfluxDB-Connector` is targetting at.
 
 .. figure:: /_images/cloud/target_database.PNG
-    :width: 400
+    :width: 500
     :align: center
 
 * `export.ip` follows `{$SERVICE_NAME_IN_DOCKER-COMPOSE-FILE}:{$PORT_NUMBER_IN_DOCKER-COMPOSE-FILE}`. Therefore it is `influxdb:8086`.
