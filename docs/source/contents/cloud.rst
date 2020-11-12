@@ -3,7 +3,7 @@ Step 3: Cloud Setup
 *******************
 
 .. figure:: /_images/cloud/cloud_schema.png
-    :width: 1200
+    :width: 800
     :align: center
 
 
@@ -18,7 +18,7 @@ kuksa.cloud - Eclipse Hono (Cloud Entry)
 ****************************************
 
 .. figure:: /_images/cloud/cloud_hono.png
-    :width: 1200
+    :width: 800
     :align: center
 
 .. figure:: /_images/cloud/eclipse-hono.png
@@ -122,7 +122,7 @@ kuksa.cloud - InfluxDB (Time Series Database)
 *********************************************
 
 .. figure:: /_images/cloud/cloud_influxdb.png
-    :width: 1200
+    :width: 800
     :align: center
 
 Now that we have set up a Hono instance, `cloudfeeder.py` can send the telemetry data to Hono every one to two seconds. Hono may be able to collect all the data from its connected vehicles. However, Hono is not a database, meaning that it doesn't store all the collected data in itself. This also means that we have to hire a time series database manager that can collect and store the data received by Hono in chronological order.
@@ -217,7 +217,7 @@ dias_kuksa - Hono-InfluxDB-Connector
 ************************************
 
 .. figure:: /_images/cloud/cloud_hono-influxdb-connector.png
-    :width: 1200
+    :width: 800
     :align: center
 
 Now that Hono and InfluxDB are set up, we need a connector application to transmit the incoming data from Hono to InfluxDB. `cloudfeeder.py` produces and sends Hono the result telemetry messages in a form of JSON dictionary. Therefore the connector application should be able to read the JSON dictionary from Hono, map the dictionary to several individual metrics and send them to InfluxDB by using the `curl` command.
@@ -288,7 +288,7 @@ kuksa.cloud - Grafana (Visualization Web App)
 *********************************************
 
 .. figure:: /_images/cloud/cloud_grafana.png
-    :width: 1200
+    :width: 800
     :align: center
 
 So far we have successfully managed to set up Hono and InfluxDB, and transmit data incoming to Hono to InfluxDB by running Hono-InfluxDB-Connector. Now our concern is how to visualize the data inside InfluxDB. One way to do this is to use Grafana.
@@ -446,7 +446,7 @@ Modifying and creating a Docker image for Hono-InfluxDB-Connector
 Unlike `InfluxDB` and `Grafana`, `Hono-InfluxDB-Connector` is an application that is only designed to serve a particular task. This means that the application needs to be changed according to the target metrics. Since the application cannot be generic but only user-specific, it is important to understand how to make changes on the application, build a new Docker image with the new changes and push it to the Docker Hub registry. One might ask why the application needs to be docker-containerized and pushed to Docker Hub when one could simply run the result Jar file on a local machine. This can be easily explained with the figure below.
 
 .. figure:: /_images/cloud/docker-compose-scenario.png
-    :width: 1200
+    :width: 800
     :align: center
 
 The figure describes the following scenario:
@@ -497,7 +497,7 @@ Configuring a Grafana's Data Source, Dashboard and Notifier
 Manually synchronizing `Grafana` with `InfluxDB` as a data source, creating a dashboard with several panels and setting a notifier via Email in `Grafana` for several Docker hosts (Virtual Machines) can take a lot of handwork. The following `Grafana` dashboard example is used for the NOx map analysis part from Bosch's DIAS-KUKSA implementation.
 
 .. figure:: /_images/cloud/nox-map-dashboard.PNG
-    :width: 1000
+    :width: 800
     :align: center
 
 As depicted in the figure, the dashboard contains 7 different panels. Each of 6 scatter-plotly panels has a unique title and is set to detect certain metrics that come from the `InfluxDB` data source. The last panel is to measure the cumulative sampling time of data collection. The dashboard is simply designed to accommodate a specific type of messages sent by `Hono-InfluxDB-Connector` conforming its intended purpose. Since the `Grafana Docker image <https://hub.docker.com/r/grafana/grafana/>`_ is offered without any pre-configured panel options, it could be easily presumed that users might have to set a data source and create this sort of panels manaually everytime they deploy the application, which can be considered significantly inefficient.
@@ -548,7 +548,7 @@ As depicted in the figure, the dashboard contains 7 different panels. Each of 6 
     :width: 600
     :align: center
 
-* `grafana.ini` needs to be configured to enable SMTP (Simple Mail Transfer Protocol). Simply speaking, this is to set a sender's Email account. In the case of Gmail, the address of SMTP host server is `smtp.gmail.com:465` (Click `here <https://domar.com/smtp_pop3_server>`_ to learn more about SMTP servers). Then set the sender's Email address, `user`, and password, `password`. To use a Gmail account, one needs to have 2FA enabled for the account and then create an APP password for `password` (Click `here <https://support.google.com/mail/answer/185833?hl=en-GB>`_ to find more about the APP password). `from_address` and `from_name` are set to change the sender's information in the receiver's perspective.
+* `grafana.ini` is located in `dias_kuksa/utils/cloud/connector-influxdb-grafana-deployment/grafana_config/` and needs to be configured to enable SMTP (Simple Mail Transfer Protocol). Simply speaking, this is to set a sender's Email account. In the case of Gmail, the address of SMTP host server is `smtp.gmail.com:465` (Click `here <https://domar.com/smtp_pop3_server>`_ to learn more about SMTP servers). Then set the sender's Email address, `user`, and password, `password`. To use a Gmail account, one needs to have 2FA enabled for the account and then create an APP password for `password` (Click `here <https://support.google.com/mail/answer/185833?hl=en-GB>`_ to learn more about the APP password). `from_address` and `from_name` are set to change the sender's information in the receiver's perspective.
 
     * At the time of writing this documentation, only the graph panel visualization supports alerts as stated `here <https://grafana.com/docs/grafana/latest/alerting/alerts-overview/>`_.
 
@@ -615,7 +615,7 @@ The information needs to be stated in `docker-compose.yml` as well::
 * `INFLUXDB_DB=dias_kuksa_tut`: The database is set as `dias_kuksa_tut` because it is the name of the database that `Hono-InfluxDB-Connector` is targetting at.
 
 .. figure:: /_images/cloud/target_database.PNG
-    :width: 500
+    :width: 550
     :align: center
 
 * `export.ip` follows `{$SERVICE_NAME_IN_DOCKER-COMPOSE-FILE}:{$PORT_NUMBER_IN_DOCKER-COMPOSE-FILE}`. Therefore it is `influxdb:8086`.
@@ -692,7 +692,7 @@ Make sure `Hono-InfluxDB-Connector`, `InfluxDB` and `Grafana` are in the "Up" st
 Deployment Option 3 - Azure Kubernetes Service (AKS)
 ####################################################
 
-* **WORK IN PROGRESS...** *
+** *WORK IN PROGRESS...* **
 
 
 
