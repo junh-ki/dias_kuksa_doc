@@ -268,6 +268,8 @@ Now that Hono and InfluxDB are set up, we need a connector application to transm
 
 * (Bosch IoT Hub) The corresponding info (messaging-username, messaging-password, tenant-id, device-id) can be found in `Service Subscriptions Page <https://accounts.bosch-iot-suite.com/subscriptions>`_.
 
+* If `InfluxDB` is deployed manually, `export-ip` shall be set to: `localhost:8086`.
+
 * The startup can take up to 10 seconds. If you are still running `cloudfeeder.py`, the connector application should print out telemetry messages on the console.
 
 5. (Optional) If you want to change the way the connector application post-processes telemetry messages, you can modify `ExampleConsumer.java` that can be found in the directory: `dias_kuksa/utils/cloud/maven.consumer.hono/src/main/java/maven/consumer/hono/`.
