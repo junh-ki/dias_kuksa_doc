@@ -73,7 +73,7 @@ B. Ubuntu::
 
 4-2. Install dependencies (Boost libraries, OpenSSL, Mosquitto and more)::
 
-    $ sudo apt-get install libblkid-dev e2fslibs-dev libboost-all-dev libaudit-dev libssl-dev mosquitto libmosquitto-dev
+    $ sudo apt-get install libblkid-dev e2fslibs-dev libboost-all-dev libaudit-dev libssl-dev mosquitto libmosquitto-dev libglib2.0-dev
 
 5. You can `cmake` now. Navigate to `kuksa.val/build/` and command the following::
 
@@ -155,7 +155,7 @@ kuksa.val - kuksa.val VSS Server Setup
 1-5. Before commanding `make`, install python dependencies (anytree, deprecation, stringcase) first::
 
     $ sudo apt install python3-pip
-    $ pip3 install anytree deprecation stringcase
+    $ pip3 install anytree deprecation stringcase pyyaml
 
 1-6. Navigate to the directory, `vehicle_signal_specification/`, and command `make` to create a new JSON file::
 
