@@ -1,6 +1,6 @@
-********************************
-Step 2 (Extra): SAE J1939 Alternative Option
-********************************************
+*********************
+Ref: SAE J1939 Option
+*********************
 
 Society of Automotive Engineers standard SAE J1939 is the vehicle bus recommended practice used for communication and diagnostics among vehicle components. Originating in the car and heavy-duty truck industry in the United States, it is now widely used in other parts of the world. SAE J1939 is a higher-layer protocol (e.g., an add-on software) that uses the CAN Bus technology as a physical layer. In addition to the standard CAN Bus capabilities, SAE J1939 supports node addresses, and it can deliver data frames longer than 8 bytes (in fact, up to 1785 bytes). Since DIAS's demonstrator vehicle is a Ford Otosan vehicle that uses SAE J1939 standard, it is necessary for KUKSA to adapt the standard. 
 
