@@ -6,6 +6,7 @@ Introduction to SAE J1939
 #########################
 
 Society of Automotive Engineers standard SAE J1939 is the vehicle bus recommended practice used for communication and diagnostics among vehicle components. Originating in the car and heavy-duty truck industry in the United States, it is now widely used in other parts of the world. SAE J1939 is a higher-layer protocol (e.g., an add-on software) that uses the CAN Bus technology as a physical layer. In addition to the standard CAN Bus capabilities, SAE J1939 supports node addresses, and it can deliver data frames longer than 8 bytes (in fact, up to 1785 bytes).
+
 Since DIAS's demonstrator vehicle is a Ford Otosan truck that uses SAE J1939 standard, it is necessary for KUKSA to adapt the standard. 
 
 The normal DBC file is used to apply identifying names, scaling, offsets, and defining information, to data transmitted **within a CAN frame**. The J1939 DBC file is designed to serve the same purposes but aiming at data transmitted **within a Parameter Group Number (PGN) unit**. This is due to the fact that some data frames are delievered in more than one CAN frame depending on the PGN's data length in J1939. 
@@ -18,18 +19,19 @@ To simply put, one can take a look at one PGN example. The following PGN-65251 i
 
 PGN-65251 defines the engine configuration and consists of 39 bytes as stated in "Data Length". This means that to receive the complete information of PGN-65251, at least 6 CAN frames are required when considering the length of a single CAN frame is 8 bytes: 
 
-:math:`6 = 1 * TP.CM-BAM + 5 * TP.DT`
+:math:`6 = 1 * TP.BAM + 5 * TP.DT`
 
-- A Transfer Protocol Broadcast Announce Message (TP.CM-BAM) is used to inform all the nodes (e.g., Raspberry-Pi) of the network that a large message is about to be broadcast and defines the parameter group (The Target PGN) and the number of total packets to be sent. After TP.CM-BAM is sent, a set of TP.DT messages are sent at specific time intervals.
+- A Transfer Protocol Broadcast Announce Message (TP.BAM) is used to inform all the nodes (e.g., Raspberry-Pi) of the network that a large message is about to be broadcast and defines the parameter group (The Target PGN) and the number of total packets to be sent. After TP.BAM is sent, a set of TP.DT messages are sent at specific time intervals.
 - A Transfer Protocol Data Transfer (TP.DT) is an individual packet of a multipacket message transfer. It is used for the transfer of data associated with parameter groups that have more than 8 bytes of data (e.g., PGN-65251: 39 bytes).
 
-For example, one TP.CM-BAM and three TP.DT messages would be sent to deliver a parameter group that has more than 20 bytes (PGN-65260) as illustrated below:
+For example, one TP.BAM and three TP.DT messages would be sent to deliver a parameter group that has more than 20 bytes (PGN-65260) as illustrated below:
 
 .. figure:: /_images/j1939/j1939_transport_protocol.png
     :width: 450
     :align: center
 
 To conform the transport protocol, there are a lot of concepts defined in the J1939 documentation. One can look into the documentation to understand the concepts in depth. However, the general premise is simple: **Raw CAN frames are processed to produce PGN data that is consumed by an in-vehicle application.** Having said that, finding an existing J1939 library that can convert raw CAN frames to PGN data should be the first step. Since `dbcfeeder.py` is written in Python, it makes sense to choose the library written in the same language.
+
 `The J1939 Python package <https://pypi.org/project/j1939/>`_ converts raw CAN frames to PGN data and make it available for use. The following figures compare two scenarios where `dbcfeeder.py` reads CAN signals without and with J1939.
 
 .. figure:: /_images/j1939/dbcreader_schema.png
@@ -54,7 +56,7 @@ At the time of writing this documentation, the following features are available 
         - Transfer Protocol Transfer Data (TP.DT)
         - Transfer Protocol Communication Management (TP.CM)
     - Multi-Packet Broadcasts
-        - Broadcast Announce Message (TP.CM-BAM)
+        - Broadcast Announce Message (TP.BAM)
 
 
 
