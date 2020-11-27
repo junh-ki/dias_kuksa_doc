@@ -8,7 +8,7 @@ The normal DBC file is used to apply identifying names, scaling, offsets, and de
 
 To simply put, one can take a look at one PGN example. The following PGN-65251 information is captured in the official SAE J1939-71 documentation revised in 2011-03 (`PDF Download Link <http://gost-snip.su/download/1sae_j1939_71_vehicle_application_layer_>`_).
 
-.. figure:: /_images/J1939/pgn_65251.PNG
+.. figure:: /_images/j1939/pgn_65251.PNG
     :width: 600
     :align: center
 
@@ -21,7 +21,7 @@ PGN-65251 defines the engine configuration and consists of 39 bytes as stated in
 
 For example, one TP.CM-BAM and three TP.DT messages would be sent to deliver a parameter group that has more than 20 bytes (PGN-65260) as illustrated below:
 
-.. figure:: /_images/J1939/j1939_transport_protocol.png
+.. figure:: /_images/j1939/j1939_transport_protocol.png
     :width: 450
     :align: center
 
