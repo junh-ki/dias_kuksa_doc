@@ -1,0 +1,54 @@
+********************************
+Step 2 (Extra): SAE J1939 Alternative Option
+********************************************
+
+Society of Automotive Engineers standard SAE J1939 is the vehicle bus recommended practice used for communication and diagnostics among vehicle components. Originating in the car and heavy-duty truck industry in the United States, it is now widely used in other parts of the world. SAE J1939 is a higher-layer protocol (e.g., an add-on software) that uses the CAN Bus technology as a physical layer. In addition to the standard CAN Bus capabilities, SAE J1939 supports node addresses, and it can deliver data frames longer than 8 bytes (in fact, up to 1785 bytes). Since DIAS's demonstrator vehicle is a Ford Otosan vehicle that uses SAE J1939 standard, it is necessary for KUKSA to adapt the standard. 
+
+The normal DBC file is used to apply identifying names, scaling, offsets, and defining information, to data transmitted **within a CAN frame**. The J1939 DBC file is designed to serve the same purposes but aiming at data transmitted **within a Parameter Group Number (PGN) unit**. This is due to the fact that some data frames are delievered in more than one CAN frame depending on the PGN's data length in J1939. 
+
+To simply put, one can take a look at one PGN example. The following PGN-65251 information is captured in the official SAE J1939-71 documentation revised in 2011-03 (`PDF Download Link <http://gost-snip.su/download/1sae_j1939_71_vehicle_application_layer_>`_).
+
+.. figure:: /_images/J1939/pgn_65251.PNG
+    :width: 600
+    :align: center
+
+PGN-65251 defines the engine configuration and consists of 39 bytes as stated in "Data Length". This means that to receive the complete information of PGN-65251, at least 6 CAN frames are required when considering the length of a single CAN frame is 8 bytes: 
+
+1 Transfer Protocol Broadcast Announce Message (TP.CM-BAM) + 5 Transfer Protocol Data Transfer (TP.DT)
+
+- A TP.CM-BAM is used to inform all the nodes (e.g., Raspberry-Pi) of the network that a large message is about to be broadcast and defines the parameter group (target PGN, defined in the ) and the number of total packets to be sent. After TP.CM-BAM is sent, a set of TP.DT messages are sent at specific time intervals.
+- A TP.DT is an individual packet of a multipacket message transfer. It is used for the transfer of data associated with parameter groups that have more than 8 bytes of data (e.g., PGN-65251: 39 bytes).
+
+For example, one TP.CM-BAM and three TP.DT messages would be sent to deliver a parameter group that has more than 20 bytes (PGN-65260) as illustrated below:
+
+.. figure:: /_images/J1939/j1939_transport_protocol.png
+    :width: 450
+    :align: center
+
+
+
+..not just BAM there are more concepts
+
+
+..Which is why  
+
+..it is recommended to use a standard library or an existing library that can support this protocol 
+..Currently following features are available from the package:
+
+..- one ElectronicControlUnit (ECU) can hold multiple ControllerApplications (CA)
+..- ECU (CA) Naming according SAE J1939/81
+..- full support of transport protocol according SAE J1939/21 for sending and receiveing
+    - Message Packaging and Reassembly (up to 1785 bytes)
+        - Transfer Protocol Transfer Data (TP.DT)
+        - Transfer Protocol Communication Management (TP.CM)
+    - Multi-Packet Broadcasts
+        - Broadcast Announce Message (TP.CM-BAM)
+
+
+
+
+
+
+
+
+

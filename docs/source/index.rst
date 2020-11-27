@@ -9,8 +9,6 @@ Getting Started with DIAS-KUKSA
 	:width: 150
 	:align: center
 
-
-
 Contents
 ########
 
@@ -20,6 +18,7 @@ Contents
    Introduction <contents/intro>
    Step 1: Hardware Setup <contents/hwsetup>
    Step 2: In-vehicle Setup <contents/invehicle>
+   Step 2 (Extra): SAE J1939 Alternative Option <contents/j1939>
    Step 3: Cloud Setup <contents/cloud>
    Step 4: Simulation <contents/sim>
    Ref: Logging CAN traces <contents/traces>
