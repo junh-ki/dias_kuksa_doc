@@ -33,7 +33,7 @@ To conform the transport protocol, there are a lot of concepts defined in the J1
 `The J1939 Python package <https://pypi.org/project/j1939/>`_ converts raw CAN frames to PGN data and make it available for use. The following figures compare two scenarios where `dbcfeeder.py` reads CAN signals without and with J1939.
 
 .. figure:: /_images/j1939/dbcreader_schema.png
-    :width: 600
+    :width: 450
     :align: center
 
 Without J1939, `dbcfeeder.py` gets decoded CAN singals through `dbcreader.py` that reads raw CAN messages directly from a CAN interface (e.g., `can0` or `vcan0`).
@@ -49,7 +49,7 @@ At the time of writing this documentation, the following features are available 
 
 - One ElectronicControlUnit (ECU) can hold multiple ControllerApplications (CA)
 - ECU (CA) Naming according SAE J1939/81
-- full support of transport protocol according SAE J1939/21 for sending and receiveing
+- Full support of transport protocol according SAE J1939/21 for sending and receiveing
     - Message Packaging and Reassembly (up to 1785 bytes)
         - Transfer Protocol Transfer Data (TP.DT)
         - Transfer Protocol Communication Management (TP.CM)
