@@ -88,8 +88,8 @@ It is already possible to receive PGN data through `OwnCaToProduceCyclicMessages
 j1939reader.py in dbcfeeder.py
 ==============================
 
-1. Without J1939
-----------------
+1. dbcfeeder.py without J1939
+-----------------------------
 
 .. figure:: /_images/j1939/dbcreader_schema.png
     :width: 450
@@ -105,8 +105,8 @@ j1939reader.py in dbcfeeder.py
 
 In the case without J1939, `dbcfeeder.py` imports `dbcreader.py` and passes the required arguments when creating an instance of `dbcreader.DBCReader`. Then the `dbcreader.DBCReader` instance starts a thread by running `start_listening()` and receiving CAN frames through its connected CAN interface (`cfg['can.port']`).
 
-2. With J1939
--------------
+2. dbcfeeder.py with J1939
+--------------------------
 
 .. figure:: /_images/j1939/j1939reader_schema.png
     :width: 600
