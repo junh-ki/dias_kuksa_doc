@@ -17,7 +17,7 @@ To simply put, one can take a look at one PGN example. The following PGN-65251 i
     :width: 600
     :align: center
 
-PGN-65251 defines the engine configuration and consists of 39 bytes as stated in "Data Length". This means that to receive the complete information of PGN-65251, at least 6 CAN frames are required when considering the length of a single CAN frame is 8 bytes: 
+PGN-65251 defines the engine configuration 1 and consists of 39 bytes as stated in "Data Length". This means that to receive the complete information of PGN-65251, at least 6 CAN frames are required when considering the length of a single CAN frame is 8 bytes: 
 
 :math:`6 = 1 * TP.BAM + 5 * TP.DT`
 
@@ -30,9 +30,9 @@ For example, one TP.BAM and three TP.DT messages would be sent to deliver a para
     :width: 450
     :align: center
 
-To conform the transport protocol, there are a lot of concepts defined in the J1939 documentation. One can look into the documentation to understand the concepts in depth. However, the general premise is simple: **Raw CAN frames are processed to produce PGN data that should be decoded into CAN signals and later consumed by an in-vehicle application.** Having said that, finding an existing J1939 library that can convert raw CAN frames to PGN data should be the first step. Since `dbcfeeder.py` is written in Python, it makes sense to choose the library written in the same language.
+There are a lot of concepts defined in the SAE J1939 documentation that are required to conform the transport protocol. One can look into the documentation to understand the concepts in depth. However, the general premise is simple: **Raw CAN frames are processed to produce PGN data that should be decoded into CAN signals and later consumed by an in-vehicle application.** Having said that, finding an existing J1939 library that can convert raw CAN frames to PGN data should be the first step. Since `dbcfeeder.py` is written in Python, it makes sense to choose the library written in the same language.
 
-`The J1939 Python package <https://pypi.org/project/j1939/>`_ converts raw CAN frames to PGN data and make it available for use. The following figures compare two scenarios where `dbcfeeder.py` reads CAN signals without and with J1939.
+`The J1939 Python package <https://pypi.org/project/j1939/>`_ converts raw CAN frames to PGN data and make the data available for use. The following figures compare two scenarios where `dbcfeeder.py` reads CAN signals without and with J1939.
 
 .. figure:: /_images/j1939/dbcreader_schema.png
     :width: 450
@@ -145,25 +145,64 @@ The callback function, `on_message`, receives PGN data and finds a corresponding
     :width: 310
     :align: center
 
-`identify_message` examines the database instance (`self.db`) that has been built with the passed DBC file (`cfg['vss.dbcfile']`) to get a message that corresponds to the observed PGN. Because CAN messages come in the form of a hex code,
+`identify_message` examines the database instance (`self.db`) that has been built with the passed DBC file (`cfg['vss.dbcfile']`) to get a message (`cantools.database.can.Message`) that corresponds to the observed PGN. Because PGN is the only available parameter that can identify what parameter group a CAN message is intended for, understanding how a CAN frame (especially CAN-ID) is structured is important so that the application can compare the observed PGN to a comparison message's ID to confirm whether or not they match.
+
+In the case of PGN-61444 (Electronic Engine Controller 1 / EEC1), it is `(0x)f004` when `61444` is converted to hex. Therefore `identify_message` should find a CAN message with an ID that contains `f004` among the messages from `self.db`. The ID of a message from `self.db` is determined based on the passed DBC file (`cfg['vss.dbcfile']`). The following image (`source <https://www.csselectronics.com/screen/page/can-dbc-file-database-intro/language/en>`_) shows how a J1939 DBC file looks like.
+
+.. figure:: /_images/j1939/CAN-DBC-File-Format-Explained-Intro-Basics_2.png
+    :width: 500
+    :align: center
+
+The needed information in the above image is CAN ID: `2364540158`. It is `(0x)8CF004FE` When `2364540158` is converted to hex. To understand what exactly `(0x)8CF004FE` indicates, one can refer to the following image that explains the J1939 message format. 
+
+.. figure:: /_images/j1939/j1939_message_format.png
+    :width: 422
+    :align: center
+
+As described above, CAN ID consists of 29 bits in J1939. To express the value on a bit level, the binary conversion needs to be applied to `(0x)8CF004FE`, making it `(0b) 1000 1100 1111 0000 0000 0100 1111 1110`. With this, the following information can be derived.
+
+=================  ==============================================
+ID Form            Correponding Value of ECC1
+=================  ==============================================
+PGN                `61444`
+PGN in hex         `(0x) f004`
+PGN in binary      `(0b) 1111 0000 0000 0100`
+DBC ID             `2364540158`
+DBC ID in hex      `(0x) 8CF004FE`
+DBC ID in binary   `(0b) 1000 1100 1111 0000 0000 0100 1111 1110`
+=================  ==============================================
+
+Since the number of binary numbers is 32 (bits) making it bigger than 29 (bits), the first three binary numbers are omitted: `(0b) 0 1100 1111 0000 0000 0100 1111 1110`. With this and the message format image, the folloiwng information can be derived from the ECC1 message ID.
+
+====================  ===============================  =======  ===========
+J1939 Message Info    Binary                           Decimal  Hex
+====================  ===============================  =======  ===========
+3 Bit Priority        `(0b) 0 11(00)`                  `3`      `(0x) c`
+18 Bit PGN            `(0b) (00) 1111 0000 0000 0100`  `61444`  `(0x) f004`
+8 Bit Source Address  `(0b) 1111 1110`                 `254`    `(0x) fe`
+====================  ===============================  =======  ===========
+
+As shown above, the decimal value of ECC1 message ID's PGN is the same as `61444` which means that it is possible to confirm whether or not one of the CAN messages in `self.db` has the same PGN as the observed PGN. `identify_message` converts the observed PGN into a hex value and compare the value to the hex PGN value of each message in `self.db`. If the hex value of the observed PGN matches with that of the comparison message's PGN, it means that the comparison message is what the observed PGN indicates and thus the message is returned.
 
 .. figure:: /_images/j1939/put_signal_in_queue.PNG
     :width: 533
     :align: center
 
-the passed queue (`self.queue`)
+Once the target message is returned by `identify_message`, `on_message` iterates the list of signals in the returned message and put each signal (`cantools.database.can.Signal`) with its calculated value in the queue (`self.queue`) that would later be used to feed `kuksa-val-server` by running `put_signal_in_queue`. In `put_signal_in_queue`, some of the observed signal's attributes are collected and used to decode and calculate the value of the signal by running `decode_signal`.
 
 .. figure:: /_images/j1939/decode_signal.PNG
     :width: 514
     :align: center
 
+`decode_signal` calculates a signal's value. If the number of bytes (data length) is equal to `1`, the value can be directly calculated as follow:
 
+:math:`[value] = [offset] + [scale] * [raw value]` (`Source <https://gitlab.com/sibros_public/public/-/wikis/can/can>`_)
 
 .. figure:: /_images/j1939/decode_2bytes.PNG
     :width: 415
     :align: center
 
-
+If the number of bytes (data length) is not equal to `1`, it is `2`. In this case, `decode_2bytes` calculates the value. To aggregate two data, both data need to be converted to hex first and then merged. The data arrangement order depends on the byte order that is either `little_endian` or `big_endian`. After aggregation, the merged data is converted to decimal and saved as `raw_value`. Then the same formula above is used to calculate the result value.
 
 
 
@@ -171,5 +210,6 @@ Running dbcfeeder.py with j1939reader.py
 ########################################
 
 .. STEPS TO USE dbcfeeder.py with J1939
+
 
 
