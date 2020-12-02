@@ -130,19 +130,19 @@ Decoding PGN Data with j1939reader.py
 `j1939reader.py` (`code <https://github.com/junh-ki/dias_kuksa/blob/master/utils/in-vehicle/j1939feeder/j1939reader.py>`_) reuses `OwnCaToProduceCyclicMessages` and `dbcreader.py` for the requirement A and C with the add-on PGN decode functionality for the requirement B.
 
 .. figure:: /_images/j1939/start_listening.PNG
-    :width: 400
+    :width: 440
     :align: center
 
 `start_listening` creates a `j1939.ElectronicControlUnit` instance and connects it to the passed CAN interface (`cfg['can.port']`). Then the ECU instance adds the current `j1939reader.J1939Reader` (precisely, `j1939.ControllerApplication` inherited by `j1939reader.J1939Reader`) instance and starts a thread of it. After running `start_listening`, the ECU instance can start reading raw CAN frames from the connected CAN interface, convert them into PGN data and send the result to a callback function, `on_message`, of the `j1939reader.J1939Reader` instance. 
 
-.. figure:: /_images/j1939/on_message_modified.PNG
-    :width: 300
+.. figure:: /_images/j1939/on_message-modified.PNG
+    :width: 330
     :align: center
 
 The callback function, `on_message`, receives PGN data and finds a corresponding CAN message in `self.db` by running `identify_message`. If the return value of `identify_message` is not `None`, it means that the observed PGN has the corresponding message and thus it iterates the list of signals of the message and decodes each signal and put the result in `self.queue` by running `put_signal_in_queue`.
 
 .. figure:: /_images/j1939/identify_message.PNG
-    :width: 310
+    :width: 341
     :align: center
 
 `identify_message` examines the database instance (`self.db`) that has been built with the passed DBC file (`cfg['vss.dbcfile']`) to get a message (`cantools.database.can.Message`) that corresponds to the observed PGN. Because PGN is the only available parameter that can identify what parameter group a CAN message is intended for, understanding how a CAN frame (especially CAN-ID) is structured is important so that the application can compare the observed PGN to a comparison message's ID to confirm whether or not they match.
@@ -150,13 +150,13 @@ The callback function, `on_message`, receives PGN data and finds a corresponding
 In the case of PGN-61444 (Electronic Engine Controller 1 / EEC1), it is `(0x)f004` when `61444` is converted to hex. Therefore `identify_message` should find a CAN message with an ID that contains `f004` among the messages from `self.db`. The ID of a message from `self.db` is determined based on the passed DBC file (`cfg['vss.dbcfile']`). The following image (`source <https://www.csselectronics.com/screen/page/can-dbc-file-database-intro/language/en>`_) shows how a J1939 DBC file looks like.
 
 .. figure:: /_images/j1939/CAN-DBC-File-Format-Explained-Intro-Basics_2.png
-    :width: 500
+    :width: 550
     :align: center
 
 The needed information in the above image is CAN ID: `2364540158`. It is `(0x)8CF004FE` When `2364540158` is converted to hex. To understand what exactly `(0x)8CF004FE` indicates, one can refer to the following image that explains the J1939 message format. 
 
 .. figure:: /_images/j1939/j1939_message_format.png
-    :width: 422
+    :width: 464
     :align: center
 
 As described above, CAN ID consists of 29 bits in J1939. To express the value on a bit level, the binary conversion needs to be applied to `(0x)8CF004FE`, making it `(0b) 1000 1100 1111 0000 0000 0100 1111 1110`. With this, the following information can be derived.
@@ -184,14 +184,14 @@ J1939 Message Info    Binary                           Decimal  Hex
 
 As shown above, the decimal value of ECC1 message ID's PGN is the same as `61444` which means that it is possible to confirm whether or not one of the CAN messages in `self.db` has the same PGN as the observed PGN. `identify_message` converts the observed PGN into a hex value and compare the value to the hex PGN value of each message in `self.db`. If the hex value of the observed PGN matches with that of the comparison message's PGN, it means that the comparison message is what the observed PGN indicates and thus the message is returned.
 
-.. figure:: /_images/j1939/put_signal_in_queue.PNG
-    :width: 533
+.. figure:: /_images/j1939/put_signal_in_queue_.PNG
+    :width: 586
     :align: center
 
 Once the target message is returned by `identify_message`, `on_message` iterates the list of signals in the returned message and put each signal (`cantools.database.can.Signal`) with its calculated value in the queue (`self.queue`) that would later be used to feed `kuksa-val-server` by running `put_signal_in_queue`. In `put_signal_in_queue`, some of the observed signal's attributes are collected and used to decode and calculate the value of the signal by running `decode_signal`.
 
 .. figure:: /_images/j1939/decode_signal.PNG
-    :width: 514
+    :width: 565
     :align: center
 
 `decode_signal` calculates a signal's value. If the number of bytes (data length) is equal to `1`, the value can be directly calculated as follow:
@@ -199,17 +199,74 @@ Once the target message is returned by `identify_message`, `on_message` iterates
 :math:`[value] = [offset] + [scale] * [raw value]` (`Source <https://gitlab.com/sibros_public/public/-/wikis/can/can>`_)
 
 .. figure:: /_images/j1939/decode_2bytes.PNG
-    :width: 415
+    :width: 457
     :align: center
 
 If the number of bytes (data length) is not equal to `1`, it is `2`. In this case, `decode_2bytes` calculates the value. To aggregate two data, both data need to be converted to hex first and then merged. The data arrangement order depends on the byte order that is either `little_endian` or `big_endian`. After aggregation, the merged data is converted to decimal and saved as `raw_value`. Then the same formula above is used to calculate the result value.
 
 
 
+.. _feeder-j1939:
+
 Running dbcfeeder.py with j1939reader.py
 ########################################
 
-.. STEPS TO USE dbcfeeder.py with J1939
+1. Clone the `junh-ki/dias_kuksa` repository::
 
+    $ git clone https://github.com/junh-ki/dias_kuksa.git
 
+2. Navigate to `dias_kuksa/utils/in-vehicle/j1939feeder/` and copy `j1939reader.py` and paste it to `kuksa.val/clients/feeder/dbc2val/` where `dbcfeeder.py` is located.
 
+3. Install J1939 Python dependency::
+
+    $ pip3 install j1939
+
+4. Come back to the `Home` directory and install the wheel-package::
+
+    $ cd
+    $ git clone https://github.com/benkfra/j1939.git
+    $ cd j1939
+    $ pip install .
+
+5. In `dbcfeeder.py` (:ref:`dbc-feeder`), any line that involves with `dbcreader.py` should be replaced to work with `j1939reader.py`.
+
+5-1. Import part:
+
+.. code-block:: python
+
+    # import dbcreader
+    import j1939reader
+
+5-2. Reader class instance creation part:
+
+.. code-block:: python
+
+    # dbcR = dbcreader.DBCReader(cfg,canQueue,mapping)
+    j1939R = j1939reader.J1939Reader(cfg,canQueue,mapping)
+
+5-3. `start_listening` function part:
+
+.. code-block:: python
+
+    # dbcR.start_listening()
+    j1939R.start_listening()
+
+6. Make sure `kuksa-val-server` and a CAN interface (`vcan0` or `can0`) are up and running before running `dbcfeeder.py`.
+
+7. Navigate to `kuksa.val/clients/feeder/dbc2val/` where `dbcfeeder.py` is located, and command the following::
+
+    $ python3 dbcfeeder.py -d vcan0 -j ../../../certificates/jwt/super-admin.json.token --dbc dias_simple.dbc --mapping dias_mapping.yml
+
+* The following screenshots show what values are stored in `kuksa-val-server` at the end of playing log files (`can0_otosan_can0-30092020` and `can0_otosan_can2-30092020`).
+
+.. figure:: /_images/j1939/sim_without_j1939.PNG
+    :width: 350
+    :align: center
+
+In the normal case, `dbcfeeder.py` is not able to read `EngRefereneceTorque`, `EngSpeedAtIdlePoint1` and `EngSpeedAtPoint2`. These signals belong to PGN-65251 (Engine Configuration 1 / J1939) and are delievered with a `TP.BAM` with multitple `TP.DT` messages since the size of the message is bigger than 8 bytes (size of 1 CAN frame = 8 bytes).
+
+.. figure:: /_images/j1939/sim_with_j1939.PNG
+    :width: 350
+    :align: center
+
+Now `dbcfeeder.py` with `j1939reader.py` is able to read these signals and the values of the rest signals remain the same as the case without J1939 as shown above.

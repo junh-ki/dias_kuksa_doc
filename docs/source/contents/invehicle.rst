@@ -171,6 +171,8 @@ kuksa.val - kuksa.val VSS Server Setup
 
 
 
+.. _dbc-feeder:
+
 kuksa.val - dbcfeeder.py Setup
 ******************************
 
@@ -203,6 +205,8 @@ kuksa.val - dbcfeeder.py Setup
 5. Navigate to `kuksa.val/clients/feeder/dbc2val/`, and command the following::
 
 	$ python3 dbcfeeder.py -d vcan0 -j ../../../certificates/jwt/super-admin.json.token --dbc dias_simple.dbc --mapping dias_mapping.yml
+
+6. (Optional) If your DBC file follows J1939 standard, please follow :ref:`feeder-j1939` to run `dbcfeeder.py` with J1939.
 
 
 
