@@ -32,20 +32,20 @@ For example, one TP.BAM and three TP.DT messages would be sent to deliver a para
 
 There are a lot of concepts defined in the SAE J1939 documentation that are required to conform the J1939 transport protocol. One can look into the documentation to understand the concepts in depth. However, the general premise is simple: **Raw CAN frames are processed to produce PGN data that should be decoded into CAN signals consumed by an in-vehicle application.** Having said that, finding an existing J1939 library that can convert raw CAN frames to PGN data should be the first step. Since `dbcfeeder.py` is written in Python, it makes sense to choose the library written in the same language.
 
-`The J1939 Python package <https://pypi.org/project/j1939/>`_ converts raw CAN frames to PGN data and make the data available for use. The following figures compare two scenarios where `dbcfeeder.py` reads CAN signals without and with J1939.
+`The J1939 Python package <https://pypi.org/project/j1939/>`_ converts raw CAN frames to PGN data and makes the data available for use. The following figures compare two scenarios where `dbcfeeder.py` reads CAN signals without and with J1939.
 
 .. figure:: /_images/j1939/dbcreader_schema.png
     :width: 470
     :align: center
 
-Without J1939, `dbcfeeder.py` gets decoded CAN singals through `dbcreader.py` that reads raw CAN messages directly from a CAN interface (e.g., `can0` or `vcan0`).
+Without J1939, `dbcfeeder.py` gets decoded CAN singals through `dbcreader.py` that reads raw CAN frames directly from a CAN interface (e.g., `can0` or `vcan0`).
 
 .. figure:: /_images/j1939/j1939reader_schema.png
     :width: 650
     :align: center
 
-With J1939, `dbcfeeder.py` gets decoded CAN singals through `j1939reader.py` (`source <https://github.com/junh-ki/dias_kuksa/blob/master/utils/in-vehicle/j1939feeder/j1939reader.py>`_) that reads PGN messages from the `j1939.ElectronicControlUnit`(ECU) class of the `j1939` python package that converts raw CAN frames to PGN data.
-The `j1939.ControllerApplications`(CA) class from the `j1939` python package is a superclass of `j1939Reader.J1939Reader` and utilizes the ECU class's functionalities to derive PGN data. 
+With J1939, `dbcfeeder.py` gets decoded CAN singals through `j1939reader.py` (`source <https://github.com/junh-ki/dias_kuksa/blob/master/utils/in-vehicle/j1939feeder/j1939reader.py>`_) that reads PGN messages from the `j1939.ElectronicControlUnit` (ECU) class of the `j1939` python package that converts raw CAN frames to PGN data.
+The `j1939.ControllerApplications` (CA) class from the `j1939` python package is a superclass of `j1939Reader.J1939Reader` and utilizes the ECU class's functionalities to derive PGN data. 
 
 At the time of writing this documentation, the following features are available from the `j1939` python package according to `here <https://pypi.org/project/j1939/>`_:
 
@@ -69,7 +69,7 @@ A sophisticated example of `j1939.ControllerApplication` that receives PGN messa
     :width: 300
     :align: center
 
-As shown above, each line prints out the number and the length of a PGN that has been read. These messages are produced from a function called `OwnCaToProduceCyclicMessages.on_message`.
+As shown above, each line prints out the number and the length of a PGN that has been read. These messages are produced from a callback function called `OwnCaToProduceCyclicMessages.on_message`.
 
 .. figure:: /_images/j1939/on_message.PNG
     :width: 350
