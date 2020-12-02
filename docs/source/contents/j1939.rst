@@ -215,6 +215,9 @@ Once the target message is returned by `identify_message`, `on_message` iterates
 
 :math:`[value] = [offset] + [scale] * [raw value]` (`Source <https://gitlab.com/sibros_public/public/-/wikis/can/can>`_)
 
+6. Function: decode_2bytes
+--------------------------
+
 .. figure:: /_images/j1939/decode_2bytes.PNG
     :width: 457
     :align: center
