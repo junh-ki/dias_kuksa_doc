@@ -200,29 +200,65 @@ As shown above, the decimal value of ECC1 message ID's PGN is the same as `61444
     :width: 586
     :align: center
 
-Once the target message is returned by `identify_message`, `on_message` iterates the list of signals in the returned message and puts each signal (`cantools.database.can.Signal`) with its calculated value in the queue (`self.queue`) that would later be used to feed `kuksa-val-server` by running `put_signal_in_queue`. In `put_signal_in_queue`, some of the observed signal's attributes are collected and used to decode and calculate the value of the signal by running `decode_signal`.
+Once the target message is returned by `identify_message`, `on_message` iterates the list of signals in the returned message and puts each signal (`cantools.database.can.Signal`) with its calculated value in the queue (`self.queue`) that would later be used to feed `kuksa-val-server` by running `put_signal_in_queue`. In `put_signal_in_queue`, there are two scenarios. One is when the type of data is "list", and the other is when the type of data is "bytearray" as shown below.
+
+.. figure:: /_images/j1939/data_type.PNG
+    :width: 650
+    :align: center
+
+In the scenario where the data type is "list", the size of data is more than a CAN frame's maximum payload of 8 bytes (e.g., 39 bytes with PGN-65251) in which case data comes in a form of a list of decimal numbers. In this case, the start byte and the length of data should be calculated as each number represents a byte's decimal value and the data access is done on 1 byte basis. For example, if the DBC file describes that the observed signal's start bit is `16` (It starts from `0` in DBC files) and its length is `16`, it means that the number of start byte is `2` (starts from `0`) and the length of data is `2`. Which means that the third and fourth numbers in the list express the observed signal's value. With this information, `decode_signal` calculates the value of the observed signal with other attributes described by the DBC file.
+
+In the other scenario where the data type is "bytearray", the size of data is 8 bytes. In this case, the data access is done on 1 bit basis and the start bit and data length can be used without any processing as they are based on a bit level. With this information, `decode_byte_array` directly calculates the value of the observed signal with other attributes described by the DBC file.
+
+Once the value is calculated, it checks whether the calculated value is bigger than the signal's maximum or its minimum. If the value is out of the allowed scope of the signal, it is changed either to minimum or maximum before it is passed to the queue (`self.queue`).
 
 * One can refer to `here <https://github.com/eerimoq/cantools/blob/master/cantools/database/can/signal.py>`_ to find out all the available attributes from `cantools.database.can.Signal`. This also depends on the target DBC file.
 
 5. Function: decode_signal
 --------------------------
 
-.. figure:: /_images/j1939/decode_signal.PNG
+.. figure:: /_images/j1939/decode_signal_.PNG
     :width: 565
     :align: center
 
-`decode_signal` calculates a signal's value. If the number of bytes (data length) is equal to `1`, the value can be directly calculated as follow:
+`decode_signal` is to calculate the value of the observed signal when the data access level is on a byte level in which case data comes in a form of a list of decimal numbers. If the number of bytes (data length) is equal to `1`, the raw value can be directly extracted from data with the start byte number and the value of the signal can be calculated as follow:
 
-:math:`[value] = [offset] + [scale] * [raw value]` (`Source <https://gitlab.com/sibros_public/public/-/wikis/can/can>`_)
+:math:`[value] = [offset] + [raw value] * [scale]` (`Source <https://www.embeddeduse.com/2020/01/17/introduction-to-the-sae-j1939-standard/>`_)
+
+If the number of bytes (data length) is equal to `2`, this means that two decimal numbers have to be aggregated to calculate the value of the signal which is done by running `decode_2bytes`. 
 
 6. Function: decode_2bytes
 --------------------------
 
-.. figure:: /_images/j1939/decode_2bytes.PNG
+.. figure:: /_images/j1939/decode_2bytes_.PNG
     :width: 457
     :align: center
 
-If the number of bytes (data length) is not equal to `1`, it is `2`. In this case, `decode_2bytes` calculates the value. To aggregate the data with two bytes, both bytes need to be converted to hex first and then merged. The data arrangement order depends on the byte order (`byte_order`) that is either `little_endian` or `big_endian`. After aggregation, the merged data is converted to decimal and saved as `raw_value`. Then the same formula above is used to calculate the result value.
+`decode_2bytes` calculates the value of the observed signal when the signal is decribed with two bytes. Because each decimal number in the list can be converted to hex (e.g., 16 = `0x0f`) representing a byte, the aggregation of two decimal numbers is done after coverting them to hex. 
+
+.. figure:: /_images/j1939/endian.png
+    :width: 500
+    :align: center
+
+As described above, the aggregation depends on the byte oder that is either "little_endian" or "big_endian". In the case of "little_endian", the first number of data comes at the end whereas it comes at the beginning with "big_endian". Once the numbers are merged in a form of a hex number, the merged hex number is once again converted to decimal to describe the raw value. Then the same formula used in `decode_signal` is applied to calculate the result value.
+
+7. Function: decode_byte_array
+------------------------------
+
+.. figure:: /_images/j1939/decode_byte_array.PNG
+    :width: 556
+    :align: center
+
+`decode_byte_array` is to calculate the value of the observed signal when the data access level is on a bit level in which case data comes in a form of a bytearray. If the byte order is "little_endian", the bytearray is reversed first and then converted to a list of bits by running `byteArr2bitArr` to produce a binary string that is later converted to integer to get the raw value. Otherwise the same process is done but without reversing the bytearray.
+
+8. Function: byteArr2bitArr
+---------------------------
+
+.. figure:: /_images/j1939/byteArr2bitArr.PNG
+    :width: 475
+    :align: center
+
+`byteArr2bitArr` is to convert a bytearray to a list of bits. 
 
 
 
@@ -285,8 +321,8 @@ Running dbcfeeder.py with j1939reader.py
 
 In the normal case, `dbcfeeder.py` is not able to read `EngRefereneceTorque`, `EngSpeedAtIdlePoint1` and `EngSpeedAtPoint2`. These three signals belong to PGN-65251 (Engine Configuration 1 / J1939) and are delievered with a `TP.BAM` with multitple `TP.DT` messages since the size of the message is bigger than 8 bytes (size of 1 CAN frame = 8 bytes).
 
-.. figure:: /_images/j1939/sim_with_j1939.PNG
+.. figure:: /_images/j1939/sim_with_j1939_.PNG
     :width: 500
     :align: center
 
-Now `dbcfeeder.py` with `j1939reader.py` is able to read these signals. The values of the rest signals remain the same as the case without J1939 as shown above.
+Now not only `dbcfeeder.py` with `j1939reader.py` is able to read these signals but also the values of the rest signals are different from the case without J1939 as shown above. This is due to the fact that `dbcfeeder.py` has followed the J1939 standard when reading signals from CAN and the values are valid as they appear within their designated scope in the DBC file.
