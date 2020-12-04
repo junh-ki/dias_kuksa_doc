@@ -240,7 +240,7 @@ If the number of bytes (data length) is equal to `2`, this means that two decima
     :width: 500
     :align: center
 
-As described above, the aggregation depends on the byte order that is either "little_endian" or "big_endian". According to `here <https://www.embeddeduse.com/2020/01/17/introduction-to-the-sae-j1939-standard/>`_ In J1939, the payload is encoded in the "little_endian" order from byte 0 to byte 7 while the bits in a byte are in the "big_endian" order as decribed in the table below.
+As described above, the aggregation depends on the byte order that is either "little_endian" or "big_endian". According to `here <https://www.embeddeduse.com/2020/01/17/introduction-to-the-sae-j1939-standard/>`_ In J1939, the payload is encoded in the "little_endian" order from byte 0 to byte 7 while the bits in every byte are in the "big_endian" order as decribed in the table below.
 
 +-------+------+-------+--------+--------+--------+--------+--------+--------+
 | Bytes | 0    | 1     | 2      | 3      | 4      | 5      | 6      | 7      |
@@ -257,7 +257,7 @@ To get a raw value out of two hex numbers, they need to be arranged in the "big_
     :width: 556
     :align: center
 
-`decode_byte_array` is to calculate the value of the observed signal when the data access level is on a bit level in which case data comes in a form of a bytearray. As explained in `decode_2bytes`, the payload is encoded in the same way that bytes are in the "little_endian" order and the bits in every byte are in the "big_endian" order. If the byte order is "little_endian", the bytearray is reversed first and then converted to a list of bits by running `byteArr2bitArr` to produce a binary string that is later converted to integer to get the raw value. Otherwise the same process is done but without reversing the bytearray which is highly unlikely in J1939. In any case, changing the order in a bit level is not required as well.
+`decode_byte_array` is to calculate the value of the observed signal when the data access level is on a bit level in which case data comes in a form of a bytearray. As explained in `decode_2bytes`, the payload is encoded in the same way that bytes are in the "little_endian" order and the bits in every byte are in the "big_endian" order. If the byte order is "little_endian", the bytearray is reversed first and then converted to a list of bits by running `byteArr2bitArr` to produce a binary string that is later converted to integer to get the raw value. Otherwise the same process is done but without reversing the bytearray which is highly unlikely in J1939. In any case, changing the order on a bit level is not required as well.
 
 8. Function: byteArr2bitArr
 ---------------------------
@@ -337,4 +337,4 @@ In the normal case, `dbcfeeder.py` is not able to read `EngRefereneceTorque`, `E
     :width: 500
     :align: center
 
-Now not only `dbcfeeder.py` with `j1939reader.py` is able to read these signals but also the value of `Aftertreatment1IntakeNOx` appears to be at the signal's maximum and other signals' values are different from the case without J1939 as shown above. This is due to the fact that `dbcfeeder.py` has followed the J1939 standard when reading signals from CAN and all the values here are valid as they appear within their designated scope in the DBC file.
+Now not only `dbcfeeder.py` with `j1939reader.py` is able to read these signals but also the value of `Aftertreatment1IntakeNOx` appears to be at the signal's maximum and the other signals' values are different from the case without J1939 as shown above. This is due to the fact that `dbcfeeder.py` has followed the J1939 standard when reading signals from CAN and all the values here are valid as they appear within their designated scope in the DBC file.
