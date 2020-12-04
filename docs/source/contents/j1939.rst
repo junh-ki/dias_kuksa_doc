@@ -333,6 +333,8 @@ In the normal case, `dbcfeeder.py` is not able to read `EngRefereneceTorque`, `E
     :width: 600
     :align: center
 
+(`DBC Source <https://hackage.haskell.org/package/ecu-0.0.8/src/src/j1939_orig.dbc>`_)
+
 .. figure:: /_images/j1939/sim_with_j1939_.PNG
     :width: 500
     :align: center
