@@ -156,7 +156,7 @@ The callback function, `on_message`, receives PGN data and finds a corresponding
 
 `identify_message` examines the database instance (`self.db`) that has been built with the passed DBC file (`cfg['vss.dbcfile']`) to get a message (`cantools.database.can.Message`) that corresponds to the observed PGN. Because PGN is the only available parameter that can identify what parameter group a CAN message is intended for, understanding how a CAN frame (especially CAN-ID) is structured is important so that the application can compare the observed PGN to a comparison message's ID to confirm whether or not they match.
 
-In the case of PGN-61444 (Electronic Engine Controller 1 / EEC1), it is `(0x)f004` when `61444` is converted to hex. Therefore `identify_message` should find a CAN message with an ID that contains `f004` among the messages from `self.db`. The IDs of all messages in `self.db` are determined based on the passed DBC file (`cfg['vss.dbcfile']`). The following image (`source <https://www.csselectronics.com/screen/page/can-dbc-file-database-intro/language/en>`_) shows how a J1939 DBC file looks like.
+In the case of PGN-61444 (Electronic Engine Controller 1 / EEC1), it is `(0x)f004` when `61444` is converted to hex. Therefore, `identify_message` should find a CAN message with an ID that contains `f004` among the messages from `self.db`. The IDs of all messages in `self.db` are determined based on the passed DBC file (`cfg['vss.dbcfile']`). The following image (`source <https://www.csselectronics.com/screen/page/can-dbc-file-database-intro/language/en>`_) shows how a J1939 DBC file looks like.
 
 .. figure:: /_images/j1939/CAN-DBC-File-Format-Explained-Intro-Basics_2.png
     :width: 550
@@ -240,7 +240,15 @@ If the number of bytes (data length) is equal to `2`, this means that two decima
     :width: 500
     :align: center
 
-As described above, the aggregation depends on the byte oder that is either "little_endian" or "big_endian". In the case of "little_endian", the first number of data comes at the end whereas it comes at the beginning with "big_endian". Once the numbers are merged in a form of a hex number, the merged hex number is once again converted to decimal to describe the raw value. Then the same formula used in `decode_signal` is applied to calculate the result value.
+As described above, the aggregation depends on the byte order that is either "little_endian" or "big_endian". According to `here <https://www.embeddeduse.com/2020/01/17/introduction-to-the-sae-j1939-standard/>`_ In J1939, the payload is encoded in the "little_endian" order from byte 0 to byte 7 while the bits in a byte are in the "big_endian" order as decribed in the table below.
+
++-------+------+-------+--------+--------+--------+--------+--------+--------+
+| Bytes | 0    | 1     | 2      | 3      | 4      | 5      | 6      | 7      |
++-------+------+-------+--------+--------+--------+--------+--------+--------+
+| Bits  | 7..0 | 15..8 | 23..16 | 31..24 | 39..32 | 47..40 | 55..48 | 63..56 |
++-------+------+-------+--------+--------+--------+--------+--------+--------+
+
+To get a raw value out of two hex numbers, they need to be arranged in the "big_endian" order before decimal conversion. Since the bits in every byte are already in the "big_endian" order, changing the order in a bit level is not required in any case. Therefore, in the case of "little_endian", the start byte comes at the end whereas it comes at the beginning with "big_endian" which is highly unlikely in J1939, and the order of bits in each byte remains the same. Once the numbers are merged in a form of a hex number, the merged hex number is once again converted to decimal to describe the raw value. Then the same formula used in `decode_signal` is applied to calculate the result value. 
 
 7. Function: decode_byte_array
 ------------------------------
@@ -249,7 +257,7 @@ As described above, the aggregation depends on the byte oder that is either "lit
     :width: 556
     :align: center
 
-`decode_byte_array` is to calculate the value of the observed signal when the data access level is on a bit level in which case data comes in a form of a bytearray. If the byte order is "little_endian", the bytearray is reversed first and then converted to a list of bits by running `byteArr2bitArr` to produce a binary string that is later converted to integer to get the raw value. Otherwise the same process is done but without reversing the bytearray.
+`decode_byte_array` is to calculate the value of the observed signal when the data access level is on a bit level in which case data comes in a form of a bytearray. As explained in `decode_2bytes`, the payload is encoded in the same way that bytes are in the "little_endian" order and the bits in every byte are in the "big_endian" order. If the byte order is "little_endian", the bytearray is reversed first and then converted to a list of bits by running `byteArr2bitArr` to produce a binary string that is later converted to integer to get the raw value. Otherwise the same process is done but without reversing the bytearray which is highly unlikely in J1939. In any case, changing the order in a bit level is not required as well.
 
 8. Function: byteArr2bitArr
 ---------------------------
@@ -319,10 +327,14 @@ Running dbcfeeder.py with j1939reader.py
     :width: 500
     :align: center
 
-In the normal case, `dbcfeeder.py` is not able to read `EngRefereneceTorque`, `EngSpeedAtIdlePoint1` and `EngSpeedAtPoint2`. These three signals belong to PGN-65251 (Engine Configuration 1 / J1939) and are delievered with a `TP.BAM` with multitple `TP.DT` messages since the size of the message is bigger than 8 bytes (size of 1 CAN frame = 8 bytes).
+In the normal case, `dbcfeeder.py` is not able to read `EngRefereneceTorque`, `EngSpeedAtIdlePoint1` and `EngSpeedAtPoint2`. These three signals belong to PGN-65251 (Engine Configuration 1 / J1939) and are delievered with a `TP.BAM` with multitple `TP.DT` messages since the size of the message is bigger than 8 bytes (size of 1 CAN frame = 8 bytes). Also, the value of `Aftertreatment1IntakeNOx` is `3076.75` which is not correct considering it is bigger than the signal's maximum value in the DBC file as shown below.
+
+.. figure:: /_images/j1939/Aftertreatment1IntakeNOx_max.PNG
+    :width: 600
+    :align: center
 
 .. figure:: /_images/j1939/sim_with_j1939_.PNG
     :width: 500
     :align: center
 
-Now not only `dbcfeeder.py` with `j1939reader.py` is able to read these signals but also the values of the rest signals are different from the case without J1939 as shown above. This is due to the fact that `dbcfeeder.py` has followed the J1939 standard when reading signals from CAN and the values are valid as they appear within their designated scope in the DBC file.
+Now not only `dbcfeeder.py` with `j1939reader.py` is able to read these signals but also the value of `Aftertreatment1IntakeNOx` appears to be at the signal's maximum and other signals' values are different from the case without J1939 as shown above. This is due to the fact that `dbcfeeder.py` has followed the J1939 standard when reading signals from CAN and all the values here are valid as they appear within their designated scope in the DBC file.
