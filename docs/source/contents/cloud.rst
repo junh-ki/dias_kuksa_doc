@@ -500,7 +500,7 @@ Configuring a Grafana's Data Source, Dashboard and Notifier
     :width: 400
     :align: center
 
-The above shows 7 dashboards that are created based on Bosch's DIAS-KUKSA implementation. The following is one of the first 6 dashboards.
+The above shows 7 dashboards that are created based on Bosch's DIAS-KUKSA implementation. The following is one of the first 6 NOx-map dashboards.
 
 .. figure:: /_images/cloud/nox_map-tscr_bad.PNG
     :width: 800
@@ -555,10 +555,10 @@ Since the `Grafana Docker image <https://hub.docker.com/r/grafana/grafana/>`_ is
     :align: center
 
 .. figure:: /_images/cloud/sent_email_.jpg
-    :width: 800
+    :width: 400
     :align: center
 
-* Now that you have set a notifier, you have to set an alert rule for you to receive a message from Grafana in a certain condition. The first screenshot above shows a condition that the alert is triggered when the query A, `total_sampling_time`, is above 300. The second screenshot above shows the kind of message a receiver' phone would receive via `Gmail` if the condition is met.
+* Now that you have set a notifier, you have to set an alert rule for you to receive a message from Grafana in a certain condition. The first screenshot above shows a condition that the alert is triggered when the query A, `total_sampling_time`, is above 300. The second screenshot above shows the kind of message a receiver's phone would receive via `Gmail` if the condition is met.
 
 .. figure:: /_images/cloud/grafana_ini.PNG
     :width: 600
@@ -575,7 +575,7 @@ It can be noticed that all configuration files for `Grafana` are located under `
 Configuration Setup
 *******************
 
-.. figure:: /_images/cloud/docker-compose_yml.PNG
+.. figure:: /_images/cloud/docker-compose_yml_.PNG
     :width: 500
     :align: center
 
@@ -624,7 +624,7 @@ The information needs to be stated in `docker-compose.yml` as well::
     command: --hono.client.tlsEnabled=true --hono.client.username=messaging@${HONO_TENANTID} --hono.client.password=${HONO_MESSAGINGPW} --tenant.id=${HONO_TENANTID} --export.ip=influxdb:8086
 
     environment:
-      - GF_INSTALL_PLUGINS=natel-plotly-panel # to add plugins
+      - GF_INSTALL_PLUGINS=natel-plotly-panel,vonage-status-panel # to add plugins
       - GF_SECURITY_ADMIN_USER=${GRAFANA_USERNAME}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
 
@@ -635,7 +635,7 @@ The information needs to be stated in `docker-compose.yml` as well::
     :align: center
 
 * `export.ip` follows `{$SERVICE_NAME_IN_DOCKER-COMPOSE-FILE}:{$PORT_NUMBER_IN_DOCKER-COMPOSE-FILE}`. Therefore it is `influxdb:8086`.
-* `GF_INSTALL_PLUGINS=natel-plotly-panel`: The NOx Map dashboard that we are trying to provision uses the `natel-plotly-panel` plugin that is not provided by default.
+* `GF_INSTALL_PLUGINS=natel-plotly-panel,vonage-status-panel`: The NOx Map dashboard that we are trying to provision uses the `vonage-status-panel` plugin that is not provided by default. `natel-plotly-panel` is just addtional to show how multiple panel-plugins can be added.
 
 
 
