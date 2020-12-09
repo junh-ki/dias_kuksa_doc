@@ -496,13 +496,27 @@ This way, the tagged Docker image would be directed to your respository on Docke
 Configuring a Grafana's Data Source, Dashboard and Notifier
 ***********************************************************
 
-Manually synchronizing `Grafana` with `InfluxDB` as a data source, creating a dashboard with several panels and setting a notifier via Email in `Grafana` for several Docker hosts (Virtual Machines) can take a lot of handwork. The following `Grafana` dashboard example is used for the NOx map analysis part from Bosch's DIAS-KUKSA implementation.
+.. figure:: /_images/cloud/dashboards.PNG
+    :width: 400
+    :align: center
 
-.. figure:: /_images/cloud/nox-map-dashboard.PNG
+The above shows 7 dashboards that are created based on Bosch's DIAS-KUKSA implementation. The following is one of the first 6 dashboards.
+
+.. figure:: /_images/cloud/nox_map-tscr_bad.PNG
     :width: 800
     :align: center
 
-As depicted in the figure, the dashboard contains 7 different panels. Each of 6 scatter-plotly panels has a unique title and is set to detect certain metrics that come from the `InfluxDB` data source. The last panel is to measure the cumulative sampling time of data collection. The dashboard is simply designed to accommodate a specific type of messages sent by `Hono-InfluxDB-Connector` conforming its intended purpose. Since the `Grafana Docker image <https://hub.docker.com/r/grafana/grafana/>`_ is offered without any pre-configured panel options, it could be easily presumed that users might have to set a data source and create this sort of panels manaually everytime they deploy the application, which can be considered significantly inefficient.
+As named in the screenshot above, the depicted dashboard represents "DIAS-BOSCH NOx Bin Map - TSCR (Bad)" that consists of 12 status panels that each of which describes a data bin and has three metrics: `Sampling Time (s)`, `Cumulative NOx DS (g)` and `Cumulative Work (J)`. Each and every metric here comes from the `InfluxDB` data source. The rest of the first 6 dashboards follow the same format. The following is the last dashboard.
+
+.. figure:: /_images/cloud/total_sampling_time.PNG
+    :width: 800
+    :align: center
+
+As shown above, the last dashboard is to keep track of the cumulative time of bin-data sampling. This dashboard is meant to send the administrator user an alert through a notifer feature if a certain sampling time threshold is met.
+
+All these dashboards are simply designed to monitor a specific set of data stored in `InfluxDB` by `Hono-InfluxDB-Connector` conforming their intended purposes. 
+
+Since the `Grafana Docker image <https://hub.docker.com/r/grafana/grafana/>`_ is offered without any pre-configured dashboard and panel options, it could be easily presumed that users might have to set `InfluxDB` as a data source, create these dashboards with multiple panels and set a notifier via Email in `Grafana` manaually for several Docker hosts (Virtual Machines) everytime they deploy the application, which takes a lot of handwork and can be considered significantly inefficient.
 
 `Grafana`'s provisioning system helps users with this problem. With the provisioning system, data sources, dashboards and notifiers can be defined via config files such as YML and JSON that can be version-controlled with `Git`.
 
@@ -536,15 +550,15 @@ As depicted in the figure, the dashboard contains 7 different panels. Each of 6 
 
 * `notifier.yml` states the type of notifier (e.g., Email, Slack, Line, etc...) and the receiver's addresses in case when Email is chosen as the notifier type. If there are more than one receivers, multiple addresses can be added with semi colons that separate email addresses as shown in the screenshot. The result can be checked in `Alerting > Notification Channels` in the Grafana web-server page.
 
-.. figure:: /_images/cloud/alert_rules.PNG
+.. figure:: /_images/cloud/alert_rules_.PNG
     :width: 800
     :align: center
 
-.. figure:: /_images/cloud/sent_email.PNG
+.. figure:: /_images/cloud/sent_email_.jpg
     :width: 800
     :align: center
 
-* Now that you have set a notifier, you have to set an alert rule for you to receive a message from Grafana in a certain condition. The first screenshot above shows a condition that the alert is triggered when the query A, `cumulative_time`, is above 300. The second screenshot above shows the kind of message a receiver would receive via Email if the condition is met.
+* Now that you have set a notifier, you have to set an alert rule for you to receive a message from Grafana in a certain condition. The first screenshot above shows a condition that the alert is triggered when the query A, `total_sampling_time`, is above 300. The second screenshot above shows the kind of message a receiver' phone would receive via `Gmail` if the condition is met.
 
 .. figure:: /_images/cloud/grafana_ini.PNG
     :width: 600
