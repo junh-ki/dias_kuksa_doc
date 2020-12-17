@@ -7,9 +7,9 @@ Introduction to SAE J1939
 
 Society of Automotive Engineers standard SAE J1939 is the vehicle bus recommended practice used for communication and diagnostics among vehicle components. Originating in the car and heavy-duty truck industry in the United States, it is now widely used in other parts of the world. SAE J1939 is a higher-layer protocol (e.g., an add-on software) that uses the CAN Bus technology as a physical layer. In addition to the standard CAN Bus capabilities, SAE J1939 supports node addresses, and it can deliver data frames longer than 8 bytes (in fact, up to 1785 bytes).
 
-Since DIAS's demonstrator vehicle is a Ford Otosan truck that uses SAE J1939 standard, it is necessary for KUKSA to adapt the standard. 
+Since DIAS's demonstrator vehicle is a Ford Otosan truck that follows SAE J1939 standard, it is necessary for KUKSA to adapt the standard. 
 
-The normal DBC file is used to apply identifying names, scaling, offsets, and defining information, to data transmitted **within a CAN frame**. The J1939 DBC file is designed to serve the same purposes but aiming at data transmitted **within a Parameter Group Number (PGN) unit**. This is due to the fact that some data frames are delievered in more than one CAN frame depending on the PGN's data length in J1939. 
+The normal DBC file is used to apply identifying names, scaling, offsets, and defining information, to data transmitted **within a CAN frame**. The J1939 DBC file is designed to serve the same purposes but aiming at data transmitted **within a Parameter Group Number (PGN) unit**. This is due to the fact that some data frames are delivered in more than one CAN frame depending on the PGN's data length in J1939. 
 
 To simply put, one can take a look at one PGN example. The following PGN-65251 information is captured in the official SAE J1939-71 documentation revised in 2011-03 (`PDF Download Link <http://gost-snip.su/download/1sae_j1939_71_vehicle_application_layer_>`_).
 
@@ -32,22 +32,22 @@ For example, one TP.BAM and three TP.DT messages would be sent to deliver a para
 
 There are a lot of concepts defined in the SAE J1939 documentation that are required to conform the J1939 transport protocol. One can look into the documentation to understand the concepts in depth. However, the general premise is simple: **Raw CAN frames are processed to produce PGN data that should be decoded into CAN signals consumed by an in-vehicle application.** Having said that, finding an existing J1939 library that can convert raw CAN frames to PGN data should be the first step. Since `dbcfeeder.py` is written in Python, it makes sense to choose the library written in the same language.
 
-`The J1939 Python package <https://pypi.org/project/j1939/>`_ converts raw CAN frames to PGN data and makes the data available for use. The following figures compare two scenarios where `dbcfeeder.py` reads CAN signals without and with J1939.
+`The Python J1939 package <https://pypi.org/project/j1939/>`_ converts raw CAN frames to PGN data and makes the data available for use. The following figures compare two scenarios where `dbcfeeder.py` reads CAN signals without and with J1939.
 
 .. figure:: /_images/j1939/dbcreader_schema.png
     :width: 470
     :align: center
 
-Without J1939, `dbcfeeder.py` gets decoded CAN singals through `dbcreader.py` that reads raw CAN frames directly from a CAN interface (e.g., `can0` or `vcan0`).
+Without J1939, `dbcfeeder.py` receives decoded CAN singals through `dbcreader.py` that reads raw CAN frames directly from a CAN interface (e.g., `can0` or `vcan0`).
 
 .. figure:: /_images/j1939/j1939reader_schema.png
     :width: 650
     :align: center
 
-With J1939, `dbcfeeder.py` gets decoded CAN singals through `j1939reader.py` (`source <https://github.com/junh-ki/dias_kuksa/blob/master/utils/in-vehicle/j1939feeder/j1939reader.py>`_) that reads PGN messages from the `j1939.ElectronicControlUnit` (ECU) class of the `j1939` python package that converts raw CAN frames to PGN data.
-The `j1939.ControllerApplications` (CA) class from the `j1939` python package is a superclass of `j1939Reader.J1939Reader` and utilizes the ECU class's functionalities to derive PGN data. 
+With J1939, `dbcfeeder.py` receives decoded CAN singals through `j1939reader.py` (`source <https://github.com/junh-ki/dias_kuksa/blob/master/utils/in-vehicle/j1939feeder/j1939reader.py>`_) that reads PGN messages from the `j1939.ElectronicControlUnit` (ECU) class of the python `j1939` package that converts raw CAN frames to PGN data.
+The `j1939.ControllerApplications` (CA) class from the python `j1939` package is a superclass of `j1939Reader.J1939Reader` and utilizes the ECU class's functionalities to derive PGN data. 
 
-At the time of writing this documentation, the following features are available from the `j1939` python package according to `here <https://pypi.org/project/j1939/>`_:
+At the time of writing this documentation, the following features are available from the python `j1939` package according to `here <https://pypi.org/project/j1939/>`_:
 
 - One ElectronicControlUnit (ECU) can hold multiple ControllerApplications (CA)
 - ECU (CA) Naming according SAE J1939/81
@@ -327,7 +327,7 @@ Running dbcfeeder.py with j1939reader.py
     :width: 500
     :align: center
 
-In the normal case, `dbcfeeder.py` is not able to read `EngRefereneceTorque`, `EngSpeedAtIdlePoint1` and `EngSpeedAtPoint2`. These three signals belong to PGN-65251 (Engine Configuration 1 / J1939) and are delievered with a `TP.BAM` with multitple `TP.DT` messages since the size of the message is bigger than 8 bytes (size of 1 CAN frame = 8 bytes). Also, the value of `Aftertreatment1IntakeNOx` is `3076.75` which is not correct considering it is bigger than the signal's maximum value in the DBC file as shown below.
+In the normal case, `dbcfeeder.py` is not able to read `EngRefereneceTorque`, `EngSpeedAtIdlePoint1` and `EngSpeedAtPoint2`. These three signals belong to PGN-65251 (Engine Configuration 1 / J1939) and are delivered with a `TP.BAM` with multitple `TP.DT` messages since the size of the message is bigger than 8 bytes (size of 1 CAN frame = 8 bytes). Also, the value of `Aftertreatment1IntakeNOx` is `3076.75` which is not correct considering it is bigger than the signal's maximum value in the DBC file as shown below.
 
 .. figure:: /_images/j1939/Aftertreatment1IntakeNOx_max.PNG
     :width: 600
