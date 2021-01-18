@@ -222,6 +222,7 @@ kuksa.val - cloudfeeder.py Setup
 * `dias_kuksa/utils/in-vehicle/cloudfeeder_telemetry/cloudfeeder.py` fetches the data from the `kuksa.val` in-vehicle server and preprocesses it with a user-specific preprocessor, `dias_kuksa/utils/in-vehicle/cloudfeeder_telemetry/preprocessor_bosch.py`, and transmits the result to Hono (:ref:`cloud-hono`) in a form of JSON Dictionary.
 
 * `cloudfeeder.py` takes six compulsory arguments to be run:
+    * JSON token (e.g., `super-admin.json.token`) / `-j` or `--jwt` / To have write-access to the server.
 	* Host URL (e.g., "mqtt.bosch-iot-hub.com") / `--host`
 	* Protocol Port Number (e.g., "8883") / `-p` or `--port`
 	* Credential Authorization Username (Configured when creating) (e.g., "{username}@{tenant-id}") / `-u` or `--username`
@@ -267,26 +268,10 @@ kuksa.val - cloudfeeder.py Setup
 
 7. When all the required information is ready, navigate to `kuksa.val/clients/vss-testclient/`, and run `cloudfeeder.py` by commanding::
 
-	$ python3 cloudfeeder.py --host {host_url} -p {port_number} -u {auth-id}@{tenant-id} -P {password} -c {server_certificate_file} -t {transmission_type}
+	$ python3 cloudfeeder.py -j {admin_json_token} --host {host_url} -p {port_number} -u {auth-id}@{tenant-id} -P {password} -c {server_certificate_file} -t {transmission_type}
 
 * Just a reminder, the information between `{}` should be different depending on the target Hono instance. You can follow :ref:`cloud-hono` to create a Hono instance.
 
-6. If all the arguments are assigned properly, you would be asked to choose the connection type (0: Secure, 1: Insecure). Type `1` and enter to connect insecurely::
-
-    0-Secure or 1-Insecure connection:
-    1
-
-7. Then you would be asked to enter the authorization token. We can copy and paste the JSON token (`kuksa.val/certificates/jwt/super-admin.json.token`).
-
-7-1. Open another terminal and navigate to `kuksa.val/certificates/jwt/`, where the JSON token is located.
-
-7-2. Print the token by commanding::
-
-    cat super-admin.json.token
-
-7-3. Copy the printed token on the terminal and paste it to the previous terminal where you are asked to enter the authorization token::
-
-    Enter the authorization token:
-    eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJrdWtzYS52YWwiLCJpc3MiOiJFY2xpcHNlIEtVS1NBIERldiIsImFkbWluIjp0cnVlLCJtb2RpZnlUcmVlIjp0cnVlLCJpYXQiOjE1MTYyMzkwMjIsImV4cCI6MTc2NzIyNTU5OSwia3Vrc2EtdnNzIjp7IioiOiJydyJ9fQ.p2cnFGH16QoQ14l6ljPVKggFXZKmD-vrw8G6Vs6DvAokjsUG8FHh-F53cMsE-GDjyZH_1_CrlDCnbGlqjsFbgAylqA7IAJWp9_N6dL5p8DHZTwlZ4IV8L1CtCALs7XVqvcQKHCCzB63Y8PgVDCAqpQSRb79JPVD4pZwkBKpOknfEY5y9wfbswZiRKdgz7o61_oFnd-yywpse-23HD6v0htThVF1SuGL1PuvGJ8p334nt9bpkZO3gaTh1xVD_uJMwHzbuBCF33_f-I5QMZO6bVooXqGfe1zvl3nDrPEjq1aPulvtP8RgREYEqE6b2hB8jouTiC_WpE3qrdMw9sfWGFbm04qC-2Zjoa1yYSXoxmYd0SnliSYHAad9aXoEmFENezQV-of7sc-NX1-2nAXRAEhaqh0IRuJwB4_sG7SvQmnanwkz-sBYxKqkoFpOsZ6hblgPDOPYY2NAsZlYkjvAL2mpiInrsmY_GzGsfwPeAx31iozImX75rao8rm-XucAmCIkRlpBz6MYKCjQgyRz3UtZCJ2DYF4lKqTjphEAgclbYZ7KiCuTn9HualwtEmVzHHFneHMKl7KnRQk-9wjgiyQ5nlsVpCCblg6JKr9of4utuPO3cBvbjhB4_ueQ40cpWVOICcOLS7_w0i3pCq1ZKDEMrYDJfz87r2sU9kw1zeFQk
+* `admin_json_token` can be found under the directory (`kuksa.val/certificates/jwt/super-admin.json.token`). Therefore, `../../certificates/jwt/super-admin.json.token` should be entered for `-j` when considering the current directory is `kuksa.val/clients/vss-testclient/`.
 
 * If you have successuly made it here, you would be able to see `cloudfeeder.py` fetching and transmitting the data every 1~2 seconds by now. 
